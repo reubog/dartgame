@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.game;
 
-public interface Notifyer {
+public interface DartGameNotification {
     void onGameInitialized(DartGame dartGame);
     void onGameStarted(DartGame dartGame);
     void onGameFinished(DartGame dartGame);
@@ -14,4 +14,5 @@ public interface Notifyer {
     void onRemoveDarts(DartGame dartGame, int round, Player player);
 
     void onPlayerWon(DartGame dartGame, Player player);
+    void onPlayerBust(DartGame dartGame, Player player);
 }
