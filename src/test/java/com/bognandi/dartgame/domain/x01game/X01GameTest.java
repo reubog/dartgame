@@ -114,6 +114,20 @@ public class X01GameTest {
     }
 
     @Test
+    void testSinglePlay() {
+        game.initGame(dartBoardAction, notifyer);
+        game.addPlayer(player1);
+        dartBoardAction.doPressButton();
+
+        throw3dartsAndPressButton(DOUBLE_BULLSEYE, DOUBLE_BULLSEYE, DOUBLE_BULLSEYE);
+        throw3dartsAndPressButton(DOUBLE_BULLSEYE, DOUBLE_BULLSEYE, DOUBLE_BULLSEYE);
+
+        dartBoardAction.doThrowDart(ONE);
+        verify(notifyer).onPlayerWon(game, player1);
+        verify(notifyer).onGameFinished(game);
+    }
+
+    @Test
     @Disabled
     void testBust() {
         game.initGame(dartBoardAction, notifyer);

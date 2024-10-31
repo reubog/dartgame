@@ -45,7 +45,7 @@ public class X01Game implements DartGame {
 
     @Override
     public void startGame() {
-        if (players.size() < 2) {
+        if (players.size() < 1) {
             LOG.warn("Not enough players to start the game");
             return;
         }
