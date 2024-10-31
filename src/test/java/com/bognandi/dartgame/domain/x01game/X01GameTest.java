@@ -127,6 +127,15 @@ public class X01GameTest {
         verify(notifyer).onGameFinished(game);
     }
 
+
+
+    @Test
+    void testStartGameWithoutPlayserShouldNotStart() {
+        game.initGame(dartBoardAction, notifyer);
+        dartBoardAction.doPressButton();
+        verify(notifyer, never()).onGameStarted(game);
+    }
+
     @Test
     @Disabled
     void testBust() {
