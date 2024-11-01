@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class X01PlayerScore implements PlayerScore, DartGameNotification {
+public class X01PlayerScore implements PlayerScore, GameEventListener {
 
     private final static Logger LOG = LoggerFactory.getLogger(X01PlayerScore.class);
 
@@ -47,7 +47,7 @@ public class X01PlayerScore implements PlayerScore, DartGameNotification {
     }
 
     @Override
-    public void onGameInitialized(DartGame dartGame) {
+    public void onGameStarting(DartGame dartGame) {
         ;
     }
 
