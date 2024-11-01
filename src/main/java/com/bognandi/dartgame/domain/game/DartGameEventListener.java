@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.game;
 
-public interface GameEventListener {
+public interface DartGameEventListener {
     void onGameStarting(DartGame dartGame);
     void onGameStarted(DartGame dartGame);
     void onGameFinished(DartGame dartGame);

@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.dart_game_app;
+package com.bognandi.dartgame.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
