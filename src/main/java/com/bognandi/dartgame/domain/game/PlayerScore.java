@@ -1,7 +1,7 @@
 package com.bognandi.dartgame.domain.game;
 
 public interface PlayerScore {
-    int getTotalScore();
+    int getScore();
     int getPlayedRounds();
     int getThrownDarts();
 }

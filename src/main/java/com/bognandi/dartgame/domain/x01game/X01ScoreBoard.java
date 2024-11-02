@@ -3,6 +3,7 @@ package com.bognandi.dartgame.domain.x01game;
 import com.bognandi.dartgame.domain.game.*;
 import lombok.RequiredArgsConstructor;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +11,10 @@ import java.util.Map;
 public class X01ScoreBoard implements ScoreBoard, DartGameEventListener {
 
     private final int startScore;
+    private Player currentPlayer;
+    private final DartValueMapper dartValueMapper;
     private List<PlayerRound> playerRounds;
-    private Map<Player,PlayerScore> playerScoreMap;
-
+    private Map<Player, X01PlayerScore> playerScoreMap = new LinkedHashMap<>();
 
     @Override
     public int getMinimumNumberOfPlayers() {
@@ -27,6 +29,11 @@ public class X01ScoreBoard implements ScoreBoard, DartGameEventListener {
     @Override
     public boolean isWinner(Player player) {
         return false;
+    }
+
+    @Override
+    public PlayerScore getPlayerScore(Player player) {
+        return playerScoreMap.get(player);
     }
 
     @Override
@@ -46,22 +53,24 @@ public class X01ScoreBoard implements ScoreBoard, DartGameEventListener {
 
     @Override
     public void onPlayerAdded(DartGame dartGame, Player player) {
-
+        playerScoreMap.put(player, new X01PlayerScore(startScore));
     }
 
     @Override
     public void onRoundStarted(DartGame dartGame, int roundNumber) {
-
+        playerScoreMap.values().forEach(X01PlayerScore::nextRound);
     }
 
     @Override
     public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
-
+        currentPlayer = player;
     }
 
     @Override
     public void onDartThrown(DartGame dartGame, Dart dart) {
-
+        playerScoreMap.get(currentPlayer)
+                .decreaseScoreWith(dartValueMapper.getDartValue(dart))
+                .nextDart();
     }
 
     @Override

@@ -171,6 +171,12 @@ public class X01DartGameTest {
 
     class TestScoreBoard implements ScoreBoard, DartGameEventListener {
         private List<Player> players = new ArrayList<>();
+
+        @Override
+        public PlayerScore getPlayerScore(Player player) {
+            return null;
+        }
+
         @Override
         public int getMinimumNumberOfPlayers() {
             return 0;
