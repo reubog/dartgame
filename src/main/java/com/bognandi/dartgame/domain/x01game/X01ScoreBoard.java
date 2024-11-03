@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.x01game;
 
-import com.bognandi.dartgame.domain.game.*;
+import com.bognandi.dartgame.domain.dartgame.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashMap;

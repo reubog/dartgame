@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.x01game;
 
-import com.bognandi.dartgame.domain.game.PlayerScore;
+import com.bognandi.dartgame.domain.dartgame.PlayerScore;
 
 
 public class X01PlayerScore implements PlayerScore {

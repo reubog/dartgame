@@ -1,16 +1,16 @@
 package com.bognandi.dartgame.domain.x01game;
 
-import com.bognandi.dartgame.domain.game.DartGame;
-import com.bognandi.dartgame.domain.game.DartValueMapper;
-import com.bognandi.dartgame.domain.game.Player;
-import com.bognandi.dartgame.domain.game.PlayerScore;
+import com.bognandi.dartgame.domain.dartgame.DartGame;
+import com.bognandi.dartgame.domain.dartgame.DartValueMapper;
+import com.bognandi.dartgame.domain.dartgame.Player;
+import com.bognandi.dartgame.domain.dartgame.PlayerScore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.bognandi.dartgame.domain.game.Dart.ONE;
+import static com.bognandi.dartgame.domain.dartgame.Dart.ONE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 

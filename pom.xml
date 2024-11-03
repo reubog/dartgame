@@ -29,12 +29,12 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
-<!--	<repositories>-->
-<!--		<repository>-->
-<!--			<id>tts</id>-->
-<!--			<url>https://raw.githubusercontent.com/DFKI-MLT/Maven-Repository/main</url>-->
-<!--		</repository>-->
-<!--	</repositories>-->
+	<repositories>
+		<repository>
+			<id>Eurotech Kura</id>
+			<url>https://raw.githubusercontent.com/eurotech/kura_addons/mvn-repo/</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -60,6 +60,12 @@
 <!--			<artifactId>voice-cmu-slt-hsmm</artifactId>-->
 <!--			<version>5.2.1</version>-->
 <!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/tinyb/tinyb -->
+		<dependency>
+			<groupId>tinyb</groupId>
+			<artifactId>tinyb</artifactId>
+			<version>1.0.100</version>
+		</dependency>
 
 
 

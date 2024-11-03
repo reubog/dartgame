@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.domain.game;
+package com.bognandi.dartgame.domain.dartgame;
 
 import java.util.ArrayList;
 import java.util.List;

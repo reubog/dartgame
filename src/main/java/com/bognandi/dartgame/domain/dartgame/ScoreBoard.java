@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.domain.game;
+package com.bognandi.dartgame.domain.dartgame;
 
 public interface ScoreBoard {
     int getMinimumNumberOfPlayers();

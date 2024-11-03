@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.x01game;
 
-import com.bognandi.dartgame.domain.game.*;
+import com.bognandi.dartgame.domain.dartgame.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bognandi.dartgame.domain.game.Dart.*;
+import static com.bognandi.dartgame.domain.dartgame.Dart.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.domain.game;
+package com.bognandi.dartgame.domain.dartgame;
 
 public abstract class DartGameException extends RuntimeException {
     public DartGameException(String message) {
