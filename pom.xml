@@ -84,23 +84,22 @@
 			<artifactId>javafx-controls</artifactId>
 			<version>23.0.1</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.openjfx</groupId>-->
-<!--			<artifactId>javafx-graphics</artifactId>-->
-<!--			<version>${javafx.version}</version>-->
-<!--			<classifier>win</classifier>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.openjfx</groupId>-->
-<!--			<artifactId>javafx-graphics</artifactId>-->
-<!--			<version>${javafx.version}</version>-->
-<!--			<classifier>linux</classifier>-->
-<!--		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
 		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-			<classifier>mac</classifier>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>26.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.5.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.16</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

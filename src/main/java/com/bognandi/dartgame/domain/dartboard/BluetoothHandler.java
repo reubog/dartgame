@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +95,7 @@ public class BluetoothHandler implements Closeable {
 
         @Override
         public void onNotificationStateUpdate(@NotNull BluetoothPeripheral peripheral, @NotNull BluetoothGattCharacteristic characteristic, BluetoothCommandStatus status) {
+            System.out.println(String.format("Status=%d, Address=%s", status.getValue(), peripheral.getAddress()));
             if (status == COMMAND_SUCCESS) {
                 final boolean isNotifying = peripheral.isNotifying(characteristic);
                 logger.info(String.format("SUCCESS: Notify set to '%s' for %s", isNotifying, characteristic.getUuid()));
@@ -122,6 +125,8 @@ public class BluetoothHandler implements Closeable {
         public void onCharacteristicUpdate(@NotNull BluetoothPeripheral peripheral, byte[] value, @NotNull BluetoothGattCharacteristic characteristic, BluetoothCommandStatus status) {
             final UUID characteristicUUID = characteristic.getUuid();
             final BluetoothBytesParser parser = new BluetoothBytesParser(value);
+
+            System.out.println(String.format("Characteristic: Address=%s, Cstic=%s, Value=%s, Status=%d", peripheral.getAddress(), characteristic.getUuid(), new String(value), status.getValue()));
 
             // Deal with errors
             if (status != COMMAND_SUCCESS) {
@@ -261,25 +266,35 @@ public class BluetoothHandler implements Closeable {
 
     public static void main(String[] args) {
         try(BluetoothHandler bluetoothHandler = new BluetoothHandler()) {
-
+Thread.sleep(20*1000);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     void startScanning() {
-        central.scanForPeripheralsWithNames(new String[]{"GRANBOARD"});
-//        central.scanForPeripheralsWithServices(new UUID[]{
-////                WSS_SERVICE_UUID,
-//                HTS_SERVICE_UUID,
-////                PLX_SERVICE_UUID,
-////                BLP_SERVICE_UUID,
-////                HRS_SERVICE_UUID
-//        });
+//        central.scanForPeripheralsWithNames(new String[]{"GRANBOARD"});
+        central.scanForPeripheralsWithServices(new UUID[]{
+//////                WSS_SERVICE_UUID,
+                HTS_SERVICE_UUID,
+//////                PLX_SERVICE_UUID,
+//////                BLP_SERVICE_UUID,
+//////                HRS_SERVICE_UUID
+        });
     }
 
     @Override
     public void close() throws IOException {
+        System.out.println("Closing");
+        central.getConnectedPeripherals().forEach(peripheral -> peripheral.cancelConnection());
+
+        try {
+            Thread.sleep(5*1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         central.stopScan();
         central.shutdown();
     }
