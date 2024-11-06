@@ -1,26 +1,25 @@
 package com.bognandi.dartgame.domain.dartboard;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
 public class DartFieldMapper {
-    public static Map<String, NotifiedValues> FIELD_DART_MAP = new LinkedHashMap<>();
-    private static Queue<NotifiedValues> NOTIFIED_VALUES = new ArrayDeque<>(Arrays.asList(NotifiedValues.values()));
-    private static NotifiedValues CURRENT_NOTIFIED_VALUE = null;
-    private static Queue<NotifiedValues> SYNC_QUEUE = new SynchronousQueue<>();
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DartFieldMapper.class);
 
-    public static NotifiedValues nextNotifiedValue() {
-        if (NOTIFIED_VALUES.isEmpty()) {
-            return null;
-        }
-        return CURRENT_NOTIFIED_VALUE = NOTIFIED_VALUES.remove();
-    }
+    public static Map<String, NotifiedValues> FIELD_DART_MAP = new LinkedHashMap<>();
+    private static Queue<NotifiedValues> SYNC_QUEUE = new ArrayDeque<>(Arrays.asList(NotifiedValues.values()));
 
     public static void pushValueToNotifiedValue(byte[] value) {
-        SYNC_QUEUE.offer()
+        if (SYNC_QUEUE.isEmpty()) {
+            LOG.warn("No more values. Discarding value {}", new String(value));
+            return;
+        }
 
         String str = Base64.getEncoder().encodeToString(value);
-        FIELD_DART_MAP.put(str, CURRENT_NOTIFIED_VALUE);
+        FIELD_DART_MAP.put(str, SYNC_QUEUE.remove());
+
+        LOG.info("Next value to map: {}", SYNC_QUEUE.peek());
     }
 
     public static void print() {

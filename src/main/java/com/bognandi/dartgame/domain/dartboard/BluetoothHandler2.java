@@ -81,13 +81,10 @@ public class BluetoothHandler2 extends BluetoothCentralManagerCallback {
         callback.setCentralManager(centralManager);
         centralManager.setRssiThreshold(-120);
         centralManager.scanForPeripheralsWithNames(new String[]{"GRANBOARD"});
-//        centralManager.scanForPeripheralsWithAddresses(new String[]{"EA:11:C6:FD:E9:57"});
 
-        NotifiedValues notifiedValues;
-        while ((notifiedValues = DartFieldMapper.nextNotifiedValue()) != null) {
-            waitForUserPressReturn();
-        }
+        waitForUserPressReturn();
 
+        DartFieldMapper.print();
 
          // shutting down
         centralManager.getConnectedPeripherals().forEach(peripheral -> {
