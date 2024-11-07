@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.dartboard;
 
-public enum NotifiedValues {
+public enum DartboardNotifiedValue {
     INITIAL_CODE,
 
     RED_BUTTON,
@@ -90,5 +90,13 @@ public enum NotifiedValues {
     TRIPLE_SEVENTEEN,
     TRIPLE_EIGHTEEN,
     TRIPLE_NINETEEN,
-    TRIPLE_TWENTY,
+    TRIPLE_TWENTY;
+
+    public boolean isButton() {
+        return this == RED_BUTTON;
+    }
+
+    public boolean isDartValue() {
+        return this != RED_BUTTON && this != INITIAL_CODE;
+    }
 }

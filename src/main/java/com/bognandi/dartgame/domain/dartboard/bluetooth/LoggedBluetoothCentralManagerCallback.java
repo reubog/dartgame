@@ -1,6 +1,7 @@
-package com.bognandi.dartgame.domain.dartboard;
+package com.bognandi.dartgame.domain.dartboard.bluetooth;
 
-import com.welie.blessed.*;
+import com.bognandi.dartgame.domain.dartboard.BluetoothDartboardPeripheral;
+import com.bognandi.dartgame.domain.dartboard.DartboardValueMapper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,18 +9,15 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class BluetoothHandler2 extends BluetoothCentralManagerCallback {
+public class LoggedBluetoothCentralManagerCallback extends BluetoothCentralManagerCallback {
 
-    private static Logger LOG = LoggerFactory.getLogger(BluetoothHandler2.class);
+    private static Logger LOG = LoggerFactory.getLogger(LoggedBluetoothCentralManagerCallback.class);
 
-    private BluetoothCentralManager centralManager;
+    protected BluetoothCentralManager centralManager;
 
     public void setCentralManager(BluetoothCentralManager centralManager) {
         this.centralManager = centralManager;
@@ -43,14 +41,6 @@ public class BluetoothHandler2 extends BluetoothCentralManagerCallback {
     @Override
     public void onDiscoveredPeripheral(@NotNull BluetoothPeripheral peripheral, @NotNull ScanResult scanResult) {
         LOG.debug("Discovered Peripheral: Address={}, Name={}, Status=[{}]", peripheral.getAddress(), peripheral.getName(), String.join(",", scanResult.getUuids().stream().map(UUID::toString).collect(Collectors.joining(", "))));
-
-        if ("GRANBOARD".equals(peripheral.getName())) {
-            centralManager.stopScan();
-
-            LOG.debug("GRANBOARD found! Connecting...");
-            centralManager.connectPeripheral(peripheral, new BluetoothPeripheralHandler2());
-
-        }
     }
 
     @Override
@@ -76,7 +66,20 @@ public class BluetoothHandler2 extends BluetoothCentralManagerCallback {
 
     public static void main(String[] args) throws InterruptedException {
         LOG.debug("Start");
-        BluetoothHandler2 callback = new BluetoothHandler2();
+        LoggedBluetoothCentralManagerCallback callback = new LoggedBluetoothCentralManagerCallback(){
+            @Override
+            public void onDiscoveredPeripheral(@NotNull BluetoothPeripheral peripheral, @NotNull ScanResult scanResult) {
+                super.onDiscoveredPeripheral(peripheral, scanResult);
+
+                if ("GRANBOARD".equals(peripheral.getName())) {
+                    centralManager.stopScan();
+
+                    LOG.debug("GRANBOARD found! Connecting...");
+                    centralManager.connectPeripheral(peripheral, new BluetoothDartboardPeripheral());
+
+                }
+            }
+        };
         BluetoothCentralManager centralManager = new BluetoothCentralManager(callback);
         callback.setCentralManager(centralManager);
         centralManager.setRssiThreshold(-120);
@@ -84,7 +87,7 @@ public class BluetoothHandler2 extends BluetoothCentralManagerCallback {
 
         waitForUserPressReturn();
 
-        DartFieldMapper.print();
+        DartboardValueMapper.print();
 
          // shutting down
         centralManager.getConnectedPeripherals().forEach(peripheral -> {

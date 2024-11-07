@@ -1,21 +1,16 @@
-package com.bognandi.dartgame.domain.dartboard;
+package com.bognandi.dartgame.domain.dartboard.bluetooth;
 
-import com.welie.blessed.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
-import static com.welie.blessed.BluetoothBytesParser.FORMAT_UINT32;
+public class LoggedBluetoothPeripheral extends BluetoothPeripheralCallback {
 
-public class BluetoothPeripheralHandler2 extends BluetoothPeripheralCallback {
-
-    private static Logger LOG = LoggerFactory.getLogger(BluetoothPeripheralHandler2.class);
+    private static Logger LOG = LoggerFactory.getLogger(LoggedBluetoothPeripheral.class);
 
     @Override
     public void onServicesDiscovered(@NotNull BluetoothPeripheral peripheral, @NotNull List<BluetoothGattService> services) {
@@ -51,10 +46,6 @@ public class BluetoothPeripheralHandler2 extends BluetoothPeripheralCallback {
             sb.append(String.format("%02X ", val));
         }
         LOG.debug("onCharacteristicUpdate: peripheral={}, cstic={}, status={}, valueStr={} valueHex={}", peripheral.getName(), characteristic.getUuid(), status, new String(value), sb);
-        DartFieldMapper.pushValueToNotifiedValue(value);
-//        BluetoothBytesParser parser = new BluetoothBytesParser(value);
-//
-//        LOG.debug("Cstic Update: peripheral={}, value={}", peripheral.getName(), new String(value));
     }
 
     @Override
