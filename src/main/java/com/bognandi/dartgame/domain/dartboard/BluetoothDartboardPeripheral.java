@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BluetoothDartboardPeripheral extends LoggedBluetoothPeripheral implements DartBoard {
 
@@ -40,7 +39,7 @@ public class BluetoothDartboardPeripheral extends LoggedBluetoothPeripheral impl
             listeners.forEach(listener -> listener.onButton());
         }
         else if (dartboardNotifiedValue.isDartValue()) {
-            Dart dart = DartboardValueMapper.DARTVALUE_MAP.get(dartboardNotifiedValue);
+            Dart dart = DartboardValueMapper.DART_MAP.get(dartboardNotifiedValue);
             LOG.info("Dart thrown, notifying listeners: {}", dart);
             listeners.forEach(listener -> listener.onDartThrown(dart));
         }

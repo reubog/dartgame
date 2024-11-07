@@ -88,8 +88,6 @@ public class LoggedBluetoothCentralManagerCallback extends BluetoothCentralManag
 
         waitForUserPressReturn();
 
-        DartboardValueMapper.print();
-
          // shutting down
         centralManager.getConnectedPeripherals().forEach(peripheral -> {
             peripheral.getNotifyingCharacteristics().forEach(cstic -> {

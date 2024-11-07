@@ -28,8 +28,6 @@ public class GranboardValueMapper {
 
         waitForUserPressReturn();
 
-        DartboardValueMapper.print();
-
         // shutting down
         centralManager.getConnectedPeripherals().forEach(peripheral -> {
             peripheral.getNotifyingCharacteristics().forEach(cstic -> {
