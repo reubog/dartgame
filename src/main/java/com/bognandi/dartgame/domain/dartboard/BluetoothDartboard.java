@@ -1,12 +1,12 @@
 package com.bognandi.dartgame.domain.dartboard;
 
-import com.bognandi.dartgame.domain.dartgame.DartBoard;
+import com.bognandi.dartgame.domain.dartgame.Dartboard;
 import com.bognandi.dartgame.domain.dartgame.DartBoardEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BluetoothDartboard implements DartBoard {
+public class BluetoothDartboard implements Dartboard {
 
     private final List<DartBoardEventListener> listeners = new ArrayList<>();
 

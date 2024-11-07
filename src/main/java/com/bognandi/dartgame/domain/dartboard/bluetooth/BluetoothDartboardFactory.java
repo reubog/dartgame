@@ -2,7 +2,7 @@ package com.bognandi.dartgame.domain.dartboard.bluetooth;
 
 import com.bognandi.dartgame.domain.dartboard.BluetoothDartboardPeripheral;
 import com.bognandi.dartgame.domain.dartboard.DartboardFactory;
-import com.bognandi.dartgame.domain.dartgame.DartBoard;
+import com.bognandi.dartgame.domain.dartgame.Dartboard;
 import com.welie.blessed.BluetoothCentralManager;
 import com.welie.blessed.BluetoothPeripheral;
 import com.welie.blessed.ScanResult;
@@ -17,25 +17,23 @@ public class BluetoothDartboardFactory implements DartboardFactory {
     private final BluetoothCentralManager centralManager;
     private final BluetoothDartboardPeripheral bluetoothDartboardPeripheral = new BluetoothDartboardPeripheral();
     private final Callback centralManagerCallback = new Callback();
-    private final String dartboardName;
 
-    public BluetoothDartboardFactory(String dartboardName) {
+    public BluetoothDartboardFactory() {
         LOG.info("Starting BluetoothDartboardFactory");
-        this.dartboardName = dartboardName;
         this.centralManager = new BluetoothCentralManager(centralManagerCallback);
         centralManagerCallback.setCentralManager(centralManager);
         centralManager.setRssiThreshold(-120);
     }
 
     @Override
-    public void createDartboard(Consumer<DartBoard> dartBoardConsumer) {
-        LOG.info("Scanning for dartboard: {}", dartboardName);
-        centralManagerCallback.setDartBoardConsumer(dartBoardConsumer);
-        centralManager.scanForPeripheralsWithNames(new String[]{dartboardName});
+    public void createDartboard(String name, Consumer<Dartboard> dartBoardConsumer) {
+        LOG.info("Scanning for dartboard: {}", name);
+        centralManagerCallback.setDartBoardConsumer(name, dartBoardConsumer);
+        centralManager.scanForPeripheralsWithNames(new String[]{name});
     }
 
     @Override
-    public void destroyDartboard(DartBoard dartBoard) {
+    public void destroyDartboard(Dartboard dartBoard) {
 
     }
 
@@ -65,9 +63,11 @@ public class BluetoothDartboardFactory implements DartboardFactory {
     }
 
     private class Callback extends LoggedBluetoothCentralManagerCallback {
-        private Consumer<DartBoard> dartBoardConsumer;
+        private Consumer<Dartboard> dartBoardConsumer;
+        private String dartboardName;
 
-        public void setDartBoardConsumer(Consumer<DartBoard> dartBoardConsumer) {
+        public void setDartBoardConsumer(String dartboardName, Consumer<Dartboard> dartBoardConsumer) {
+            this.dartboardName = dartboardName;
             this.dartBoardConsumer = dartBoardConsumer;
         }
 

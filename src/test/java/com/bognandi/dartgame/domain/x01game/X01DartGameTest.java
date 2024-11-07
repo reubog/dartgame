@@ -21,7 +21,7 @@ public class X01DartGameTest {
     @Mock
     private DartGameEventListener dartGameEventListener;
 
-    private DefaultDartBoard dartBoard = new DefaultDartBoard();
+    private DefaultDartboard dartBoard = new DefaultDartboard();
 
     @Mock
     private ScoreBoard scoreBoard;

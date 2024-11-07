@@ -2,7 +2,7 @@ package com.bognandi.dartgame.domain.dartboard;
 
 import com.bognandi.dartgame.domain.dartboard.bluetooth.LoggedBluetoothPeripheral;
 import com.bognandi.dartgame.domain.dartgame.Dart;
-import com.bognandi.dartgame.domain.dartgame.DartBoard;
+import com.bognandi.dartgame.domain.dartgame.Dartboard;
 import com.bognandi.dartgame.domain.dartgame.DartBoardEventListener;
 import com.welie.blessed.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BluetoothDartboardPeripheral extends LoggedBluetoothPeripheral implements DartBoard {
+public class BluetoothDartboardPeripheral extends LoggedBluetoothPeripheral implements Dartboard {
 
     private static Logger LOG = LoggerFactory.getLogger(BluetoothDartboardPeripheral.class);
 

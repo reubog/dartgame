@@ -1,11 +1,11 @@
 package com.bognandi.dartgame.domain.dartboard;
 
-import com.bognandi.dartgame.domain.dartgame.DartBoard;
+import com.bognandi.dartgame.domain.dartgame.Dartboard;
 
 import java.util.function.Consumer;
 
 public interface DartboardFactory {
-    void createDartboard(Consumer<DartBoard> dartBoardConsumer);
-    void destroyDartboard(DartBoard dartBoard);
+    void createDartboard(String name, Consumer<Dartboard> dartBoardConsumer);
+    void destroyDartboard(Dartboard dartBoard);
     void shutdown();
 }

@@ -3,7 +3,7 @@ package com.bognandi.dartgame.domain.dartgame;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultDartBoard implements DartBoard {
+public class DefaultDartboard implements Dartboard {
 
     private List<DartBoardEventListener> eventListeners = new ArrayList<>();
 

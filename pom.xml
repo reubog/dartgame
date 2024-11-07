@@ -118,7 +118,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.bognandi.dartgame.app.JavaFxApplicationSupport</mainClass>
+					<mainClass>${main.app.class}</mainClass>
 					<jvmArguments>--module-path platform/javafx-sdk-23.0.1/lib --add-modules javafx.controls</jvmArguments>
 				</configuration>
 			</plugin>
