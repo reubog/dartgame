@@ -24,13 +24,15 @@ public class GameService {
         this.dartBoardEventListener = new DartboardListener();
         LOG.info("Constructing service");
 
-        dartboardService.findDartboard(dartboardName, dartboard -> dartboard.addEventListener(dartBoardEventListener));
+        dartboardService.findDartboard(dartboardName, dartboard -> {
+            LOG.info("Dartboard listener attached");
+            dartboard.addEventListener(dartBoardEventListener);
+        });
     }
 
     @PreDestroy
     public void destroy() {
         LOG.info("Destroying!");
-        dartboardService.destroy();
     }
 
     private class DartboardListener implements DartBoardEventListener {

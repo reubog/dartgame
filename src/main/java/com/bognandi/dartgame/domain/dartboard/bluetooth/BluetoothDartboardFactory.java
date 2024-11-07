@@ -15,7 +15,6 @@ public class BluetoothDartboardFactory implements DartboardFactory {
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(BluetoothDartboardFactory.class);
 
     private final BluetoothCentralManager centralManager;
-    private final BluetoothDartboardPeripheral bluetoothDartboardPeripheral = new BluetoothDartboardPeripheral();
     private final Callback centralManagerCallback = new Callback();
 
     public BluetoothDartboardFactory() {
@@ -79,7 +78,7 @@ public class BluetoothDartboardFactory implements DartboardFactory {
                 centralManager.stopScan();
 
                 LOG.debug("Dartboard '{}' found! Connecting...", dartboardName);
-                centralManager.connectPeripheral(peripheral, bluetoothDartboardPeripheral);
+                centralManager.connectPeripheral(peripheral, new BluetoothDartboardPeripheral(dartboardName, dartBoardConsumer));
             }
         }
 
@@ -89,7 +88,6 @@ public class BluetoothDartboardFactory implements DartboardFactory {
 
             if (dartboardName.equals(peripheral.getName())) {
                 LOG.debug("Dartboard '{}' connected!", dartboardName);
-
             }
         }
     }

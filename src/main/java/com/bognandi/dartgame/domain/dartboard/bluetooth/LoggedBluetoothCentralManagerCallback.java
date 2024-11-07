@@ -76,7 +76,7 @@ public class LoggedBluetoothCentralManagerCallback extends BluetoothCentralManag
                     centralManager.stopScan();
 
                     LOG.debug("GRANBOARD found! Connecting...");
-                    centralManager.connectPeripheral(peripheral, new BluetoothDartboardPeripheral());
+                    centralManager.connectPeripheral(peripheral, new BluetoothDartboardPeripheral("GRANBOARD", (dartboard)->{}));
 
                 }
             }

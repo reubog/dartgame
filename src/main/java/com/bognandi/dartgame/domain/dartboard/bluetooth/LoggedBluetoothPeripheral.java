@@ -19,19 +19,6 @@ public class LoggedBluetoothPeripheral extends BluetoothPeripheralCallback {
                 .collect(Collectors.joining(", ", "[", "]"));
 
         LOG.debug("Services Discovered: Peripheral={}, Services={}", peripheral.getName(), servicesStr);
-
-//        services.forEach(service -> {
-//            service.getCharacteristics().stream()
-//                    .forEach(cstic -> {
-//                        if (cstic.supportsNotifying()) {
-//                            LOG.debug("Setting Notify ON on peripheral={}, service={}, cstic={}", peripheral.getName(), service.getUuid(), cstic.getUuid());
-//                            peripheral.setNotify(service.getUuid(), cstic.getUuid(), true);
-//                        } else if (cstic.supportsReading()) {
-//                            LOG.debug("Reading peripheral={}, service={}, cstic={}", peripheral.getName(), service.getUuid(), cstic.getUuid());
-//                            peripheral.readCharacteristic(service.getUuid(), cstic.getUuid());
-//                        }
-//                    });
-//        });
     }
 
     @Override
