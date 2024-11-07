@@ -1,10 +1,10 @@
 package com.bognandi.dartgame.domain.dartboard.bluetooth;
 
+import com.welie.blessed.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,18 +20,18 @@ public class LoggedBluetoothPeripheral extends BluetoothPeripheralCallback {
 
         LOG.debug("Services Discovered: Peripheral={}, Services={}", peripheral.getName(), servicesStr);
 
-        services.forEach(service -> {
-            service.getCharacteristics().stream()
-                    .forEach(cstic -> {
-                        if (cstic.supportsNotifying()) {
-                            LOG.debug("Setting Notify ON on peripheral={}, service={}, cstic={}", peripheral.getName(), service.getUuid(), cstic.getUuid());
-                            peripheral.setNotify(service.getUuid(), cstic.getUuid(), true);
-                        } else if (cstic.supportsReading()) {
-                            LOG.debug("Reading peripheral={}, service={}, cstic={}", peripheral.getName(), service.getUuid(), cstic.getUuid());
-                            peripheral.readCharacteristic(service.getUuid(), cstic.getUuid());
-                        }
-                    });
-        });
+//        services.forEach(service -> {
+//            service.getCharacteristics().stream()
+//                    .forEach(cstic -> {
+//                        if (cstic.supportsNotifying()) {
+//                            LOG.debug("Setting Notify ON on peripheral={}, service={}, cstic={}", peripheral.getName(), service.getUuid(), cstic.getUuid());
+//                            peripheral.setNotify(service.getUuid(), cstic.getUuid(), true);
+//                        } else if (cstic.supportsReading()) {
+//                            LOG.debug("Reading peripheral={}, service={}, cstic={}", peripheral.getName(), service.getUuid(), cstic.getUuid());
+//                            peripheral.readCharacteristic(service.getUuid(), cstic.getUuid());
+//                        }
+//                    });
+//        });
     }
 
     @Override

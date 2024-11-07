@@ -15,19 +15,8 @@ public class BluetoothDartboardFactory implements DartboardFactory {
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(BluetoothDartboardFactory.class);
 
     private final BluetoothCentralManager centralManager;
-    private final LoggedBluetoothCentralManagerCallback centralManagerCallback = new LoggedBluetoothCentralManagerCallback(){
-        @Override
-        public void onDiscoveredPeripheral(@NotNull BluetoothPeripheral peripheral, @NotNull ScanResult scanResult) {
-            super.onDiscoveredPeripheral(peripheral, scanResult);
-
-            if (dartboardName.equals(peripheral.getName())) {
-                centralManager.stopScan();
-
-                LOG.debug("Dartboard '{}' found! Connecting...", dartboardName);
-                centralManager.connectPeripheral(peripheral, new BluetoothDartboardPeripheral());
-            }
-        }
-    };
+    private final BluetoothDartboardPeripheral bluetoothDartboardPeripheral = new BluetoothDartboardPeripheral();
+    private final Callback centralManagerCallback = new Callback();
     private final String dartboardName;
 
     public BluetoothDartboardFactory(String dartboardName) {
@@ -50,6 +39,7 @@ public class BluetoothDartboardFactory implements DartboardFactory {
 
     }
 
+    @Override
     public void shutdown() {
         LOG.info("Shutting down BluetoothDartboardFactory");
         // shutting down
@@ -71,6 +61,36 @@ public class BluetoothDartboardFactory implements DartboardFactory {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private class Callback extends LoggedBluetoothCentralManagerCallback {
+        private Consumer<DartBoard> dartBoardConsumer;
+
+        public void setDartBoardConsumer(Consumer<DartBoard> dartBoardConsumer) {
+            this.dartBoardConsumer = dartBoardConsumer;
+        }
+
+        @Override
+        public void onDiscoveredPeripheral(@NotNull BluetoothPeripheral peripheral, @NotNull ScanResult scanResult) {
+            super.onDiscoveredPeripheral(peripheral, scanResult);
+
+            if (dartboardName.equals(peripheral.getName())) {
+                centralManager.stopScan();
+
+                LOG.debug("Dartboard '{}' found! Connecting...", dartboardName);
+                centralManager.connectPeripheral(peripheral, bluetoothDartboardPeripheral);
+            }
+        }
+
+        @Override
+        public void onConnectedPeripheral(@NotNull BluetoothPeripheral peripheral) {
+            super.onConnectedPeripheral(peripheral);
+
+            if (dartboardName.equals(peripheral.getName())) {
+                LOG.debug("Dartboard '{}' connected!", dartboardName);
+
+            }
         }
     }
 
