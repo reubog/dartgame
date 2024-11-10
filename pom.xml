@@ -81,12 +81,18 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>23.0.1</version>
+			<version>${javafx.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>23.0.1</version>
+			<version>${javafx.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-media -->
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>${javafx.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
@@ -119,7 +125,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>${main.app.class}</mainClass>
-					<jvmArguments>--module-path platform/javafx-sdk-23.0.1/lib --add-modules javafx.controls</jvmArguments>
+					<jvmArguments>--module-path platform/javafx-sdk-23.0.1/lib --add-modules javafx.controls,javafx.base,javafx.media,javafx.fxml</jvmArguments>
 				</configuration>
 			</plugin>
 			<plugin>

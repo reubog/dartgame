@@ -28,6 +28,11 @@ public class X01PlayerScore implements PlayerScore {
         return this;
     }
 
+    public X01PlayerScore setScore(int score) {
+        this.score = score;
+        return this;
+    }
+
     @Override
     public int getScore() {
         return score;

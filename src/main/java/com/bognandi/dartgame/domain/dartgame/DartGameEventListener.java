@@ -15,4 +15,5 @@ public interface DartGameEventListener {
 
     void onPlayerWon(DartGame dartGame, Player player);
     void onPlayerBust(DartGame dartGame, Player player);
+    void onPlayerLost(DartGame dartGame, Player player);
 }

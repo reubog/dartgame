@@ -11,24 +11,25 @@ import java.util.Map;
 public class X01ScoreBoard implements ScoreBoard, DartGameEventListener {
 
     private final int startScore;
+    private int currentPlayerTurnStartScore;
     private Player currentPlayer;
     private final DartValueMapper dartValueMapper;
-    private List<PlayerRound> playerRounds;
+    //private List<PlayerRound> playerRounds;
     private Map<Player, X01PlayerScore> playerScoreMap = new LinkedHashMap<>();
 
     @Override
     public int getMinimumNumberOfPlayers() {
-        return 0;
+        return 2;
     }
 
     @Override
     public boolean isBust(Player player) {
-        return false;
+        return playerScoreMap.get(currentPlayer).getScore() < 0;
     }
 
     @Override
     public boolean isWinner(Player player) {
-        return false;
+        return playerScoreMap.get(currentPlayer).getScore() == 0;
     }
 
     @Override
@@ -64,6 +65,7 @@ public class X01ScoreBoard implements ScoreBoard, DartGameEventListener {
     @Override
     public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
         currentPlayer = player;
+        currentPlayerTurnStartScore = playerScoreMap.get(currentPlayer).getScore();
     }
 
     @Override
@@ -85,10 +87,11 @@ public class X01ScoreBoard implements ScoreBoard, DartGameEventListener {
 
     @Override
     public void onPlayerBust(DartGame dartGame, Player player) {
-
+        playerScoreMap.get(currentPlayer).setScore(currentPlayerTurnStartScore);
     }
 
-    class PlayerRound {
+    @Override
+    public void onPlayerLost(DartGame dartGame, Player player) {
 
     }
 

@@ -40,6 +40,8 @@ public class BluetoothDartboardFactory implements DartboardFactory {
     public void shutdown() {
         LOG.info("Shutting down BluetoothDartboardFactory");
         // shutting down
+        centralManager.stopScan();
+
         centralManager.getConnectedPeripherals().forEach(peripheral -> {
             peripheral.getNotifyingCharacteristics().forEach(cstic -> {
                 peripheral.setNotify(cstic.getService().getUuid(), cstic.getUuid(), false);
@@ -48,7 +50,6 @@ public class BluetoothDartboardFactory implements DartboardFactory {
             peripheral.cancelConnection();
         });
         waitSeconds(5);
-        centralManager.stopScan();
         centralManager.shutdown();
         LOG.debug("Bluetooth is down");
     }

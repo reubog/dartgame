@@ -37,10 +37,16 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
     private List<Dart> thrownDarts = new ArrayList<>();
 
     @Override
+    public String getName() {
+        return "301";
+    }
+
+    @Override
     public void startGame(ScoreBoard scoreBoard) {
         LOG.info("Starting game");
 
         this.scoreBoard = scoreBoard;
+        this.dartGameEventListeners.addFirst((X01ScoreBoard) scoreBoard);
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
 
@@ -165,6 +171,7 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         return currentPlayerIndex == players.size() - 1;
     }
 
+
     private Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
@@ -201,5 +208,10 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         Player player = getCurrentPlayer();
         LOG.info("Starting turn for player {}", player);
         this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerTurn(this, round, player));
+    }
+
+    @Override
+    public PlayerScore getPlayerScore(Player player) {
+        return scoreBoard.getPlayerScore(player);
     }
 }

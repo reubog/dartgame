@@ -242,5 +242,10 @@ public class X01DartGameTest {
         public void onPlayerBust(DartGame dartGame, Player player) {
 
         }
+
+        @Override
+        public void onPlayerLost(DartGame dartGame, Player player) {
+
+        }
     }
 }

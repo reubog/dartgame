@@ -1,33 +1,75 @@
 package com.bognandi.dartgame.app.service;
 
+import com.bognandi.dartgame.app.service.audio.AudioService;
+import com.bognandi.dartgame.app.service.audio.SoundClip;
 import com.bognandi.dartgame.app.service.dartboard.DartboardService;
 import com.bognandi.dartgame.app.service.speech.SpeechService;
-import com.bognandi.dartgame.domain.dartgame.Dart;
-import com.bognandi.dartgame.domain.dartgame.DartBoardEventListener;
+import com.bognandi.dartgame.domain.dartgame.*;
+import com.bognandi.dartgame.domain.x01game.X01DartGame;
+import com.bognandi.dartgame.domain.x01game.X01ScoreBoard;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Service
 public class GameService {
 
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(GameService.class);
-    private SpeechService speechService;
-    private DartboardService dartboardService;
-    private DartBoardEventListener dartBoardEventListener;
 
-    public GameService(@Autowired SpeechService speechService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName) {
+    private SpeechService speechService;
+    private AudioService audioService;
+    private DartboardService dartboardService;
+    private ProxyDartboardListener proxyDartboardListener;
+    private List<DartGame> dartGames = new ArrayList<>();
+
+    public GameService(@Autowired SpeechService speechService, @Autowired AudioService audioService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName) {
         this.speechService = speechService;
+        this.audioService = audioService;
         this.dartboardService = dartboardService;
-        this.dartBoardEventListener = new DartboardListener();
+        this.proxyDartboardListener = new ProxyDartboardListener();
         LOG.info("Constructing service");
+        dartGames.add(new X01DartGame());
 
         dartboardService.findDartboard(dartboardName, dartboard -> {
             LOG.info("Dartboard listener attached");
-            dartboard.addEventListener(dartBoardEventListener);
+            dartboard.addEventListener(proxyDartboardListener);
         });
+    }
+
+    public void playGame(String name) {
+        //Platform.runLater(() -> {
+        DartGame dartGame = findGame(name);
+
+        Player player1 = new GamePlayer("Player 1");
+        Player player2 = new GamePlayer("Player 2");
+        dartGame.addEventListener(new GameEventListener());
+
+        proxyDartboardListener.addListener((DartBoardEventListener) dartGame);
+
+        ScoreBoard scoreBoard = new X01ScoreBoard(301, new DefaultDartValueMapper());
+        dartGame.startGame(scoreBoard);
+        dartGame.addPlayer(player1);
+        dartGame.addPlayer(player2);
+
+
+
+        //proxyDartboardListener.removeListener((DartBoardEventListener) dartGame);
+        //  });
+    }
+
+    private DartGame findGame(String name) {
+        return dartGames.stream()
+                .filter(game -> name.equals(game.getName()))
+                .findFirst()
+                .get();
     }
 
     @PreDestroy
@@ -35,15 +77,203 @@ public class GameService {
         LOG.info("Destroying!");
     }
 
-    private class DartboardListener implements DartBoardEventListener {
+    private class ProxyDartboardListener implements DartBoardEventListener {
+
+        private List<DartBoardEventListener> listeners = new ArrayList<>();
+
+        public void addListener(DartBoardEventListener listener) {
+            listeners.add(listener);
+        }
+
+        public void removeListener(DartBoardEventListener listener) {
+            listeners.remove(listener);
+        }
+
         @Override
         public void onDartThrown(Dart dart) {
-            speechService.doSpeak(dart.name().replace("_", " "));
+            listeners.forEach(listener -> listener.onDartThrown(dart));
         }
 
         @Override
         public void onButton() {
-            speechService.doSpeak("Button pressed");
+            listeners.forEach(listener -> listener.onButton());
+        }
+
+    }
+
+    private class GamePlayer implements Player {
+        private String name;
+
+        public GamePlayer(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+    private class GameEventListener implements DartGameEventListener {
+
+        private ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+        private Player currentPlayer;
+        private int startRoundScore;
+
+        @Override
+        public void onGameStarting(DartGame dartGame) {
+            speak("waiting for players and button press");
+        }
+
+        @Override
+        public void onGameStarted(DartGame dartGame) {
+            speak("game started");
+            audioService.playAudioClip(SoundClip.BELL);
+        }
+
+        @Override
+        public void onGameFinished(DartGame dartGame) {
+            speak("game finished");
+            audioService.playAudioClip(SoundClip.GAME_OVER);
+        }
+
+        @Override
+        public void onPlayerAdded(DartGame dartGame, Player player) {
+            speak("welcome to the game " + player.getName());
+        }
+
+        @Override
+        public void onRoundStarted(DartGame dartGame, int roundNumber) {
+            speak("ready for round " + roundNumber);
+
+        }
+
+        @Override
+        public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
+            currentPlayer = player;
+            startRoundScore = dartGame.getPlayerScore(player).getScore();
+            speak("next player. please go ahead " + player.getName() + ". your current score is " + startRoundScore);
+        }
+
+        @Override
+        public void onDartThrown(DartGame dartGame, Dart dart) {
+            Optional.ofNullable(mapDartToSoundclip(dart)).ifPresent((soundClip -> executorService.submit(() -> audioService.playAudioClip(soundClip.get()))));
+
+            int score = dartGame.getPlayerScore(currentPlayer).getScore();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(dart.name().replace("_", " "));
+
+            if (score > 0 && score < 50) {
+                sb.append("be careful now. your score is " + score);
+            }
+
+            speak(sb.toString());
+        }
+
+        @Override
+        public void onRemoveDarts(DartGame dartGame, int round, Player player) {
+            speak("remove darts and press button");
+        }
+
+        @Override
+        public void onPlayerWon(DartGame dartGame, Player player) {
+            speak("Contgratulations! " + player.getName() + " won the game");
+            audioService.playAudioClip(SoundClip.APPLAUSE);
+        }
+
+        @Override
+        public void onPlayerBust(DartGame dartGame, Player player) {
+            speak("Bust! " + player.getName() + " is bust. remove darts and press button");
+            audioService.playAudioClip(SoundClip.LOOSE);
+        }
+
+        @Override
+        public void onPlayerLost(DartGame dartGame, Player player) {
+            speak("Sorry! " + player.getName() + " lost the game");
+        }
+
+        void speak(String speech) {
+            executorService.submit(() -> speechService.doSpeak(speech));
+        }
+
+        Optional<SoundClip> mapDartToSoundclip(Dart dart) {
+            switch (dart) {
+                case ONE:
+                case TWO:
+                case THREE:
+                case FOUR:
+                case FIVE:
+                case SIX:
+                case SEVEN:
+                case EIGHT:
+                case NINE:
+                case TEN:
+                case ELEVEN:
+                case TWELVE:
+                case THIRTEEN:
+                case FOURTEEN:
+                case FIFTEEN:
+                case SIXTEEN:
+                case SEVENTEEN:
+                case EIGHTEEN:
+                case NINETEEN:
+                case TWENTY:
+                    return Optional.of(SoundClip.SINGLE);
+
+                case BULLSEYE:
+                    return Optional.of(SoundClip.OUTER_BULLSEYE);
+
+                case DOUBLE_ONE:
+                case DOUBLE_TWO:
+                case DOUBLE_THREE:
+                case DOUBLE_FOUR:
+                case DOUBLE_FIVE:
+                case DOUBLE_SIX:
+                case DOUBLE_SEVEN:
+                case DOUBLE_EIGHT:
+                case DOUBLE_NINE:
+                case DOUBLE_TEN:
+                case DOUBLE_ELEVEN:
+                case DOUBLE_TWELVE:
+                case DOUBLE_THIRTEEN:
+                case DOUBLE_FOURTEEN:
+                case DOUBLE_FIFTEEN:
+                case DOUBLE_SIXTEEN:
+                case DOUBLE_SEVENTEEN:
+                case DOUBLE_EIGHTEEN:
+                case DOUBLE_NINETEEN:
+                case DOUBLE_TWENTY:
+                    return Optional.of(SoundClip.DOUBLE);
+
+                case DOUBLE_BULLSEYE:
+                    return Optional.of(SoundClip.INNER_BULLSEYE);
+
+                case TRIPLE_ONE:
+                case TRIPLE_TWO:
+                case TRIPLE_THREE:
+                case TRIPLE_FOUR:
+                case TRIPLE_FIVE:
+                case TRIPLE_SIX:
+                case TRIPLE_SEVEN:
+                case TRIPLE_EIGHT:
+                case TRIPLE_NINE:
+                case TRIPLE_TEN:
+                case TRIPLE_ELEVEN:
+                case TRIPLE_TWELVE:
+                case TRIPLE_THIRTEEN:
+                case TRIPLE_FOURTEEN:
+                case TRIPLE_FIFTEEN:
+                case TRIPLE_SIXTEEN:
+                case TRIPLE_SEVENTEEN:
+                case TRIPLE_EIGHTEEN:
+                case TRIPLE_NINETEEN:
+                case TRIPLE_TWENTY:
+                    return Optional.of(SoundClip.TRIPLE);
+
+                default:
+                    return Optional.empty();
+            }
         }
     }
 
