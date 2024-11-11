@@ -199,13 +199,20 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
     }
 
     private void nextPlayerTurn() {
-        boolean isLastPlayer = currentPlayerIndex == players.size() - 1;
+        while (currentPlayerIndex < players.size()) {
+            currentPlayerIndex++;
+            Player player = players.get(currentPlayerIndex);
+            if (PlayerState.PLAYING.equals(playerStateMap.get(player))) {
+                break;
+            }
+        }
+
+        boolean isLastPlayer = currentPlayerIndex == players.size();
         if (isLastPlayer) {
             newRound();
         }
 
         thrownDarts.clear();
-        currentPlayerIndex++;
         enableDarts = true;
         Player player = getCurrentPlayer();
         LOG.info("Starting turn for player {}", player);

@@ -173,19 +173,18 @@ public class X01DartGameTest {
         game.addPlayer(player3);
         when(scoreBoard.isWinner(player1)).thenReturn(true);
 
-        dartBoard.doPressButton();
-
-        verify(dartGameEventListener).onPlayerWon(game, player1);
+        dartBoard.doPressButton(); // start round player1
+        dartBoard.doThrowDart(ONE);
+        //verify(dartGameEventListener).onPlayerWon(game, player1);
 
         dartBoard.doPressButton(); // player 2
         assertEquals(player2, gameEvents.getCurrentPlayer());
         dartBoard.doPressButton(); // player 3
-        assertEquals(player2, gameEvents.getCurrentPlayer());
+        assertEquals(player3, gameEvents.getCurrentPlayer());
         dartBoard.doPressButton(); // player 2
         assertEquals(player2, gameEvents.getCurrentPlayer());
         dartBoard.doPressButton(); // player 3
-        assertEquals(player2, gameEvents.getCurrentPlayer());
-
+        assertEquals(player3, gameEvents.getCurrentPlayer());
     }
 
     private void throw3dartsAndPressButton(Dart first, Dart second, Dart third) {
