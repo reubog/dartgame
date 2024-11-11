@@ -5,6 +5,9 @@ import com.bognandi.dartgame.app.service.GameService;
 import com.bognandi.dartgame.app.service.audio.AudioService;
 import com.bognandi.dartgame.app.service.audio.SoundClip;
 import com.bognandi.dartgame.app.service.speech.SpeechService;
+import com.bognandi.dartgame.app.view.game.GameModel;
+import com.bognandi.dartgame.app.view.game.GameView;
+import com.bognandi.dartgame.app.view.game.GameViewModel;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -100,6 +103,15 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
             executorService.submit(() -> gameService.playGame("301", (int) spinner.getValue()));
         }));
 
+        Button game = new Button("Start Game");
+        hbox.getChildren().add(game);
+        game.setOnAction((actionEvent -> {
+            GameModel gameModel = new GameModel();
+            GameViewModel gameViewModel = new GameViewModel(gameModel);
+            GameView gameView = new GameView(gameViewModel);
+            stage.setScene(new Scene(gameView, 800, 600));
+            //executorService.submit(() -> gameService.playGame("301", (int) spinner.getValue()));
+        }));
         // create a stack pane
         VBox r = new VBox();
 
