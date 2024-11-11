@@ -8,6 +8,9 @@ import com.bognandi.dartgame.app.service.speech.SpeechService;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -82,10 +85,19 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
             executorService.submit(() -> speechService.doSpeak("triple"));
         }));
 
+
+        HBox hbox = new HBox();
+        Label label = new Label("Number of players");
+        hbox.getChildren().add(label);
+
+        Spinner spinner = new Spinner(2,10,2);
+        hbox.getChildren().add(spinner);
+
         Button game301 = new Button("Play Game 301");
+        hbox.getChildren().add(game301);
         game301.setOnAction((actionEvent -> {
             LOG.debug("Play 301 pressed");
-            executorService.submit(() -> gameService.playGame("301"));
+            executorService.submit(() -> gameService.playGame("301", (int) spinner.getValue()));
         }));
 
         // create a stack pane
@@ -95,10 +107,10 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
         r.getChildren().add(single);
         r.getChildren().add(dubbel);
         r.getChildren().add(trippel);
-        r.getChildren().add(game301);
+        r.getChildren().add(hbox);
 
         // create a scene
-        Scene sc = new Scene(r, 200, 200);
+        Scene sc = new Scene(r, 400, 200);
 
         // set the scene
         stage.setScene(sc);

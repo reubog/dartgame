@@ -36,7 +36,7 @@ public class DartboardValueMapper {
         map.put("30 2E 31 40", DartboardNotifiedValue.FOUR_INNER);
         map.put("35 2E 31 40", DartboardNotifiedValue.FIVE_INNER);
         map.put("31 2E 30 40", DartboardNotifiedValue.SIX_INNER);
-        map.put("36 2E 31 40", DartboardNotifiedValue.SEVEN_INNER);
+        map.put("31 31 2E 31 40", DartboardNotifiedValue.SEVEN_INNER);
         map.put("36 2E 32 40", DartboardNotifiedValue.EIGHT_INNER);
         map.put("39 2E 33 40", DartboardNotifiedValue.NINE_INNER);
         map.put("32 2E 30 40", DartboardNotifiedValue.TEN_INNER);

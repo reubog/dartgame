@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 @Service
 public class GameService {
@@ -44,22 +45,20 @@ public class GameService {
         });
     }
 
-    public void playGame(String name) {
+    public void playGame(String name, int numberOfPlayers) {
         //Platform.runLater(() -> {
         DartGame dartGame = findGame(name);
 
-        Player player1 = new GamePlayer("Player 1");
-        Player player2 = new GamePlayer("Player 2");
+
+
         dartGame.addEventListener(new GameEventListener());
 
         proxyDartboardListener.addListener((DartBoardEventListener) dartGame);
 
         ScoreBoard scoreBoard = new X01ScoreBoard(301, new DefaultDartValueMapper());
         dartGame.startGame(scoreBoard);
-        dartGame.addPlayer(player1);
-        dartGame.addPlayer(player2);
 
-
+        IntStream.range(0,numberOfPlayers).forEach(val -> dartGame.addPlayer(new GamePlayer("Player " + val)));
 
         //proxyDartboardListener.removeListener((DartBoardEventListener) dartGame);
         //  });
