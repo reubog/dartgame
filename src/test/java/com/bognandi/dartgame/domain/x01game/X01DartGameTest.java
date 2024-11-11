@@ -1,6 +1,7 @@
 package com.bognandi.dartgame.domain.x01game;
 
 import com.bognandi.dartgame.domain.dartgame.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.bognandi.dartgame.domain.dartgame.Dart.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -162,6 +164,30 @@ public class X01DartGameTest {
         verify(dartGameEventListener).onPlayerBust(game, player1);
     }
 
+    @Test
+    void testWinnerShouldNotPlayAnymore() {
+        GameEvents gameEvents = new GameEvents();
+        game.addEventListener(gameEvents);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        when(scoreBoard.isWinner(player1)).thenReturn(true);
+
+        dartBoard.doPressButton();
+
+        verify(dartGameEventListener).onPlayerWon(game, player1);
+
+        dartBoard.doPressButton(); // player 2
+        assertEquals(player2, gameEvents.getCurrentPlayer());
+        dartBoard.doPressButton(); // player 3
+        assertEquals(player2, gameEvents.getCurrentPlayer());
+        dartBoard.doPressButton(); // player 2
+        assertEquals(player2, gameEvents.getCurrentPlayer());
+        dartBoard.doPressButton(); // player 3
+        assertEquals(player2, gameEvents.getCurrentPlayer());
+
+    }
+
     private void throw3dartsAndPressButton(Dart first, Dart second, Dart third) {
         dartBoard.doThrowDart(first);
         dartBoard.doThrowDart(second);
@@ -169,29 +195,9 @@ public class X01DartGameTest {
         dartBoard.doPressButton();
     }
 
-    class TestScoreBoard implements ScoreBoard, DartGameEventListener {
-        private List<Player> players = new ArrayList<>();
+    class GameEvents implements DartGameEventListener {
 
-        @Override
-        public PlayerScore getPlayerScore(Player player) {
-            return null;
-        }
-
-        @Override
-        public int getMinimumNumberOfPlayers() {
-            return 0;
-        }
-
-
-        @Override
-        public boolean isWinner(Player player) {
-            return false;
-        }
-
-        @Override
-        public boolean isBust(Player player) {
-            return false;
-        }
+        private Player currentPlayer;
 
         @Override
         public void onGameStarting(DartGame dartGame) {
@@ -220,7 +226,7 @@ public class X01DartGameTest {
 
         @Override
         public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
-
+            currentPlayer = player;
         }
 
         @Override
@@ -246,6 +252,10 @@ public class X01DartGameTest {
         @Override
         public void onPlayerLost(DartGame dartGame, Player player) {
 
+        }
+
+        public Player getCurrentPlayer() {
+            return currentPlayer;
         }
     }
 }

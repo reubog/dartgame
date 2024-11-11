@@ -46,7 +46,9 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         LOG.info("Starting game");
 
         this.scoreBoard = scoreBoard;
-        this.dartGameEventListeners.addFirst((X01ScoreBoard) scoreBoard);
+        if (scoreBoard instanceof DartGameEventListener) {
+            this.dartGameEventListeners.addFirst((DartGameEventListener) scoreBoard);
+        }
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
 
