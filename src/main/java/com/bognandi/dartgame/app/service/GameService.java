@@ -5,7 +5,7 @@ import com.bognandi.dartgame.app.service.audio.SoundClip;
 import com.bognandi.dartgame.app.service.dartboard.DartboardService;
 import com.bognandi.dartgame.app.service.speech.SpeechService;
 import com.bognandi.dartgame.domain.dartgame.*;
-import com.bognandi.dartgame.domain.x01game.X01DartGame;
+import com.bognandi.dartgame.domain.x01game.X01Dartgame;
 import com.bognandi.dartgame.domain.x01game.X01ScoreBoard;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -28,16 +28,16 @@ public class GameService {
     private SpeechService speechService;
     private AudioService audioService;
     private DartboardService dartboardService;
+    private DartgameFactory dartgameFactory;
     private ProxyDartboardListener proxyDartboardListener;
-    private List<DartGame> dartGames = new ArrayList<>();
 
-    public GameService(@Autowired SpeechService speechService, @Autowired AudioService audioService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName) {
+    public GameService(@Autowired SpeechService speechService, @Autowired AudioService audioService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName, @Autowired DartgameFactory dartgameFactory) {
         this.speechService = speechService;
         this.audioService = audioService;
         this.dartboardService = dartboardService;
+        this.dartgameFactory = dartgameFactory;
         this.proxyDartboardListener = new ProxyDartboardListener();
         LOG.info("Constructing service");
-        dartGames.add(new X01DartGame());
 
         dartboardService.findDartboard(dartboardName, dartboard -> {
             LOG.info("Dartboard listener attached");
@@ -47,28 +47,17 @@ public class GameService {
 
     public void playGame(String name, int numberOfPlayers) {
         //Platform.runLater(() -> {
-        DartGame dartGame = findGame(name);
-
-
-
+        Dartgame dartGame = dartgameFactory.createDartgame(name);
         dartGame.addEventListener(new GameEventListener());
 
         proxyDartboardListener.addListener((DartBoardEventListener) dartGame);
 
-        ScoreBoard scoreBoard = new X01ScoreBoard(301, new DefaultDartValueMapper());
-        dartGame.startGame(scoreBoard);
+        dartGame.startGame();
 
         IntStream.range(0,numberOfPlayers).forEach(val -> dartGame.addPlayer(new GamePlayer("Player " + val)));
 
         //proxyDartboardListener.removeListener((DartBoardEventListener) dartGame);
         //  });
-    }
-
-    private DartGame findGame(String name) {
-        return dartGames.stream()
-                .filter(game -> name.equals(game.getName()))
-                .findFirst()
-                .get();
     }
 
     @PreDestroy
@@ -113,49 +102,49 @@ public class GameService {
         }
     }
 
-    private class GameEventListener implements DartGameEventListener {
+    private class GameEventListener implements DartgameEventListener {
 
         private ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
         private Player currentPlayer;
         private int startRoundScore;
 
         @Override
-        public void onGameStarting(DartGame dartGame) {
+        public void onGameStarting(Dartgame dartGame) {
             speak("waiting for players and button press");
         }
 
         @Override
-        public void onGameStarted(DartGame dartGame) {
+        public void onGameStarted(Dartgame dartGame) {
             speak("game started");
             audioService.playAudioClip(SoundClip.BELL);
         }
 
         @Override
-        public void onGameFinished(DartGame dartGame) {
+        public void onGameFinished(Dartgame dartGame) {
             speak("game finished");
             audioService.playAudioClip(SoundClip.GAME_OVER);
         }
 
         @Override
-        public void onPlayerAdded(DartGame dartGame, Player player) {
+        public void onPlayerAdded(Dartgame dartGame, Player player) {
             speak("welcome to the game " + player.getName());
         }
 
         @Override
-        public void onRoundStarted(DartGame dartGame, int roundNumber) {
+        public void onRoundStarted(Dartgame dartGame, int roundNumber) {
             speak("ready for round " + roundNumber);
 
         }
 
         @Override
-        public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
+        public void onPlayerTurn(Dartgame dartGame, int roundNumber, Player player) {
             currentPlayer = player;
             startRoundScore = dartGame.getPlayerScore(player).getScore();
             speak("next player. please go ahead " + player.getName() + ". your current score is " + startRoundScore);
         }
 
         @Override
-        public void onDartThrown(DartGame dartGame, Dart dart) {
+        public void onDartThrown(Dartgame dartGame, Dart dart) {
             Optional.ofNullable(mapDartToSoundclip(dart)).ifPresent((soundClip -> executorService.submit(() -> audioService.playAudioClip(soundClip.get()))));
 
             int score = dartGame.getPlayerScore(currentPlayer).getScore();
@@ -171,24 +160,24 @@ public class GameService {
         }
 
         @Override
-        public void onRemoveDarts(DartGame dartGame, int round, Player player) {
+        public void onRemoveDarts(Dartgame dartGame, int round, Player player) {
             speak("remove darts and press button");
         }
 
         @Override
-        public void onPlayerWon(DartGame dartGame, Player player) {
+        public void onPlayerWon(Dartgame dartGame, Player player) {
             speak("Contgratulations! " + player.getName() + " won the game");
             audioService.playAudioClip(SoundClip.APPLAUSE);
         }
 
         @Override
-        public void onPlayerBust(DartGame dartGame, Player player) {
+        public void onPlayerBust(Dartgame dartGame, Player player) {
             speak("Bust! " + player.getName() + " is bust. remove darts and press button");
             audioService.playAudioClip(SoundClip.LOOSE);
         }
 
         @Override
-        public void onPlayerLost(DartGame dartGame, Player player) {
+        public void onPlayerLost(Dartgame dartGame, Player player) {
             speak("Sorry! " + player.getName() + " lost the game");
         }
 

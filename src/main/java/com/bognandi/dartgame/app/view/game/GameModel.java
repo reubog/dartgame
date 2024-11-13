@@ -1,64 +1,50 @@
 package com.bognandi.dartgame.app.view.game;
 
-import com.bognandi.dartgame.domain.dartgame.Dart;
-import com.bognandi.dartgame.domain.dartgame.DartGame;
-import com.bognandi.dartgame.domain.dartgame.DartGameEventListener;
-import com.bognandi.dartgame.domain.dartgame.Player;
+import com.bognandi.dartgame.domain.dartgame.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class GameModel implements DartGameEventListener {
+import java.util.UUID;
 
-    @Override
-    public void onGameStarting(DartGame dartGame) {
+public class GameModel {
 
+    public static final UUID GAME_STARTING = UUID.randomUUID();
+    public static final UUID GAME_STARTED = UUID.randomUUID();
+
+    private final Notifications notifications = Notifications.createInstance();
+    private final DartgameListener dartgameListener = new DartgameListener();
+    private Dartgame dartgame;
+
+    @Autowired
+    private DartgameFactory dartgameFactory;
+
+    public void initGame(String id) {
+        this.dartgame = dartgameFactory.createDartgame(id);
+        this.dartgame.addEventListener(dartgameListener);
     }
 
-    @Override
-    public void onGameStarted(DartGame dartGame) {
-
+    public void startGame() {
+        dartgame.startGame();
     }
 
-    @Override
-    public void onGameFinished(DartGame dartGame) {
-
+    public void addPlayer(String name) {
+        dartgame.addPlayer(new DefaultPlayer(name));
     }
 
-    @Override
-    public void onPlayerAdded(DartGame dartGame, Player player) {
-
+    public void exitGame() {
+        dartgame.removeEventListener(dartgameListener);
     }
 
-    @Override
-    public void onRoundStarted(DartGame dartGame, int roundNumber) {
+    private class DartgameListener extends DefaultDartgameEventListener {
+        @Override
+        public void onGameStarting(Dartgame dartGame) {
+            super.onGameStarting(dartGame);
+            notifications.publish(GAME_STARTING);
+        }
 
-    }
-
-    @Override
-    public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
-
-    }
-
-    @Override
-    public void onDartThrown(DartGame dartGame, Dart dart) {
-
-    }
-
-    @Override
-    public void onRemoveDarts(DartGame dartGame, int round, Player player) {
-
-    }
-
-    @Override
-    public void onPlayerWon(DartGame dartGame, Player player) {
-
-    }
-
-    @Override
-    public void onPlayerBust(DartGame dartGame, Player player) {
-
-    }
-
-    @Override
-    public void onPlayerLost(DartGame dartGame, Player player) {
-
+        @Override
+        public void onGameStarted(Dartgame dartGame) {
+            super.onGameStarted(dartGame);
+            notifications.publish(GAME_STARTED);
+        }
     }
 }

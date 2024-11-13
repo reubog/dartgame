@@ -5,7 +5,8 @@ import javafx.beans.property.StringProperty;
 
 public class GameViewModel {
 
-    private GameModel model;
+    private final Notifications notifications = Notifications.createInstance();
+    private final GameModel model = new GameModel();
 
     private StringProperty dartValue1 = new SimpleStringProperty("dart 1");
     private StringProperty dartValue2 = new SimpleStringProperty("dart 2");
@@ -13,8 +14,26 @@ public class GameViewModel {
 
     private StringProperty score = new SimpleStringProperty("S C O R E");
 
-    public GameViewModel(GameModel model) {
-        this.model = model;
+    public GameViewModel() {
+        initSubscriptions();
+    }
+
+    private void initSubscriptions() {
+        notifications.subscribe(GameModel.GAME_STARTING, this, event -> {
+            dartValue1.setValue("-");
+            dartValue2.setValue("-");
+            dartValue3.setValue("-");
+
+            score.setValue("-");
+        });
+
+        notifications.subscribe(GameModel.GAME_STARTED, this, event -> {
+            dartValue1.setValue("-");
+            dartValue2.setValue("-");
+            dartValue3.setValue("-");
+
+            score.setValue("-");
+        });
     }
 
     public StringProperty dartValue1Property() {

@@ -1,6 +1,6 @@
 package com.bognandi.dartgame.domain.x01game;
 
-import com.bognandi.dartgame.domain.dartgame.DartGame;
+import com.bognandi.dartgame.domain.dartgame.Dartgame;
 import com.bognandi.dartgame.domain.dartgame.DartValueMapper;
 import com.bognandi.dartgame.domain.dartgame.Player;
 import com.bognandi.dartgame.domain.dartgame.PlayerScore;
@@ -20,7 +20,7 @@ public class X01ScoreBoardTest {
     private X01ScoreBoard scoreBoard;
 
     @Mock
-    private DartGame dartGame;
+    private Dartgame dartGame;
 
     @Mock
     private DartValueMapper dartValueMapper;

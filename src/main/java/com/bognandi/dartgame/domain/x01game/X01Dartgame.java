@@ -5,15 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequiredArgsConstructor
-public class X01DartGame implements DartGame, DartBoardEventListener {
+public class X01Dartgame implements Dartgame, DartBoardEventListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(X01DartGame.class);
+    private static final Logger LOG = LoggerFactory.getLogger(X01Dartgame.class);
 
     private enum GameState {
         WAITING_FOR_PLAYERS,
@@ -26,9 +23,9 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         PLAYING
     }
 
-    private ScoreBoard scoreBoard;
+    private final X01ScoreBoard scoreBoard;
     private GameState gameState;
-    private List<DartGameEventListener> dartGameEventListeners = new ArrayList<>();
+    private List<DartgameEventListener> dartgameEventListeners = new ArrayList<>();
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex;
     private int round;
@@ -37,33 +34,25 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
     private List<Dart> thrownDarts = new ArrayList<>();
 
     @Override
-    public String getName() {
-        return "301";
-    }
-
-    @Override
-    public void startGame(ScoreBoard scoreBoard) {
+    public void startGame() {
         LOG.info("Starting game");
 
-        this.scoreBoard = scoreBoard;
-        if (scoreBoard instanceof DartGameEventListener) {
-            this.dartGameEventListeners.addFirst((DartGameEventListener) scoreBoard);
-        }
+        this.dartgameEventListeners.addFirst(scoreBoard);
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
 
         LOG.info("Game starting, waiting for players and button press");
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameStarting(this));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameStarting(this));
     }
 
     @Override
-    public void addEventListener(DartGameEventListener listener) {
-        dartGameEventListeners.add(listener);
+    public void addEventListener(DartgameEventListener listener) {
+        dartgameEventListeners.add(listener);
     }
 
     @Override
-    public void removeEventListener(DartGameEventListener listener) {
-        dartGameEventListeners.remove(listener);
+    public void removeEventListener(DartgameEventListener listener) {
+        dartgameEventListeners.remove(listener);
     }
 
     @Override
@@ -79,7 +68,7 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         Player player = getCurrentPlayer();
         thrownDarts.add(dart);
         LOG.info("Dart #{} was {}", thrownDarts.size(), dart);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onDartThrown(this, dart));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onDartThrown(this, dart));
 
         if (scoreBoard.isBust(player)) {
             playerBust(player);
@@ -117,7 +106,7 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         players.forEach(player -> playerStateMap.put(player, PlayerState.PLAYING));
 
         LOG.info("Game Started");
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameStarted(this));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameStarted(this));
 
         newRound();
     }
@@ -130,7 +119,7 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         enableDarts = false;
 
         LOG.info("Player {} busted!", player);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerBust(this, player));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerBust(this, player));
 
         if (isNoMoreActivePlayers()) {
             finishGame();
@@ -142,7 +131,7 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         enableDarts = false;
 
         LOG.info("Player {} won!", player);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerWon(this, player));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerWon(this, player));
 
         if (isNoMoreActivePlayers()) {
             finishGame();
@@ -159,14 +148,14 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
     private void finishGame() {
         gameState = GameState.FINISHED;
         LOG.info("Game finished");
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameFinished(this));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameFinished(this));
     }
 
     private void removeDarts() {
         enableDarts = false;
         Player player = getCurrentPlayer();
         LOG.info("Player {}: Remove darts from round {}", player, round);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onRemoveDarts(this, round, player));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onRemoveDarts(this, round, player));
     }
 
     private boolean isLastPlayerOfRound() {
@@ -187,14 +176,14 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
 
         players.add(player);
         LOG.info("Added player {}", player);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerAdded(this, player));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerAdded(this, player));
     }
 
     private void newRound() {
         round++;
         currentPlayerIndex = -1;
         LOG.info("Round {} is now starting", round);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onRoundStarted(this, round));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onRoundStarted(this, round));
         nextPlayerTurn();
     }
 
@@ -216,11 +205,21 @@ public class X01DartGame implements DartGame, DartBoardEventListener {
         enableDarts = true;
         Player player = getCurrentPlayer();
         LOG.info("Starting turn for player {}", player);
-        this.dartGameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerTurn(this, round, player));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerTurn(this, round, player));
     }
 
     @Override
     public PlayerScore getPlayerScore(Player player) {
         return scoreBoard.getPlayerScore(player);
+    }
+
+    @Override
+    public ScoreBoard getScoreBoard() {
+        return scoreBoard;
+    }
+
+    @Override
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
     }
 }

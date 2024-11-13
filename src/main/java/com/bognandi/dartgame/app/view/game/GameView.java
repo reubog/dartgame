@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 
 public class GameView extends VBox {
 
-    private final GameViewModel viewModel;
+    private final GameViewModel viewModel = new GameViewModel();
 
     private HBox gameBox = new HBox();
     private HBox playersBox = new HBox();
@@ -21,8 +21,7 @@ public class GameView extends VBox {
     private Label dartLabel2 = new Label();
     private Label dartLabel3 = new Label();
 
-    public GameView(GameViewModel viewModel) {
-        this.viewModel = viewModel;
+    public GameView() {
         initLayout();
         initListeners();
     }

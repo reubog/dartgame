@@ -1,32 +1,29 @@
 package com.bognandi.dartgame.domain.x01game;
 
 import com.bognandi.dartgame.domain.dartgame.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.bognandi.dartgame.domain.dartgame.Dart.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class X01DartGameTest {
+public class X01DartgameTest {
 
-    private X01DartGame game = new X01DartGame();
 
     @Mock
-    private DartGameEventListener dartGameEventListener;
+    private DartgameEventListener dartGameEventListener;
 
     private DefaultDartboard dartBoard = new DefaultDartboard();
 
     @Mock
-    private ScoreBoard scoreBoard;
+    private X01ScoreBoard scoreBoard;
+
+    private X01Dartgame game;
 
     @Mock
     private Player player1;
@@ -41,7 +38,8 @@ public class X01DartGameTest {
     void setUp() {
         when(scoreBoard.getMinimumNumberOfPlayers()).thenReturn(2);
 
-        game.startGame(scoreBoard);
+        game = new X01Dartgame(scoreBoard);
+        game.startGame();
         game.addEventListener(dartGameEventListener);
         dartBoard.addEventListener(game);
 
@@ -194,62 +192,62 @@ public class X01DartGameTest {
         dartBoard.doPressButton();
     }
 
-    class GameEvents implements DartGameEventListener {
+    class GameEvents implements DartgameEventListener {
 
         private Player currentPlayer;
 
         @Override
-        public void onGameStarting(DartGame dartGame) {
+        public void onGameStarting(Dartgame dartGame) {
 
         }
 
         @Override
-        public void onGameStarted(DartGame dartGame) {
+        public void onGameStarted(Dartgame dartGame) {
 
         }
 
         @Override
-        public void onGameFinished(DartGame dartGame) {
+        public void onGameFinished(Dartgame dartGame) {
 
         }
 
         @Override
-        public void onPlayerAdded(DartGame dartGame, Player player) {
+        public void onPlayerAdded(Dartgame dartGame, Player player) {
 
         }
 
         @Override
-        public void onRoundStarted(DartGame dartGame, int roundNumber) {
+        public void onRoundStarted(Dartgame dartGame, int roundNumber) {
 
         }
 
         @Override
-        public void onPlayerTurn(DartGame dartGame, int roundNumber, Player player) {
+        public void onPlayerTurn(Dartgame dartGame, int roundNumber, Player player) {
             currentPlayer = player;
         }
 
         @Override
-        public void onDartThrown(DartGame dartGame, Dart dart) {
+        public void onDartThrown(Dartgame dartGame, Dart dart) {
 
         }
 
         @Override
-        public void onRemoveDarts(DartGame dartGame, int round, Player player) {
+        public void onRemoveDarts(Dartgame dartGame, int round, Player player) {
 
         }
 
         @Override
-        public void onPlayerWon(DartGame dartGame, Player player) {
+        public void onPlayerWon(Dartgame dartGame, Player player) {
 
         }
 
         @Override
-        public void onPlayerBust(DartGame dartGame, Player player) {
+        public void onPlayerBust(Dartgame dartGame, Player player) {
 
         }
 
         @Override
-        public void onPlayerLost(DartGame dartGame, Player player) {
+        public void onPlayerLost(Dartgame dartGame, Player player) {
 
         }
 
