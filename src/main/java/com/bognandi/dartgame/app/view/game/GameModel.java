@@ -1,5 +1,6 @@
 package com.bognandi.dartgame.app.view.game;
 
+import com.bognandi.dartgame.app.service.GameAppService;
 import com.bognandi.dartgame.domain.dartgame.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +16,7 @@ public class GameModel {
     private Dartgame dartgame;
 
     @Autowired
-    private DartgameFactory dartgameFactory;
+    private GameAppService gameAppService;
 
     public void initGame(String id) {
         this.dartgame = dartgameFactory.createDartgame(id);

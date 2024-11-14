@@ -5,8 +5,6 @@ import com.bognandi.dartgame.app.service.audio.SoundClip;
 import com.bognandi.dartgame.app.service.dartboard.DartboardService;
 import com.bognandi.dartgame.app.service.speech.SpeechService;
 import com.bognandi.dartgame.domain.dartgame.*;
-import com.bognandi.dartgame.domain.x01game.X01Dartgame;
-import com.bognandi.dartgame.domain.x01game.X01ScoreBoard;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +19,18 @@ import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 @Service
-public class GameService {
+public class GameAppService {
 
-    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(GameService.class);
+    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(GameAppService.class);
 
+    private GameAppState gameAppState;
     private SpeechService speechService;
     private AudioService audioService;
     private DartboardService dartboardService;
     private DartgameFactory dartgameFactory;
     private ProxyDartboardListener proxyDartboardListener;
 
-    public GameService(@Autowired SpeechService speechService, @Autowired AudioService audioService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName, @Autowired DartgameFactory dartgameFactory) {
+    public GameAppService(@Autowired SpeechService speechService, @Autowired AudioService audioService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName, @Autowired DartgameFactory dartgameFactory) {
         this.speechService = speechService;
         this.audioService = audioService;
         this.dartboardService = dartboardService;
@@ -39,10 +38,16 @@ public class GameService {
         this.proxyDartboardListener = new ProxyDartboardListener();
         LOG.info("Constructing service");
 
-        dartboardService.findDartboard(dartboardName, dartboard -> {
-            LOG.info("Dartboard listener attached");
-            dartboard.addEventListener(proxyDartboardListener);
-        });
+//        dartboardService.findDartboard(dartboardName, dartboard -> {
+//            LOG.info("Dartboard listener attached");
+//            dartboard.addEventListener(proxyDartboardListener);
+//        });
+        gameAppState = GameAppState.APP_STARTED;
+    }
+
+    public List<DartgameDescriptor> getAvailableDartgames() {
+        gameAppState = GameAppState.SELECT_GAME;
+        return dartgameFactory.getDartgames();
     }
 
     public void playGame(String name, int numberOfPlayers) {

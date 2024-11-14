@@ -1,21 +1,16 @@
 package com.bognandi.dartgame.app.stage;
 
 import com.bognandi.dartgame.app.event.StageReadyEvent;
-import com.bognandi.dartgame.app.service.GameService;
+import com.bognandi.dartgame.app.service.GameAppService;
 import com.bognandi.dartgame.app.service.audio.AudioService;
 import com.bognandi.dartgame.app.service.audio.SoundClip;
 import com.bognandi.dartgame.app.service.speech.SpeechService;
-import com.bognandi.dartgame.app.view.game.GameModel;
 import com.bognandi.dartgame.app.view.game.GameView;
-import com.bognandi.dartgame.app.view.game.GameViewModel;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -45,7 +40,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     private SpeechService speechService;
 
     @Autowired
-    private GameService gameService;
+    private GameAppService gameAppService;
 
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle) {
         this.applicationTitle = applicationTitle;
@@ -100,7 +95,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
         hbox.getChildren().add(game301);
         game301.setOnAction((actionEvent -> {
             LOG.debug("Play 301 pressed");
-            executorService.submit(() -> gameService.playGame("301", (int) spinner.getValue()));
+            executorService.submit(() -> gameAppService.playGame("301", (int) spinner.getValue()));
         }));
 
         Button game = new Button("Start Game");

@@ -36,6 +36,14 @@ public class GameViewModel {
         });
     }
 
+    public void doGameSelection() {
+
+    }
+
+    public void doSelectGame(String id) {
+        model.doSelectGame(id);
+    }
+
     public StringProperty dartValue1Property() {
         return dartValue1;
     }
