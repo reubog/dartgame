@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
 public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     private final int startScore;
@@ -15,6 +14,11 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     private final DartValueMapper dartValueMapper;
     //private List<PlayerRound> playerRounds;
     private Map<Player, X01PlayerScore> playerScoreMap = new LinkedHashMap<>();
+
+    public X01ScoreBoard(int startScore, DartValueMapper dartValueMapper) {
+        this.startScore = startScore;
+        this.dartValueMapper = dartValueMapper;
+    }
 
     @Override
     public int getMinimumNumberOfPlayers() {

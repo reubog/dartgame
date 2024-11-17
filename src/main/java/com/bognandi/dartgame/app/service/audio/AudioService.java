@@ -39,27 +39,27 @@ public class AudioService {
 //
 
 
-        Arrays.stream(SoundClip.values())
-                .forEach(enumVal -> {
-                    String resource = Path.of("/audio", enumVal.getResourceName()).toString();
-                    try {
-
-                        InputStream inputStream = this.getClass().getResourceAsStream(resource);
-//                    AudioClip clip = new AudioClip(resource);
-
-                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
-                        Clip clip = AudioSystem.getClip();
-                        clip.open(audioInputStream);
-                        audioClipMap.put(enumVal, clip);
-
-                    } catch (UnsupportedAudioFileException e) {
-                        throw new RuntimeException("Cannot find load resource: " + resource, e);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Cannot find load resource: " + resource, e);
-                    } catch (LineUnavailableException e) {
-                        throw new RuntimeException("Cannot find load resource: " + resource, e);
-                    }
-                });
+//        Arrays.stream(SoundClip.values())
+//                .forEach(enumVal -> {
+//                    String resource = Path.of("/audio", enumVal.getResourceName()).toString();
+//                    try {
+//
+//                        InputStream inputStream = this.getClass().getResourceAsStream(resource);
+////                    AudioClip clip = new AudioClip(resource);
+//
+//                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
+//                        Clip clip = AudioSystem.getClip();
+//                        clip.open(audioInputStream);
+//                        audioClipMap.put(enumVal, clip);
+//
+//                    } catch (UnsupportedAudioFileException e) {
+//                        throw new RuntimeException("Cannot find load resource: " + resource, e);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException("Cannot find load resource: " + resource, e);
+//                    } catch (LineUnavailableException e) {
+//                        throw new RuntimeException("Cannot find load resource: " + resource, e);
+//                    }
+//                });
 
 //        try {
 //            init();

@@ -10,13 +10,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeanConfig {
 
-    @Bean
+    public static final DartgameFactory DARTGAME_FACTORY = new DefaultDartgameFactory();
+
+//    @Bean
     public DartboardFactory createDartboardFactory() {
         return new BluetoothDartboardFactory();
     }
 
     @Bean
     public DartgameFactory createDartgameFactory() {
-        return new DefaultDartgameFactory();
+        return DARTGAME_FACTORY;
     }
 }

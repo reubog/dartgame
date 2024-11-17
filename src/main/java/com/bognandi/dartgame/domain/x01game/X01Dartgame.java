@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-@RequiredArgsConstructor
 public class X01Dartgame implements Dartgame, DartBoardEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(X01Dartgame.class);
@@ -32,6 +31,10 @@ public class X01Dartgame implements Dartgame, DartBoardEventListener {
     private boolean enableDarts;
     private Map<Player, PlayerState> playerStateMap;
     private List<Dart> thrownDarts = new ArrayList<>();
+
+    public X01Dartgame(X01ScoreBoard scoreBoard) {
+        this.scoreBoard = scoreBoard;
+    }
 
     @Override
     public void startGame() {

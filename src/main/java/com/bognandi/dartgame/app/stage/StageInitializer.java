@@ -2,10 +2,12 @@ package com.bognandi.dartgame.app.stage;
 
 import com.bognandi.dartgame.app.event.StageReadyEvent;
 import com.bognandi.dartgame.app.service.GameAppService;
+import com.bognandi.dartgame.app.service.audio.AudioClipService;
 import com.bognandi.dartgame.app.service.audio.AudioService;
 import com.bognandi.dartgame.app.service.audio.SoundClip;
 import com.bognandi.dartgame.app.service.speech.SpeechService;
 import com.bognandi.dartgame.app.view.game.GameView;
+import com.bognandi.dartgame.app.view.gameselection.GameSelectionView;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,6 +26,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import static java.lang.Thread.sleep;
 
 @Component
 public class StageInitializer implements ApplicationListener<StageReadyEvent> {
@@ -37,10 +42,15 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     private AudioService audioService;
 
     @Autowired
+    private AudioClipService audioClipService;
+
+    @Autowired
     private SpeechService speechService;
 
     @Autowired
     private GameAppService gameAppService;
+
+    private Future audioTask;
 
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle) {
         this.applicationTitle = applicationTitle;
@@ -50,9 +60,17 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     private String applicationTitle;
     private ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
 
+    private void play(Runnable run) {
+        if (audioTask != null && Future.State.RUNNING.equals(audioTask.state())) {
+            audioTask.cancel(true);
+        }
+        audioTask = executorService.submit(() -> run.run());
+    }
+
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         LOG.debug("Setting up first stage...");
+
         Stage stage = event.getStage();
         ConfigurableApplicationContext springContext = event.getAppContext();
 //        try {
@@ -61,19 +79,35 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 //            Parent parent = fxmlLoader.load();
 //            stage.setScene(new Scene(parent, 800, 600));
         stage.setTitle(applicationTitle);
+        stage.setScene(new Scene(new WrapperLayoutBuilder().build()));
+        stage.show();
+
         // create a button
         Button single = new Button("Single");
         single.setOnAction((actionEvent -> {
             LOG.debug("button pressed");
-            executorService.submit(() -> audioService.playAudioClip(SoundClip.SINGLE));
-            executorService.submit(() -> speechService.doSpeak("single"));
+            play(() -> {
+                //audioService.playAudioClip(SoundClip.SINGLE);
+                audioClipService.play(AudioClipService.SoundClip.SINGLE);
+                speechService.doSpeak("single");
+            });
         }));
 
         Button dubbel = new Button("Double");
         dubbel.setOnAction((actionEvent -> {
             LOG.debug("button pressed");
-            executorService.submit(() -> audioService.playAudioClip(SoundClip.DOUBLE));
-            executorService.submit(() -> speechService.doSpeak("double"));
+            executorService.submit(() -> {
+                audioClipService.play(AudioClipService.SoundClip.DOUBLE);
+                try {
+                    sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                speechService.doSpeak("double");
+            });
+
+            //executorService.submit(() -> audioService.playAudioClip(SoundClip.DOUBLE));
+            //executorService.submit(() -> speechService.doSpeak("double"));
         }));
 
         Button trippel = new Button("Triple");
@@ -88,7 +122,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
         Label label = new Label("Number of players");
         hbox.getChildren().add(label);
 
-        Spinner spinner = new Spinner(2,10,2);
+        Spinner spinner = new Spinner(2, 10, 2);
         hbox.getChildren().add(spinner);
 
         Button game301 = new Button("Play Game 301");
@@ -100,10 +134,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 
         Button game = new Button("Start Game");
         hbox.getChildren().add(game);
-        game.setOnAction((actionEvent -> {
-            GameView gameView = new GameView();
-            stage.setScene(new Scene(gameView, 800, 600));
-        }));
+
         // create a stack pane
         VBox r = new VBox();
 
@@ -116,11 +147,17 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
         // create a scene
         Scene sc = new Scene(r, 400, 200);
 
+        game.setOnAction((actionEvent -> {
+            sc.setRoot(new GameSelectionView((gameId) -> {
+                LOG.info("Game selected: " + gameId);
+                sc.setRoot(new GameView(gameId, () -> {
+                    LOG.info("Game selected: " + gameId);
+                }));
+            }));
+        }));
+
         // set the scene
         stage.setScene(sc);
         stage.show();
-//        } catch (IOException e) {
-//            throw new RuntimeException();
-//        }
     }
 }

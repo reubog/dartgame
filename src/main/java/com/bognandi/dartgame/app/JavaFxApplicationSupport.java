@@ -1,8 +1,10 @@
 package com.bognandi.dartgame.app;
 
 import com.bognandi.dartgame.app.event.StageReadyEvent;
+import com.bognandi.dartgame.app.view.WrapperLayoutBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +28,11 @@ public class JavaFxApplicationSupport extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         LOG.info("Application starting...");
-        applicationContext.publishEvent(new StageReadyEvent(applicationContext, stage));
-        // Load the FXML file and create the scene
-//        Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
-//        Scene scene = new Scene(stage, 800, 600);
-//        stage.setScene(scene);
-//        stage.show();
+        //applicationContext.publishEvent(new StageReadyEvent(applicationContext, stage));
+
+        stage.setScene(new Scene(new WrapperLayoutBuilder().build()));
+        stage.show();
+
     }
 
     @Override

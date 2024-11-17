@@ -23,19 +23,22 @@ public class GameAppService {
 
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(GameAppService.class);
 
+
     private GameAppState gameAppState;
+    @Autowired
     private SpeechService speechService;
+    @Autowired
     private AudioService audioService;
+    //@Autowired
     private DartboardService dartboardService;
+    @Autowired
     private DartgameFactory dartgameFactory;
     private ProxyDartboardListener proxyDartboardListener;
 
-    public GameAppService(@Autowired SpeechService speechService, @Autowired AudioService audioService, @Autowired DartboardService dartboardService, @Value("${dartboard.name}") String dartboardName, @Autowired DartgameFactory dartgameFactory) {
-        this.speechService = speechService;
-        this.audioService = audioService;
-        this.dartboardService = dartboardService;
-        this.dartgameFactory = dartgameFactory;
-        this.proxyDartboardListener = new ProxyDartboardListener();
+    @Value("${dartboard.name}")
+    private String dartboardName;
+
+    {
         LOG.info("Constructing service");
 
 //        dartboardService.findDartboard(dartboardName, dartboard -> {
@@ -59,7 +62,7 @@ public class GameAppService {
 
         dartGame.startGame();
 
-        IntStream.range(0,numberOfPlayers).forEach(val -> dartGame.addPlayer(new GamePlayer("Player " + val)));
+        IntStream.range(0, numberOfPlayers).forEach(val -> dartGame.addPlayer(new GamePlayer("Player " + val)));
 
         //proxyDartboardListener.removeListener((DartBoardEventListener) dartGame);
         //  });

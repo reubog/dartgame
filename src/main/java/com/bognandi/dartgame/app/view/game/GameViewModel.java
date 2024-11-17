@@ -41,7 +41,6 @@ public class GameViewModel {
     }
 
     public void doSelectGame(String id) {
-        model.doSelectGame(id);
     }
 
     public StringProperty dartValue1Property() {

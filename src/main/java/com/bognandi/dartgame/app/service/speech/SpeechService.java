@@ -32,11 +32,11 @@ public class SpeechService {
     public void doSpeak(String text) {
         LOG.info("Speaking '{}'", text);
         synthesizer.speakPlainText(text, null);
-        try {
-            synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
-        } catch (InterruptedException e) {
-            LOG.warn("Interrupted while waiting for speech engine", e);
-        }
+//        try {
+//            synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
+//        } catch (InterruptedException e) {
+//            LOG.warn("Interrupted while waiting for speech engine", e);
+//        }
     }
 
     @PreDestroy

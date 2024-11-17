@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Consumer;
 
-@Service
+//@Service
 public class DartboardService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DartboardService.class);

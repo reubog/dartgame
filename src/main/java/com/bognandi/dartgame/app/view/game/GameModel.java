@@ -19,7 +19,7 @@ public class GameModel {
     private GameAppService gameAppService;
 
     public void initGame(String id) {
-        this.dartgame = dartgameFactory.createDartgame(id);
+//        this.dartgame = dartgameFactory.createDartgame(id);
         this.dartgame.addEventListener(dartgameListener);
     }
 
