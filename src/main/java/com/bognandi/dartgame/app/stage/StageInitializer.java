@@ -79,7 +79,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 //            Parent parent = fxmlLoader.load();
 //            stage.setScene(new Scene(parent, 800, 600));
         stage.setTitle(applicationTitle);
-        stage.setScene(new Scene(new WrapperLayoutBuilder().build()));
+        stage.setScene(new Scene(new GameView(()->{}).build()));
         stage.show();
 
         // create a button
@@ -148,12 +148,12 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
         Scene sc = new Scene(r, 400, 200);
 
         game.setOnAction((actionEvent -> {
-            sc.setRoot(new GameSelectionView((gameId) -> {
-                LOG.info("Game selected: " + gameId);
-                sc.setRoot(new GameView(gameId, () -> {
-                    LOG.info("Game selected: " + gameId);
-                }));
-            }));
+//            sc.setRoot(new GameSelectionView((gameId) -> {
+//                LOG.info("Game selected: " + gameId);
+//                sc.setRoot(new GameView(gameId, () -> {
+//                    LOG.info("Game selected: " + gameId);
+//                }));
+//            }));
         }));
 
         // set the scene

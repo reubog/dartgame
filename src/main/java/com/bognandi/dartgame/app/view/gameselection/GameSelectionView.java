@@ -1,32 +1,32 @@
 package com.bognandi.dartgame.app.view.gameselection;
 
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
 import java.util.function.Consumer;
 
-public class GameSelectionView extends VBox implements Builder<Region> {
+public class GameSelectionView extends VBox implements Builder<Parent> {
 
-    private final Consumer<String> gameSelectionSupplier;
+    private final Runnable nextScene;
     private final GameSelectionViewModel viewModel = new GameSelectionViewModel();
 
     private Label titleLabel = new Label("Select Dart Game:");
     private ListView<GameInfo> games = new ListView();
     private Button startButton = new Button("Start Game");
 
-    public GameSelectionView(Consumer<String> gameSelectionSupplier) {
-        this.gameSelectionSupplier = gameSelectionSupplier;
+    public GameSelectionView(Runnable nextScene) {
+        this.nextScene = nextScene;
         createView();
         createBindings();
     }
 
     @Override
-    public Region build() {
+    public Parent build() {
         return this;
     }
 
@@ -42,7 +42,7 @@ public class GameSelectionView extends VBox implements Builder<Region> {
 
     private void createBindings() {
         games.itemsProperty().bind(viewModel.gameInfosPropertyProperty());
-        startButton.setOnAction(event -> gameSelectionSupplier.accept(games.getSelectionModel().getSelectedItem().id()));
+        startButton.setOnAction(event -> nextScene.run());
     }
 
     private class Cell extends ListCell<GameInfo> {

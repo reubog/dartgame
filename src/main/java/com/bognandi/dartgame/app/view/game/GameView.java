@@ -1,10 +1,12 @@
 package com.bognandi.dartgame.app.view.game;
 
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Builder;
 
-public class GameView extends VBox {
+public class GameView extends VBox implements Builder<Parent> {
 
     private final GameViewModel viewModel = new GameViewModel();
 
@@ -21,7 +23,10 @@ public class GameView extends VBox {
     private Label dartLabel2 = new Label();
     private Label dartLabel3 = new Label();
 
-    public GameView() {
+    private Runnable nextScene;
+
+    public GameView(Runnable nextScene) {
+        this.nextScene = nextScene;
         initLayout();
         initListeners();
     }
@@ -47,5 +52,10 @@ public class GameView extends VBox {
         viewModel.dartValue3Property().addListener((observable, oldValue, newValue) -> dartLabel3.setText(newValue));
 
         viewModel.scoreProperty().addListener((observable, oldValue, newValue) -> scoreLabel.setText(newValue));
+    }
+
+    @Override
+    public Parent build() {
+        return this;
     }
 }
