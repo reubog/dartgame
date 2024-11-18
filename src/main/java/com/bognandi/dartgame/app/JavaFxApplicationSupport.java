@@ -1,7 +1,6 @@
 package com.bognandi.dartgame.app;
 
-import com.bognandi.dartgame.app.event.StageReadyEvent;
-import com.bognandi.dartgame.app.view.WrapperLayoutBuilder;
+import com.bognandi.dartgame.app.gui.WrapperLayoutBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -28,8 +27,6 @@ public class JavaFxApplicationSupport extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         LOG.info("Application starting...");
-        //applicationContext.publishEvent(new StageReadyEvent(applicationContext, stage));
-
         stage.setScene(new Scene(new WrapperLayoutBuilder().build()));
         stage.show();
 

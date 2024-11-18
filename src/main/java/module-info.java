@@ -19,7 +19,6 @@ module com.bognandi.dartgame.app {
 
     opens com.bognandi.dartgame.app;
     opens com.bognandi.dartgame.app.config;
-    opens com.bognandi.dartgame.app.stage;
     opens com.bognandi.dartgame.app.service to spring.beans, spring.core;
     opens com.bognandi.dartgame.app.service.audio to spring.beans;
     opens com.bognandi.dartgame.app.service.speech to spring.beans;

@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.app.view.game;
+package com.bognandi.dartgame.app.gui.game;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

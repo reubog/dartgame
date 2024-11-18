@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.app.view.game;
+package com.bognandi.dartgame.app.gui.game;
 
 import com.bognandi.dartgame.app.service.GameAppService;
 import com.bognandi.dartgame.domain.dartgame.*;

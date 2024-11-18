@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.app.view.gameselection;
+package com.bognandi.dartgame.app.gui.gameselection;
 
 import com.bognandi.dartgame.app.config.BeanConfig;
 import com.bognandi.dartgame.domain.dartgame.DartgameDescriptor;

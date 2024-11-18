@@ -1,4 +1,4 @@
-package com.bognandi.dartgame.app.view.gameselection;
+package com.bognandi.dartgame.app.gui.gameselection;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -23,5 +23,9 @@ public class GameSelectionViewModel {
 
     public ListProperty<GameInfo> gameInfosPropertyProperty() {
         return gameInfosProperty;
+    }
+
+    public void onSelectGame(GameInfo gameInfo) {
+        System.out.println("Selected game: " + gameInfo.name());
     }
 }
