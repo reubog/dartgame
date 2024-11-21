@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.function.Consumer;
 
-
+@Component
 public class Notifications {
 
     public static final String WAITING_FOR_PLAYERS = "waiting-for-players";
