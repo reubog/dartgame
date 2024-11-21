@@ -8,16 +8,14 @@ import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
 public class GameSelectionView extends VBox {
 
-    @Autowired
-    private GameSelectionViewModel gameSelectionViewModel;
+    private GameSelectionViewModel gameSelectionViewModel = new GameSelectionViewModel();
 
     private Runnable nextScene;
 
     private Label titleLabel = new Label("Select Dart Game:");
-    private ListView<GameInfo> games = new ListView();
+    private ListView<GameInfo> games = new ListView<>();
     private Button startButton = new Button("Start Game");
 
     public GameSelectionView() {
@@ -37,7 +35,10 @@ public class GameSelectionView extends VBox {
 
     private void createBindings() {
         games.itemsProperty().bind(gameSelectionViewModel.gameInfosPropertyProperty());
-        startButton.setOnAction(e -> gameSelectionViewModel.onSelectGame(games.getSelectionModel().getSelectedItem()));
+        startButton.setOnAction(e -> {
+            gameSelectionViewModel.onSelectGame(games.getSelectionModel().getSelectedItem());
+            nextScene.run();
+        });
     }
 
     private class Cell extends ListCell<GameInfo> {

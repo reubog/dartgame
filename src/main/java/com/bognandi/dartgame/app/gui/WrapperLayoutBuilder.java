@@ -11,17 +11,13 @@ import javafx.util.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
 public class WrapperLayoutBuilder implements Builder<Parent> {
 
-    @Autowired
-    private SettingsView settingsView;
+//    private SettingsView settingsView;
 
-    @Autowired
-    private GameSelectionView gameSelectionComponent;
+    private GameSelectionView gameSelectionComponent = new GameSelectionView();
 
-    @Autowired
-    private GameView gameView;
+   // private GameView gameView = new GameView();
 
 
     private BorderPane pane;
@@ -35,14 +31,14 @@ public class WrapperLayoutBuilder implements Builder<Parent> {
         pane = new BorderPane();
         pane.setTop(new HBox(){{
             getChildren().add(new Label("Top"));
-            getChildren().add(settingsView);
+            //getChildren().add(settingsView);
         }});
         pane.setCenter(gameSelectionComponent);
     }
 
     private void createSceneTransitions() {
-        gameSelectionComponent.setNextScene(() -> pane.setCenter(gameView));
-        gameView.setNextScene(() -> pane.setCenter(gameSelectionComponent));
+       // gameSelectionComponent.setNextScene(() -> pane.setCenter(gameView));
+       // gameView.setNextScene(() -> pane.setCenter(gameSelectionComponent));
     }
 
     @Override

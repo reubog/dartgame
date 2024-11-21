@@ -1,13 +1,22 @@
 package com.bognandi.dartgame.app.gui.game;
 
 import javafx.application.Platform;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+
 public class Notifications {
 
-    private final Map<UUID, List<SubscriberObject>> subscribers = new LinkedHashMap<>();
+    public static final String WAITING_FOR_PLAYERS = "waiting-for-players";
+    public static final String PLAYER_ADDED = "player-added";
+    public static final String START_GAME = "start-game";
+    public static final String ROUND_STARTED = "round-started";
+    public static final String PLAYER_TURN = "player-turn";
+    public static final String DART_THROWN = "dart-thrown";
+
+    private final Map<String, List<SubscriberObject>> subscribers = new LinkedHashMap<>();
 
     private static Notifications instance = new Notifications();
 
@@ -17,7 +26,7 @@ public class Notifications {
 
     private Notifications() {}
 
-    public void publish(UUID event) {
+    public void publish(String event) {
 
         Platform.runLater(() -> {
             List<SubscriberObject> subscriberList = instance.subscribers.get(event);
@@ -33,7 +42,7 @@ public class Notifications {
         });
     }
 
-    public void subscribe(UUID event, Object subscriber, Consumer<UUID> eventConsumer) {
+    public void subscribe(String event, Object subscriber, Consumer<String> eventConsumer) {
 
         if (!instance.subscribers.containsKey(event)) {
             List<SubscriberObject> slist = new ArrayList<>();
@@ -45,7 +54,7 @@ public class Notifications {
         subscriberList.add(new SubscriberObject(subscriber, eventConsumer));
     }
 
-    public void unsubscribe(UUID event, Object subscriber) {
+    public void unsubscribe(String event, Object subscriber) {
 
         List<SubscriberObject> subscriberList = instance.subscribers.get(event);
 
@@ -57,10 +66,10 @@ public class Notifications {
     static class SubscriberObject {
 
         private final Object subscriber;
-        private final Consumer<UUID> eventConsumer;
+        private final Consumer<String> eventConsumer;
 
         public SubscriberObject(Object subscriber,
-                                Consumer<UUID> eventConsumer) {
+                                Consumer<String> eventConsumer) {
             this.subscriber = subscriber;
             this.eventConsumer = eventConsumer;
         }
@@ -69,7 +78,7 @@ public class Notifications {
             return subscriber;
         }
 
-        public Consumer<UUID> getEventConsumer() {
+        public Consumer<String> getEventConsumer() {
             return eventConsumer;
         }
 

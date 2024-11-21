@@ -13,18 +13,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 @Service
 public class GameAppService {
 
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(GameAppService.class);
 
-
+    /**
+     * application state
+     */
     private GameAppState gameAppState;
+
+    /**
+     * currently selected game, only valid if GameAppState.GAME_WAITING_FOR_PLAYERS, GameAppState.GAME_STARTED
+     */
+    private DartgameDescriptor selectedGame;
+
+
     @Autowired
     private SpeechService speechService;
     @Autowired
@@ -41,32 +50,37 @@ public class GameAppService {
     {
         LOG.info("Constructing service");
 
-//        dartboardService.findDartboard(dartboardName, dartboard -> {
-//            LOG.info("Dartboard listener attached");
-//            dartboard.addEventListener(proxyDartboardListener);
-//        });
-        gameAppState = GameAppState.APP_STARTED;
+        gameAppState = GameAppState.SELECT_GAME;
     }
 
     public List<DartgameDescriptor> getAvailableDartgames() {
-        gameAppState = GameAppState.SELECT_GAME;
         return dartgameFactory.getDartgames();
     }
 
-    public void playGame(String name, int numberOfPlayers) {
-        //Platform.runLater(() -> {
-        Dartgame dartGame = dartgameFactory.createDartgame(name);
-        dartGame.addEventListener(new GameEventListener());
+    public void selectGame(DartgameDescriptor dartgameDescriptor) {
+        if (Objects.isNull(dartgameDescriptor) || !GameAppState.SELECT_GAME.equals(gameAppState)) {
+            LOG.debug("Omitting game selection " + dartgameDescriptor);
+            return;
+        }
 
-        proxyDartboardListener.addListener((DartBoardEventListener) dartGame);
-
-        dartGame.startGame();
-
-        IntStream.range(0, numberOfPlayers).forEach(val -> dartGame.addPlayer(new GamePlayer("Player " + val)));
-
-        //proxyDartboardListener.removeListener((DartBoardEventListener) dartGame);
-        //  });
+        selectedGame = dartgameDescriptor;
+        gameAppState = GameAppState.GAME_WAITING_FOR_PLAYERS;
     }
+
+//    public void playGame(String name, int numberOfPlayers) {
+//        //Platform.runLater(() -> {
+//        Dartgame dartGame = dartgameFactory.createDartgame(name);
+//        dartGame.addEventListener(new GameEventListener());
+//
+//        proxyDartboardListener.addListener((DartBoardEventListener) dartGame);
+//
+//        dartGame.startGame();
+//
+//        IntStream.range(0, numberOfPlayers).forEach(val -> dartGame.addPlayer(new GamePlayer("Player " + val)));
+//
+//        //proxyDartboardListener.removeListener((DartBoardEventListener) dartGame);
+//        //  });
+//    }
 
     @PreDestroy
     public void destroy() {

@@ -1,56 +1,34 @@
 package com.bognandi.dartgame.app.gui.game;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class GameView extends VBox {
 
-    private final GameViewModel viewModel = new GameViewModel();
+public class GameView extends StackPane {
 
-    private HBox gameBox = new HBox();
-    private HBox playersBox = new HBox();
-
-    private VBox dartsBox = new VBox();
-    private VBox roundsBox = new VBox();
-    private VBox scoresBox = new VBox();
-
-    private Label scoreLabel = new Label();
-
-    private Label dartLabel1 = new Label();
-    private Label dartLabel2 = new Label();
-    private Label dartLabel3 = new Label();
+    @Autowired
+    private GameViewModel gameViewModel;
 
     private Runnable nextScene;
 
+    private PlayingComponent playingComponent = new PlayingComponent();
+    private WaitingForPlayersComponent waitingForPlayersPaneComponent = new WaitingForPlayersComponent();
+
     public GameView() {
         initLayout();
-        initListeners();
+        initBindings();
     }
 
     private void initLayout() {
-        getChildren().add(gameBox);
-        getChildren().add(playersBox);
-
-        gameBox.getChildren().add(roundsBox);
-        gameBox.getChildren().add(scoresBox);
-        gameBox.getChildren().add(dartsBox);
-
-        scoresBox.getChildren().add(scoreLabel);
-
-        dartsBox.getChildren().add(dartLabel1);
-        dartsBox.getChildren().add(dartLabel2);
-        dartsBox.getChildren().add(dartLabel3);
+        getChildren().add(playingComponent);
+        getChildren().add(waitingForPlayersPaneComponent);
     }
 
-    private void initListeners() {
-        viewModel.dartValue1Property().addListener((observable, oldValue, newValue) -> dartLabel1.setText(newValue));
-        viewModel.dartValue2Property().addListener((observable, oldValue, newValue) -> dartLabel2.setText(newValue));
-        viewModel.dartValue3Property().addListener((observable, oldValue, newValue) -> dartLabel3.setText(newValue));
-
-        viewModel.scoreProperty().addListener((observable, oldValue, newValue) -> scoreLabel.setText(newValue));
+    private void initBindings() {
+        playingComponent.initBindings(gameViewModel);
+        waitingForPlayersPaneComponent.visibleProperty().bind(gameViewModel.waitingForPlayersProperty());
     }
-
 
     public void setNextScene(Runnable nextScene) {
         this.nextScene = nextScene;

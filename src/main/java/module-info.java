@@ -5,7 +5,6 @@ module com.bognandi.dartgame.app {
     requires javafx.graphics;
     requires spring.beans;
     requires spring.context;
-//    requires spring.web;
     requires spring.boot;
     requires spring.boot.autoconfigure;
     requires org.slf4j;
@@ -22,4 +21,10 @@ module com.bognandi.dartgame.app {
     opens com.bognandi.dartgame.app.service to spring.beans, spring.core;
     opens com.bognandi.dartgame.app.service.audio to spring.beans;
     opens com.bognandi.dartgame.app.service.speech to spring.beans;
+    opens com.bognandi.dartgame.app.gui to spring.beans, javafx.fxml;
+    opens com.bognandi.dartgame.app.gui.game to spring.beans, javafx.fxml, spring.core;
+    opens com.bognandi.dartgame.app.gui.gameselection to spring.beans, javafx.fxml, spring.core;
+
+
+    opens com.bognandi.dartgame.domain.dartgame;
 }
