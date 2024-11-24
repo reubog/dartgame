@@ -1,7 +1,30 @@
-#pane{
-    -fx-background-image: url("images/game-background.png");
-    -fx-background-repeat: none;
-    -fx-background-size: 800 600;
-    -fx-background-position: center center;
-    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+@font-face {
+    font-family: 'Permanent Marker';
+    src: url("'../fonts/Permanent_Marker/PermanentMarker-Regular.ttf");
 }
+#gamePane{
+    -fx-background-image: url("../images/game-background.png");
+}
+.list-cell {
+    -fx-background-color: transparent;
+}
+.list-cell #playerbox {
+    /* 4: (Styling when out of focus)*/
+    -fx-fill:  rgba(190,211,232,0.0);
+    -fx-stroke: white;
+}
+.list-cell .label {
+    /* 4: (Styling when out of focus)*/
+    -fx-text-fill: white;
+}
+.list-cell:filled:selected #playerbox {
+    -fx-fill:  rgba(190,211,232,1.0);
+    -fx-stroke: black;
+}
+.list-cell:filled:selected .label {
+    -fx-text-fill: black;
+}
+.list-view {
+    -fx-background-color: transparent;
+}
+

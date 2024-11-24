@@ -44,7 +44,7 @@ public class X01ScoreBoardTest {
 
     @Test
     void test() {
-        when(dartValueMapper.getDartValue(ONE)).thenReturn(1);
+        when(dartValueMapper.getDartScore(ONE)).thenReturn(1);
         scoreBoard.onPlayerTurn(dartGame, 1, player1);
         scoreBoard.onDartThrown(dartGame, ONE);
 

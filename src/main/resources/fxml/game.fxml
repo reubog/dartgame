@@ -2,21 +2,20 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@css/game.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bognandi.dartgame.app.gui.GameController">
-   <left>
-      <ListView fx:id="roundsList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </left>
    <right>
-      <ListView fx:id="dartsList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="dartsList" prefHeight="200.0" prefWidth="220.0" stylesheets="@css/game.css" BorderPane.alignment="CENTER" />
    </right>
    <bottom>
-      <ListView fx:id="playersList" orientation="HORIZONTAL" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="playersList" orientation="HORIZONTAL" prefHeight="220.0" prefWidth="200.0" stylesheets="@css/game.css" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <Label fx:id="currentPlayerScoreLabel" text="301" textAlignment="CENTER" textFill="RED" BorderPane.alignment="CENTER">
+      <Label fx:id="currentPlayerScoreLabel" text="301" textAlignment="CENTER" textFill="#fdfff9" BorderPane.alignment="CENTER">
          <font>
             <Font size="96.0" />
          </font>
@@ -29,4 +28,11 @@
          </font>
       </Label>
    </top>
+   <left>
+      <TableView fx:id="scoreTable" editable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn id="roundsColumn" fx:id="roundsColumn" editable="false" prefWidth="75.0" text="Round" />
+        </columns>
+      </TableView>
+   </left>
 </BorderPane>

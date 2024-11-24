@@ -5,4 +5,5 @@ public interface ScoreBoard {
     boolean isBust(Player player);
     boolean isWinner(Player player);
     PlayerScore getPlayerScore(Player player);
+    Player getLeadingPlayer();
 }

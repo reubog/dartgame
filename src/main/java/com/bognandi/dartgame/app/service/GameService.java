@@ -1,6 +1,5 @@
 package com.bognandi.dartgame.app.service;
 
-import com.bognandi.dartgame.app.gui.game.GameModel;
 import com.bognandi.dartgame.app.gui.game.Notifications;
 import com.bognandi.dartgame.domain.dartgame.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ public class GameService {
     private int currentRound;
     private Player currentPlayer;
     private int currentPlayerRoundScore;
+    private Dart lastDart;
     private List<Dart> currentRoundDarts = new ArrayList<>();
 
     public void startGame(Dartgame dartgame) {
@@ -98,7 +98,7 @@ public class GameService {
         @Override
         public void onDartThrown(Dartgame dartGame, Dart dart) {
             super.onDartThrown(dartGame, dart);
-            currentPlayerRoundScore += dartValueMapper.getDartValue(dart);
+            currentPlayerRoundScore += dartValueMapper.getDartScore(dart);
             currentRoundDarts.add(dart);
             notifications.publish(Notifications.DART_THROWN);
         }

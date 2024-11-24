@@ -5,6 +5,7 @@ import com.bognandi.dartgame.app.gui.WrapperLayoutBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ public class JavaFxApplicationSupport extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         LOG.info("Application starting...");
+        Font.loadFont(getClass().getResourceAsStream("/fxml/fonts/orange-juice/orange juice 2.0.ttf"), 10);
+        Font.loadFont(getClass().getResourceAsStream("/fxml/fonts/Permanent_Marker/PermanentMarker-Regular.ttf"), 10);
         applicationContext.publishEvent(new StageReadyEvent(applicationContext, stage));
     }
 

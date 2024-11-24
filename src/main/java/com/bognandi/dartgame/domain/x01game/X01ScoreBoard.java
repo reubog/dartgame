@@ -1,9 +1,10 @@
 package com.bognandi.dartgame.domain.x01game;
 
 import com.bognandi.dartgame.domain.dartgame.*;
-import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
@@ -41,6 +42,14 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     }
 
     @Override
+    public Player getLeadingPlayer() {
+        List<Player> playerPositions = playerScoreMap.keySet().stream()
+                .sorted((o1, o2) -> playerScoreMap.get(o1).getScore() < playerScoreMap.get(o2).getScore() ? -1 : 1)
+                .toList();
+        return playerPositions.get(0);
+    }
+
+    @Override
     public void onGameStarting(Dartgame dartGame) {
 
     }
@@ -74,7 +83,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     @Override
     public void onDartThrown(Dartgame dartGame, Dart dart) {
         playerScoreMap.get(currentPlayer)
-                .decreaseScoreWith(dartValueMapper.getDartValue(dart))
+                .decreaseScoreWith(dartValueMapper.getDartScore(dart))
                 .nextDart();
     }
 

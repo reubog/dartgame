@@ -91,7 +91,7 @@ public class GameModel {
         @Override
         public void onDartThrown(Dartgame dartGame, Dart dart) {
             super.onDartThrown(dartGame, dart);
-            currentPlayerRoundScore += dartValueMapper.getDartValue(dart);
+            currentPlayerRoundScore += dartValueMapper.getDartScore(dart);
             currentRoundDarts.add(dart);
             notifications.publish(Notifications.DART_THROWN);
         }

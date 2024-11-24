@@ -4,6 +4,7 @@ import com.bognandi.dartgame.app.event.StageReadyEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class GuiInitializer implements ApplicationListener<StageReadyEvent> {
             Parent root = loader.load();
 
             Stage stage = event.getStage();
-            stage.setScene(new Scene(root, 800, 600));
+            stage.setScene(new Scene(root, 1920, 1080));
             stage.show();
 
         } catch (Exception e) {
