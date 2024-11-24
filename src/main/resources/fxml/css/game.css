@@ -3,14 +3,14 @@
     src: url("'../fonts/Permanent_Marker/PermanentMarker-Regular.ttf");
 }
 #gamePane{
-    -fx-background-image: url("../images/game-background.png");
+    -fx-background-image: url("../images/ai-pub-background.png");
 }
 .list-cell {
     -fx-background-color: transparent;
 }
 .list-cell #playerbox {
     /* 4: (Styling when out of focus)*/
-    -fx-fill:  rgba(190,211,232,0.0);
+    -fx-fill:  rgba(210,130,130,0.0);
     -fx-stroke: white;
 }
 .list-cell .label {
@@ -18,7 +18,7 @@
     -fx-text-fill: white;
 }
 .list-cell:filled:selected #playerbox {
-    -fx-fill:  rgba(190,211,232,1.0);
+    -fx-fill:  rgba(210,130,130,1.0);
     -fx-stroke: black;
 }
 .list-cell:filled:selected .label {
