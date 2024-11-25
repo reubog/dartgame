@@ -1,6 +1,10 @@
 package com.bognandi.dartgame.domain.x01game;
 
+import com.bognandi.dartgame.domain.dartgame.Dart;
 import com.bognandi.dartgame.domain.dartgame.PlayerScore;
+
+import java.util.*;
+import java.util.Collections;
 
 
 public class X01PlayerScore implements PlayerScore {
@@ -8,6 +12,7 @@ public class X01PlayerScore implements PlayerScore {
     private int score;
     private int playedRounds;
     private int thrownDarts;
+    private Map<Integer,List<Dart>> dartsForRound = new LinkedHashMap<>();
 
     public X01PlayerScore(int score) {
         this.score = score;
@@ -15,6 +20,7 @@ public class X01PlayerScore implements PlayerScore {
 
     public X01PlayerScore nextRound() {
         this.playedRounds++;
+        dartsForRound.put(this.playedRounds, new ArrayList<>());
         return this;
     }
 
@@ -23,8 +29,9 @@ public class X01PlayerScore implements PlayerScore {
         return this;
     }
 
-    public X01PlayerScore nextDart() {
+    public X01PlayerScore nextDart(Dart dart) {
         this.thrownDarts++;
+        dartsForRound.get(this.playedRounds).add(dart);
         return this;
     }
 
@@ -46,5 +53,10 @@ public class X01PlayerScore implements PlayerScore {
     @Override
     public int getThrownDarts() {
         return thrownDarts;
+    }
+
+    @Override
+    public List<Dart> getDartsForRound(int round) {
+        return Collections.unmodifiableList(dartsForRound.get(round));
     }
 }

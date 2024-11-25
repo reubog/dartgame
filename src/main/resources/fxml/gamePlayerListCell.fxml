@@ -21,7 +21,7 @@
          </font></Label>
       <Label fx:id="scoreLabel" layoutX="16.0" layoutY="159.0" prefHeight="27.0" prefWidth="169.0" style="-fx-alignment: center;" text="301">
          <font>
-            <Font size="18.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Label>
       <ImageView fx:id="leaderImage" fitHeight="50.0" fitWidth="50.0" layoutX="5.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">

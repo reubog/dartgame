@@ -84,7 +84,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     public void onDartThrown(Dartgame dartGame, Dart dart) {
         playerScoreMap.get(currentPlayer)
                 .decreaseScoreWith(dartValueMapper.getDartScore(dart))
-                .nextDart();
+                .nextDart(dart);
     }
 
     @Override
