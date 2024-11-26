@@ -92,7 +92,6 @@ public class GameController extends DefaultDartgameEventListener {
         scoreTable.getColumns().add(column);
         scoreTable.setPrefWidth(column.getPrefWidth() + 1);
         scoreTable.setItems(scoreData);
-        scoreTable.setPrefHeight(100.0);
 
         Media media = new Media(getClass().getResource("/video/tavern.mp4").toExternalForm());
         mediaPlayer =  new MediaPlayer(media);

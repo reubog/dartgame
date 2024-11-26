@@ -22,8 +22,8 @@ public class DartListCellController {
         } else {
             switch (dartValueMapper.multiplier(dart)) {
                 case 1 -> dartLabel.setText(String.format("%d", dartValueMapper.getDartValue(dart)));
-                case 2 -> dartLabel.setText(String.format("2x %d", dartValueMapper.getDartValue(dart)));
-                case 3 -> dartLabel.setText(String.format("3x %d", dartValueMapper.getDartValue(dart)));
+                case 2 -> dartLabel.setText(String.format("= %d", dartValueMapper.getDartValue(dart)));
+                case 3 -> dartLabel.setText(String.format("≡ %d", dartValueMapper.getDartValue(dart)));
             }
         }
     }
