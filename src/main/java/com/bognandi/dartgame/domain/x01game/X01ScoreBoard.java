@@ -15,6 +15,8 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     private final DartValueMapper dartValueMapper;
     //private List<PlayerRound> playerRounds;
     private Map<Player, X01PlayerScore> playerScoreMap = new LinkedHashMap<>();
+    private List<Player> playing = new ArrayList<>();
+
 
     public X01ScoreBoard(int startScore, DartValueMapper dartValueMapper) {
         this.startScore = startScore;
@@ -44,6 +46,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     @Override
     public Player getLeadingPlayer() {
         List<Player> playerPositions = playerScoreMap.keySet().stream()
+                .filter(player -> playing.contains(player))
                 .sorted((o1, o2) -> playerScoreMap.get(o1).getScore() < playerScoreMap.get(o2).getScore() ? -1 : 1)
                 .toList();
         return playerPositions.get(0);
@@ -51,7 +54,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     @Override
     public void onGameStarting(Dartgame dartGame) {
-
+        playing.clear();
     }
 
     @Override
@@ -67,6 +70,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     @Override
     public void onPlayerAdded(Dartgame dartGame, Player player) {
         playerScoreMap.put(player, new X01PlayerScore(startScore));
+        playing.add(player);
     }
 
     @Override
@@ -94,7 +98,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     @Override
     public void onPlayerWon(Dartgame dartGame, Player player) {
-
+        playing.remove(player);
     }
 
     @Override
@@ -104,7 +108,7 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     @Override
     public void onPlayerLost(Dartgame dartGame, Player player) {
-
+        playing.remove(player);
     }
 
 }

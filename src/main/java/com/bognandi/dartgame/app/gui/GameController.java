@@ -22,9 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,7 +52,7 @@ public class GameController extends DefaultDartgameEventListener {
     private BorderPane gamePane;
 
     @FXML
-    private TableView<Map<String,Object>> scoreTable;
+    private TableView<Map<String, Object>> scoreTable;
 
     @FXML
     private ListView<Dart> dartsList;
@@ -68,8 +66,8 @@ public class GameController extends DefaultDartgameEventListener {
     private X01Dartgame dartgame;
     private Player currentPlayer;
     private int currentRound;
-    private ObservableList<Map<String,Object>> scoreData = FXCollections.observableArrayList();
-    private Map<String,Object> currentScoreRound;
+    private ObservableList<Map<String, Object>> scoreData = FXCollections.observableArrayList();
+    private Map<String, Object> currentScoreRound;
     private MediaPlayer mediaPlayer;
 
     public record GamePlayer(Player player, PlayerScore playerScore, AtomicBoolean leaderScore) {
@@ -94,7 +92,7 @@ public class GameController extends DefaultDartgameEventListener {
         scoreTable.setItems(scoreData);
 
         Media media = new Media(getClass().getResource("/video/tavern.mp4").toExternalForm());
-        mediaPlayer =  new MediaPlayer(media);
+        mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.setAutoPlay(true);
         backgroundMediaView.setMediaPlayer(mediaPlayer);
@@ -120,7 +118,7 @@ public class GameController extends DefaultDartgameEventListener {
         dartgame.onButton();
         wait(1);
 
-        for (int round = 0; round < 12; round++) {
+        for (int round = 0; round < 20; round++) {
             for (int player = 0; player < dartgame.getPlayers().size(); player++) {
                 dartgame.onDartThrown(randomDart());
                 wait(1);
@@ -140,11 +138,11 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     private void wait(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            //Thread.sleep(seconds * 1000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Override
@@ -189,10 +187,10 @@ public class GameController extends DefaultDartgameEventListener {
                             player -> new AtomicInteger(0))));
             scoreData.add(currentScoreRound);
             scoreTable.getSelectionModel().select(currentScoreRound);
+            scoreTable.scrollTo(currentScoreRound);
 
             currentRound = roundNumber;
             dartsList.getItems().clear();
-            dartsList.getSelectionModel().select(currentRound);
 
             showMessage("Round #" + roundNumber);
             wait(1);
@@ -259,7 +257,7 @@ public class GameController extends DefaultDartgameEventListener {
         PlayerScore currentPlayerScore = dartgame.getPlayerScore(currentPlayer);
         currentPlayerScoreLabel.setText(String.valueOf(currentPlayerScore.getScore()));
 
-        ((AtomicInteger)currentScoreRound.get(currentPlayer.getName())).set(currentPlayerScore.getDartsForRound(currentRound).stream()
+        ((AtomicInteger) currentScoreRound.get(currentPlayer.getName())).set(currentPlayerScore.getDartsForRound(currentRound).stream()
                 .map(dartValueMapper::getDartScore)
                 .reduce(0, Integer::sum));
 

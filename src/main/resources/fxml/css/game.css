@@ -1,5 +1,5 @@
 @font-face {
-    font-family: 'Permanent Marker';
+    -fx-font-family: 'Permanent Marker';
     src: url("'../fonts/Permanent_Marker/PermanentMarker-Regular.ttf");
 }
 /*#gamePane{
@@ -72,7 +72,6 @@
     -fx-text-fill: white;
     -fx-border-color: white;
     -fx-alignment: center;
-    /*-fx-font-weight:bold;*/
     -fx-font-size: 25px;
     -fx-cell-size: 25px;
 
@@ -88,6 +87,17 @@
     -fx-padding: 0.0em;
 }
 
+.table-row-cell:selected {
+    -fx-opacity: 80%;
+    -fx-table-cell-border-color: transparent;
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-alignment: center;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-cell-size: 25px;
+}
 
 .table-row-cell{
     /*-fx-background-color: transparent;*/
@@ -95,4 +105,14 @@
     -fx-table-cell-border-color: transparent;
 
     -fx-background-color: black;
+}
+
+.table-view .scroll-bar * {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
 }
