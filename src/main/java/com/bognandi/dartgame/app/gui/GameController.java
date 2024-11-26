@@ -12,9 +12,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
-import javafx.stage.Popup;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,14 @@ public class GameController extends DefaultDartgameEventListener {
     @Autowired
     private DartValueMapper dartValueMapper;
 
-    @Autowired
-    private GamePopups gamePopups;
+    @FXML
+    private MediaView backgroundMediaView;
+
+    @FXML
+    private AnchorPane messagePane;
+
+    @FXML
+    private Label messageLabel;
 
     @FXML
     private BorderPane gamePane;
@@ -60,9 +68,9 @@ public class GameController extends DefaultDartgameEventListener {
     private X01Dartgame dartgame;
     private Player currentPlayer;
     private int currentRound;
-    private Popup currentPopup;
     private ObservableList<Map<String,Object>> scoreData = FXCollections.observableArrayList();
     private Map<String,Object> currentScoreRound;
+    private MediaPlayer mediaPlayer;
 
     public record GamePlayer(Player player, PlayerScore playerScore, AtomicBoolean leaderScore) {
     }
@@ -85,6 +93,12 @@ public class GameController extends DefaultDartgameEventListener {
         scoreTable.setPrefWidth(column.getPrefWidth() + 1);
         scoreTable.setItems(scoreData);
         scoreTable.setPrefHeight(100.0);
+
+        Media media = new Media(getClass().getResource("/video/tavern.mp4").toExternalForm());
+        mediaPlayer =  new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setAutoPlay(true);
+        backgroundMediaView.setMediaPlayer(mediaPlayer);
 
         dartgame = new X01Dartgame(new X01ScoreBoard(301, dartValueMapper));
         dartgame.addEventListener(this);
@@ -137,7 +151,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onGameStarting(Dartgame dartGame) {
         Platform.runLater(() -> {
-            currentPopup = gamePopups.popupGameMessage(gamePane.getScene().getWindow(), "Waiting for players...");
+            showMessage("Waiting for players...");
         });
     }
 
@@ -161,9 +175,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onGameStarted(Dartgame dartGame) {
         Platform.runLater(() -> {
-            currentPopup.hide();
-            currentPopup = gamePopups.popupGameMessage(gamePane.getScene().getWindow(), "Get ready!");
-            wait(3);
+            showMessage("Get ready!");
         });
     }
 
@@ -181,8 +193,7 @@ public class GameController extends DefaultDartgameEventListener {
             currentRound = roundNumber;
             dartsList.getItems().clear();
 
-            currentPopup.hide();
-            currentPopup = gamePopups.popupGameMessage(gamePane.getScene().getWindow(), "Round #" + roundNumber);
+            showMessage("Round #" + roundNumber);
             wait(1);
         });
     }
@@ -194,15 +205,14 @@ public class GameController extends DefaultDartgameEventListener {
             dartsList.getItems().clear();
             updateScore();
 
-            currentPopup.hide();
-            currentPopup = gamePopups.popupGameMessage(gamePane.getScene().getWindow(), player.getName() + ": Throw the dart");
+            showMessage(player.getName() + ": Throw the dart");
         });
     }
 
     @Override
     public void onDartThrown(Dartgame dartGame, Dart dart) {
         Platform.runLater(() -> {
-            currentPopup.hide();
+            hideMessage();
 
             dartsList.getItems().add(dart);
             updateScore();
@@ -226,6 +236,15 @@ public class GameController extends DefaultDartgameEventListener {
 
         playersList.refresh();
         scoreTable.refresh();
+    }
+
+    private void showMessage(String message) {
+        messageLabel.setText(message);
+        messagePane.setVisible(true);
+    }
+
+    private void hideMessage() {
+        messagePane.setVisible(false);
     }
 
 }

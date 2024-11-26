@@ -2,9 +2,9 @@
     font-family: 'Permanent Marker';
     src: url("'../fonts/Permanent_Marker/PermanentMarker-Regular.ttf");
 }
-#gamePane{
+/*#gamePane{
     -fx-background-image: url("../images/ai-pub-background.png");
-}
+}*/
 .list-cell {
     -fx-background-color: transparent;
 }
