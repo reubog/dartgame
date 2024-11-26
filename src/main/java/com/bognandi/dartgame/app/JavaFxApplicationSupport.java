@@ -1,10 +1,8 @@
 package com.bognandi.dartgame.app;
 
 import com.bognandi.dartgame.app.event.StageReadyEvent;
-import com.bognandi.dartgame.app.gui.WrapperLayoutBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
