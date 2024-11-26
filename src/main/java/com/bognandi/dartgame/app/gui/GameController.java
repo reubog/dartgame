@@ -120,7 +120,7 @@ public class GameController extends DefaultDartgameEventListener {
         dartgame.onButton();
         wait(1);
 
-        for (int round = 0; round < 5; round++) {
+        for (int round = 0; round < 12; round++) {
             for (int player = 0; player < dartgame.getPlayers().size(); player++) {
                 dartgame.onDartThrown(randomDart());
                 wait(1);
@@ -188,9 +188,11 @@ public class GameController extends DefaultDartgameEventListener {
                             Player::getName,
                             player -> new AtomicInteger(0))));
             scoreData.add(currentScoreRound);
+            scoreTable.getSelectionModel().select(currentScoreRound);
 
             currentRound = roundNumber;
             dartsList.getItems().clear();
+            dartsList.getSelectionModel().select(currentRound);
 
             showMessage("Round #" + roundNumber);
             wait(1);
@@ -215,6 +217,41 @@ public class GameController extends DefaultDartgameEventListener {
 
             dartsList.getItems().add(dart);
             updateScore();
+        });
+    }
+
+    @Override
+    public void onRemoveDarts(Dartgame dartGame, int round, Player player) {
+        Platform.runLater(() -> {
+            showMessage("Remove the darts");
+        });
+    }
+
+    @Override
+    public void onPlayerBust(Dartgame dartGame, Player player) {
+        Platform.runLater(() -> {
+            showMessage(player.getName() + " is bust");
+        });
+    }
+
+    @Override
+    public void onPlayerLost(Dartgame dartGame, Player player) {
+        Platform.runLater(() -> {
+            showMessage(player.getName() + " is out");
+        });
+    }
+
+    @Override
+    public void onPlayerWon(Dartgame dartGame, Player player) {
+        Platform.runLater(() -> {
+            showMessage(player.getName() + " is a winner");
+        });
+    }
+
+    @Override
+    public void onGameFinished(Dartgame dartGame) {
+        Platform.runLater(() -> {
+            showMessage("Game over");
         });
     }
 
