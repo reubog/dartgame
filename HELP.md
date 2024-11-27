@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.bognandi.dartgame.dart-game-app' is invalid and this project uses 'com.bognandi.dartgame.app' instead.
+* The original package name 'com.bognandi.dart.dart-game-app' is invalid and this project uses 'com.bognandi.dart.app' instead.
 
 # Getting Started
 

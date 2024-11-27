@@ -15,16 +15,11 @@ Purpose:
   
 # Build and Run
 
+* Java version = 21
+* Java FX version = 21.0.5
+
 ## From CLI
-Build: ```./mnvw clean install```
-
-Run: ```./mnvw javafx:run```
-
-## From IntelliJ
-Download javafx SDK platform dependent modules from [Gluon](https://gluonhq.com/products/javafx/) and copy so that jar files is found here ```platform/javafx-sdk-23.0.1/lib```
-
-In run configuration add 
-```
---module-path platform/javafx-sdk-23.0.1/lib --add-modules javafx.controls
-```
-as VM Options
+* Build: ```./mnvw clean install```
+* Run
+  * Start MQtt server: ```docker-compose up```
+  * Run: ```./mnvw javafx:run```

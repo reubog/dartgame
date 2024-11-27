@@ -7,14 +7,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="dart-game-app" />
+        <module name="dartgame-gui" />
+        <module name="mqtt-granboard-linux" />
+        <module name="mqtt-granboard" />
+        <module name="dart-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="21" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="dart-game-app" options="-parameters" />
+      <module name="dart-core" options="-parameters" />
+      <module name="dart-game-app" options="" />
+      <module name="dartgame-gui" options="-parameters" />
+      <module name="mqtt-granboard" options="-parameters" />
+      <module name="mqtt-granboard-linux" options="-parameters" />
     </option>
   </component>
 </project>

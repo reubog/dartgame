@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bognandi.dart.dartgame.gui.app.gui.GameController">
+   <children>
+      <StackPane prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane>
+               <children>
+                  <MediaView fx:id="backgroundMediaView" fitHeight="1080.0" fitWidth="1920.0" />
+               </children>
+            </AnchorPane>
+            <BorderPane fx:id="gamePane" stylesheets="@css/game.css">
+               <right>
+                  <ListView fx:id="dartsList" prefHeight="400.0" prefWidth="320.0" stylesheets="@css/game.css" BorderPane.alignment="CENTER" />
+               </right>
+               <bottom>
+                  <ListView fx:id="playersList" orientation="HORIZONTAL" prefHeight="220.0" prefWidth="200.0" stylesheets="@css/game.css" BorderPane.alignment="CENTER" />
+               </bottom>
+               <center>
+                  <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TableView fx:id="scoreTable" editable="true" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </HBox>
+               </center>
+               <top>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <center>
+                        <Label fx:id="currentPlayerScoreLabel" text="301" textAlignment="CENTER" textFill="#fdfff9" BorderPane.alignment="CENTER">
+                           <font>
+                              <Font size="96.0" />
+                           </font>
+                        </Label>
+                     </center>
+                  </BorderPane>
+               </top>
+               <StackPane.margin>
+                  <Insets bottom="75.0" left="75.0" right="75.0" top="75.0" />
+               </StackPane.margin>
+            </BorderPane>
+            <AnchorPane fx:id="messagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1400.0">
+               <children>
+                  <Rectangle arcHeight="100.0" arcWidth="100.0" height="400.0" opacity="0.7" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="1400.0" />
+                  <Label fx:id="messageLabel" alignment="CENTER" layoutX="51.0" layoutY="45.0" prefHeight="320.0" prefWidth="1310.0" text="fgsfghsfdghdfghdgfdf df dfghdf" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

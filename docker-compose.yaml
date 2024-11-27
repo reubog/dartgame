@@ -1,0 +1,20 @@
+services:
+  mqtt:
+    image:  eclipse-mosquitto:2.0
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - mqtt_network
+  web:
+    image: emqx/mqttx-web
+    ports:
+      - "8083:80"
+    depends_on:
+      - mqtt
+    networks:
+      - mqtt_network
+networks:
+  mqtt_network:
+    driver: bridge
