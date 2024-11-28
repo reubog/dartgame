@@ -3,6 +3,7 @@ package com.bognandi.dart.dartgame.gui.app.gui;
 import com.bognandi.dart.core.dartboard.DartboardValue;
 import com.bognandi.dart.core.dartboard.DartboardValueMapper;
 import com.bognandi.dart.core.dartgame.*;
+import com.bognandi.dart.dartgame.gui.app.service.dartboard.DartboardService;
 import com.bognandi.dart.dartgame.x01game.x01game.X01Dartgame;
 import com.bognandi.dart.dartgame.x01game.x01game.X01ScoreBoard;
 import javafx.application.Platform;
@@ -42,6 +43,9 @@ public class GameController extends DefaultDartgameEventListener {
 
     @Autowired
     private DartValueMapper dartValueMapper;
+
+    @Autowired
+    private DartboardService dartboardService;
 
     @FXML
     private MediaView backgroundMediaView;
@@ -103,6 +107,9 @@ public class GameController extends DefaultDartgameEventListener {
 
         dartgame = new X01Dartgame(new X01ScoreBoard(301, dartValueMapper));
         dartgame.addEventListener(this);
+
+        Dartboard dartboard  = dartboardService.createDartboard();
+        dartboard.addEventListener(dartgame);
 
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         service.submit(() -> spela());

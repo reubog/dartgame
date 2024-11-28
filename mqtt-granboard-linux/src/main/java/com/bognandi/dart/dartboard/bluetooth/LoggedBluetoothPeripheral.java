@@ -18,12 +18,12 @@ public class LoggedBluetoothPeripheral extends BluetoothPeripheralCallback {
                 .map(service -> service.getUuid().toString())
                 .collect(Collectors.joining(", ", "[", "]"));
 
-        LOG.debug("Services Discovered: Peripheral={}, Services={}", peripheral.getName(), servicesStr);
+        LOG.trace("Services Discovered: Peripheral={}, Services={}", peripheral.getName(), servicesStr);
     }
 
     @Override
     public void onNotificationStateUpdate(@NotNull BluetoothPeripheral peripheral, @NotNull BluetoothGattCharacteristic characteristic, @NotNull BluetoothCommandStatus status) {
-        LOG.debug("notificationStateUpdated: peripheral={}, cstic={}, status={}", peripheral.getName(), characteristic.getUuid(), status);
+        LOG.trace("notificationStateUpdated: peripheral={}, cstic={}, status={}", peripheral.getName(), characteristic.getUuid(), status);
     }
 
     @Override
@@ -32,53 +32,53 @@ public class LoggedBluetoothPeripheral extends BluetoothPeripheralCallback {
         for(byte val: value) {
             sb.append(String.format("%02X ", val));
         }
-        LOG.debug("onCharacteristicUpdate: peripheral={}, cstic={}, status={}, valueStr={} valueHex={}", peripheral.getName(), characteristic.getUuid(), status, new String(value), sb);
+        LOG.trace("onCharacteristicUpdate: peripheral={}, cstic={}, status={}, valueStr={} valueHex={}", peripheral.getName(), characteristic.getUuid(), status, new String(value), sb);
     }
 
     @Override
     public void onCharacteristicWrite(@NotNull BluetoothPeripheral peripheral, @NotNull byte[] value, @NotNull BluetoothGattCharacteristic characteristic, @NotNull BluetoothCommandStatus status) {
-        LOG.debug("onCharacteristicWrite: peripheral={}, cstic={}, status={}, value={}", peripheral.getName(), characteristic.getUuid(), status, new String(value));
+        LOG.trace("onCharacteristicWrite: peripheral={}, cstic={}, status={}, value={}", peripheral.getName(), characteristic.getUuid(), status, new String(value));
     }
 
     @Override
     public void onDescriptorRead(@NotNull BluetoothPeripheral peripheral, @NotNull byte[] value, @NotNull BluetoothGattDescriptor descriptor, @NotNull BluetoothCommandStatus status) {
-        LOG.debug("onDescriptorRead: peripheral={}, descriptor={}, status={}, value={}", peripheral.getName(), descriptor.getUuid(), status, new String(value));
+        LOG.trace("onDescriptorRead: peripheral={}, descriptor={}, status={}, value={}", peripheral.getName(), descriptor.getUuid(), status, new String(value));
 
     }
 
     @Override
     public void onDescriptorWrite(@NotNull BluetoothPeripheral peripheral, @NotNull byte[] value, @NotNull BluetoothGattDescriptor descriptor, @NotNull BluetoothCommandStatus status) {
-        LOG.debug("onDescriptorWrite: peripheral={}, descriptor={}, status={}, value={}", peripheral.getName(), descriptor.getUuid(), status, new String(value));
+        LOG.trace("onDescriptorWrite: peripheral={}, descriptor={}, status={}, value={}", peripheral.getName(), descriptor.getUuid(), status, new String(value));
 
     }
 
     @Override
     public void onBondingStarted(@NotNull BluetoothPeripheral peripheral) {
-        LOG.debug("onBondingStarted: peripheral={}", peripheral.getName());
+        LOG.trace("onBondingStarted: peripheral={}", peripheral.getName());
 
     }
 
     @Override
     public void onBondingSucceeded(@NotNull BluetoothPeripheral peripheral) {
-        LOG.debug("onBondingSucceeded: peripheral={}", peripheral.getName());
+        LOG.trace("onBondingSucceeded: peripheral={}", peripheral.getName());
 
     }
 
     @Override
     public void onBondingFailed(@NotNull BluetoothPeripheral peripheral) {
-        LOG.debug("onBondingFailed: peripheral={}", peripheral.getName());
+        LOG.trace("onBondingFailed: peripheral={}", peripheral.getName());
 
     }
 
     @Override
     public void onBondLost(@NotNull BluetoothPeripheral peripheral) {
-        LOG.debug("onBondLost: peripheral={}", peripheral.getName());
+        LOG.trace("onBondLost: peripheral={}", peripheral.getName());
 
     }
 
     @Override
     public void onReadRemoteRssi(@NotNull BluetoothPeripheral peripheral, int rssi, @NotNull BluetoothCommandStatus status) {
-        LOG.debug("onReadRemoteRssi: peripheral={}, rssi={}, status={}", peripheral.getName(), rssi, status);
+        LOG.trace("onReadRemoteRssi: peripheral={}, rssi={}, status={}", peripheral.getName(), rssi, status);
     }
 
 }

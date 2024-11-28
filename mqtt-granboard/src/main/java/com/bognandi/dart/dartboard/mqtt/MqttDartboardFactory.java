@@ -42,7 +42,9 @@ public class MqttDartboardFactory implements DartboardFactory {
     public Dartboard createDartboard() {
         LOG.debug("Subscribing to Mqtt dartboard");
         try {
-            return subscriber = GranboardMqttSubscriber.createSubscriber(client, deserializer);
+            subscriber = GranboardMqttSubscriber.createSubscriber(client, deserializer);
+            LOG.info("Subscribed to Mqtt dartboard");
+            return subscriber;
         } catch (MqttException e) {
             LOG.warn("Error creating Mqtt subscriber", e);
             throw new RuntimeException(e);

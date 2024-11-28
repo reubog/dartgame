@@ -54,7 +54,7 @@ public class GranboardMqttSubscriber implements Dartboard, IMqttMessageListener 
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-        LOG.warn("Message received: {}", new String(mqttMessage.getPayload()));
+        LOG.debug("Message received: {}", new String(mqttMessage.getPayload()));
 
         if (!GRANBOARD_TOPIC.equals(topic)) {
             return;

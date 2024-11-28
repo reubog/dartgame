@@ -26,6 +26,8 @@ public class MqttClientFactory {
 
     public IMqttClient newConnectedClient() {
         try {
+            LOG.debug("Creating new connection...");
+
             IMqttClient client = new MqttClient(serverUrl, clientId);
 
             MqttConnectOptions options = new MqttConnectOptions();
@@ -49,7 +51,7 @@ public class MqttClientFactory {
         LOG.debug("Shutting down Mqtt factory");
         clients.forEach(client -> {
             try {
-                client.disconnect();
+                client.disconnect(5000);
             } catch (MqttException e) {
                 LOG.warn("Error disconnecting Mqtt client", e);
             }

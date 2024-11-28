@@ -28,6 +28,7 @@ public class BluetoothDartboardPeripheral extends LoggedBluetoothPeripheral {
 
     @Override
     public void onServicesDiscovered(@NotNull BluetoothPeripheral peripheral, @NotNull List<BluetoothGattService> services) {
+        super.onServicesDiscovered(peripheral, services);
         services.forEach(service -> {
             service.getCharacteristics().stream()
                     .forEach(cstic -> {
@@ -46,7 +47,16 @@ public class BluetoothDartboardPeripheral extends LoggedBluetoothPeripheral {
 
     @Override
     public void onCharacteristicUpdate(@NotNull BluetoothPeripheral peripheral, @NotNull byte[] value, @NotNull BluetoothGattCharacteristic characteristic, @NotNull BluetoothCommandStatus status) {
+        super.onCharacteristicUpdate(peripheral, value, characteristic, status);
         DartboardValue dartboardValue = DartboardValueMapper.bytesToDartboardNotifiedValue(value);
         publisher.publish(new GranboardMessage(DartboardStatus.CONNECTED, dartboardValue));
+    }
+
+    @Override
+    public void onNotificationStateUpdate(@NotNull BluetoothPeripheral peripheral, @NotNull BluetoothGattCharacteristic characteristic, @NotNull BluetoothCommandStatus status) {
+        super.onNotificationStateUpdate(peripheral, characteristic, status);
+        if (BluetoothCommandStatus.NOT_CONNECTED ==  status) {
+            publisher.publish(new GranboardMessage(DartboardStatus.DISCONNECTED, null));
+        }
     }
 }

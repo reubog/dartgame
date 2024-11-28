@@ -1,7 +1,16 @@
 package com.bognandi.dart.dartboard.bluetooth.app;
 
+import com.bognandi.dart.core.dartboard.DartboardStatus;
+import com.bognandi.dart.dartboard.BluetoothDartboardPeripheral;
+import com.bognandi.dart.dartboard.bluetooth.BluetoothSearchCallback;
+import com.bognandi.dart.dartboard.bluetooth.LoggedBluetoothCallback;
+import com.bognandi.dart.dartboard.mqtt.GranboardMessage;
+import com.bognandi.dart.dartboard.mqtt.GranboardMqttMessageSerializer;
+import com.bognandi.dart.dartboard.mqtt.GranboardMqttPublisher;
+import com.bognandi.dart.dartboard.mqtt.MqttClientFactory;
 import com.welie.blessed.*;
 import jakarta.annotation.PreDestroy;
+import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,21 +26,44 @@ public class BluetoothDartboardService {
     private static final Logger LOG = LoggerFactory.getLogger(BluetoothDartboardService.class);
 
     private final BluetoothCentralManager centralManager;
-    private Callback centralManagerCallback;
-    private Function<BluetoothPeripheral, BluetoothPeripheralCallback> callbackFactory;
+    private BluetoothSearchCallback centralManagerCallback;
+    private BluetoothPeripheralCallback peripheralCallback;
+    private boolean shuttingDown;
 
     public BluetoothDartboardService(
             @Value("${dartboard.bluetooth.name}") String scanForName,
-            @Autowired Function<BluetoothPeripheral, BluetoothPeripheralCallback> callbackFactory
+            @Autowired GranboardMqttMessageSerializer serializer,
+            @Autowired IMqttClient mqttClient
     ) {
         LOG.info("Starting BluetoothDartboardFactory");
-        this.centralManager = new BluetoothCentralManager(centralManagerCallback = new Callback(scanForName));
+
+        GranboardMqttPublisher publisher = new GranboardMqttPublisher(mqttClient, serializer);
+        peripheralCallback = new BluetoothDartboardPeripheral(publisher);
+
+        centralManagerCallback = new BluetoothSearchCallback();
+        centralManager = new BluetoothCentralManager(centralManagerCallback);
+        centralManagerCallback.setPeripheralName(scanForName);
+        centralManagerCallback.setOnDiscovered(peripheral -> {
+            centralManager.stopScan();
+            centralManager.connectPeripheral(peripheral, peripheralCallback);
+        });
+        centralManagerCallback.setOnConnected(peripheral -> centralManager.stopScan());
+        centralManagerCallback.setOnDisconnected(peripheral -> {
+            publisher.publish(new GranboardMessage(DartboardStatus.DISCONNECTED, null));
+            scan(scanForName);
+        });
+        centralManager.adapterOn();
         centralManager.setRssiThreshold(-120);
 
         scan(scanForName);
     }
 
-    public void scan(String name) {
+    public synchronized void scan(String name) {
+        if (shuttingDown) {
+            LOG.info("Ignoring scanning becasuse shutting down");
+            return;
+        }
+
         LOG.info("Scanning for device name={}", name);
         centralManager.scanForPeripheralsWithNames(new String[]{name});
     }
@@ -39,6 +71,7 @@ public class BluetoothDartboardService {
     @PreDestroy
     public void shutdown() {
         LOG.info("Shutting down BluetoothDartboardFactory");
+        shuttingDown = true;
 
         centralManager.stopScan();
 
@@ -62,35 +95,4 @@ public class BluetoothDartboardService {
             throw new RuntimeException(e);
         }
     }
-
-    private class Callback extends BluetoothCentralManagerCallback {
-
-        private String peripheralName;
-
-        public Callback(String peripheralName) {
-            this.peripheralName = peripheralName;
-        }
-
-        @Override
-        public void onDiscoveredPeripheral(@NotNull BluetoothPeripheral peripheral, @NotNull ScanResult scanResult) {
-            super.onDiscoveredPeripheral(peripheral, scanResult);
-
-            if (peripheralName.equals(peripheral.getName())) {
-                centralManager.stopScan();
-
-                LOG.debug("Dartboard '{}' with address={} found! Connecting...", peripheralName, peripheral.getAddress());
-                centralManager.autoConnectPeripheral(peripheral, callbackFactory.apply(peripheral));
-            }
-        }
-
-        @Override
-        public void onConnectedPeripheral(@NotNull BluetoothPeripheral peripheral) {
-            super.onConnectedPeripheral(peripheral);
-
-            if (peripheralName.equals(peripheral.getName())) {
-                LOG.debug("Dartboard '{}' connected!", peripheralName);
-            }
-        }
-    }
-
 }

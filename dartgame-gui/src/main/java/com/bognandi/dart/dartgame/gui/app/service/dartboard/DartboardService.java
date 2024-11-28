@@ -1,6 +1,7 @@
 package com.bognandi.dart.dartgame.gui.app.service.dartboard;
 
 import com.bognandi.dart.core.dartboard.DartboardFactory;
+import com.bognandi.dart.core.dartgame.Dartboard;
 import com.bognandi.dart.dartboard.mqtt.MqttDartboardFactory;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -21,6 +22,11 @@ public class DartboardService {
     ) {
         LOG.info("Constructing service");
         this.dartboardFactory = new MqttDartboardFactory(serverUrl, clientId);
+    }
+
+    public Dartboard createDartboard() {
+        LOG.info("Creating dartboard");
+        return dartboardFactory.createDartboard();
     }
 
 

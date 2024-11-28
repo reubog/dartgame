@@ -34,19 +34,18 @@ public class BeanConfig {
     }
 
     @Bean
-    public Function<BluetoothPeripheral, BluetoothPeripheralCallback> callbackFactory(
-            @Autowired MqttClientFactory clientFactory,
-            @Autowired ObjectMapper objectMapper) {
-        return (peripheral) -> {
-            IMqttClient client = clientFactory.newConnectedClient();
-            GranboardMqttMessageSerializer serializer = message -> {
+    public IMqttClient createMqttClient(@Autowired MqttClientFactory clientFactory) {
+        return clientFactory.newConnectedClient();
+    }
+
+    @Bean
+    public GranboardMqttMessageSerializer createSerializer(@Autowired ObjectMapper objectMapper) {
+        return message -> {
                 try {
                     return new MqttMessage(objectMapper.writeValueAsBytes(message));
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
             };
-            return new BluetoothDartboardPeripheral(new GranboardMqttPublisher(client, serializer));
-        };
     }
 }
