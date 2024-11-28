@@ -51,7 +51,9 @@ public class MqttClientFactory {
         LOG.debug("Shutting down Mqtt factory");
         clients.forEach(client -> {
             try {
-                client.disconnect(5000);
+                if (client.isConnected()) {
+                    client.disconnect(5000);
+                }
             } catch (MqttException e) {
                 LOG.warn("Error disconnecting Mqtt client", e);
             }

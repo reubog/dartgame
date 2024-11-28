@@ -46,6 +46,5 @@ public class GuiController {
     public void destroy() {
         LOG.info("Destroying GUI controller");
         publisher.publish(new GranboardMessage(DartboardStatus.DISCONNECTED, null));
-        publisher.disconnect();
     }
 }

@@ -44,12 +44,6 @@ public class MonitorService {
         }
     }
 
-    @PreDestroy
-    public void disconnect() throws MqttException {
-        LOG.info("Disconnection from broker");
-        mqttClient.disconnect();
-    }
-
     private class Listener implements DartboardListener {
         @Override
         public void onStatusChange(DartboardStatus status) {
