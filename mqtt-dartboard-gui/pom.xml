@@ -12,7 +12,7 @@
     <artifactId>mqtt-dartboard-gui</artifactId>
 
     <properties>
-        <main.app.class>com.bognandi.dart.dartboard.mqtt.gui.app.JavaFXApplicationSupport</main.app.class>
+        <main.app.class>com.bognandi.dart.dartboard.mqtt.gui.app.MqttDartboardGui</main.app.class>
     </properties>
 
     <dependencies>

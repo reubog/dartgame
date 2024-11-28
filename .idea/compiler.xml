@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="mqtt-dartboard-monitor" />
         <module name="dartgame-gui" />
         <module name="mqtt-granboard-linux" />
         <module name="mqtt-granboard" />
@@ -22,6 +23,7 @@
       <module name="dart-game-app" options="" />
       <module name="dartgame-gui" options="-parameters" />
       <module name="mqtt-dartboard-gui" options="-parameters" />
+      <module name="mqtt-dartboard-monitor" options="-parameters" />
       <module name="mqtt-granboard" options="-parameters" />
       <module name="mqtt-granboard-linux" options="-parameters" />
     </option>

@@ -27,6 +27,7 @@
         <module>mqtt-granboard</module>
         <module>dart-core</module>
         <module>mqtt-dartboard-gui</module>
+        <module>mqtt-dartboard-monitor</module>
     </modules>
     <scm>
         <connection/>

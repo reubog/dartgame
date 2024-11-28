@@ -10,16 +10,16 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-public class JavaFXApplicationSupport extends Application {
+public class MqttDartboardGui extends Application {
 
-    private static Logger LOG = LoggerFactory.getLogger(JavaFXApplicationSupport.class);
+    private static Logger LOG = LoggerFactory.getLogger(MqttDartboardGui.class);
 
     private ConfigurableApplicationContext applicationContext;
 
     @Override
     public void init() throws Exception {
         LOG.info("Application initializing...");
-        applicationContext = new SpringApplicationBuilder(JavaFXApplicationSupport.class).run(getParameters().getRaw().toArray(new String[0]));
+        applicationContext = new SpringApplicationBuilder(MqttDartboardGui.class).run(getParameters().getRaw().toArray(new String[0]));
     }
 
     @Override
