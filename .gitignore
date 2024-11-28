@@ -30,3 +30,4 @@ platform/*
 
 .DS_Store
 BLUEZ-MQTT-2368a214-fae7-4af0-9fb6-cc58df56d4af-tcp1270011883
+**/.lck

@@ -26,6 +26,7 @@
         <module>dartgame-gui</module>
         <module>mqtt-granboard</module>
         <module>dart-core</module>
+        <module>mqtt-dartboard-gui</module>
     </modules>
     <scm>
         <connection/>

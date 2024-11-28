@@ -29,4 +29,12 @@ public class GranboardMqttPublisher {
             throw new RuntimeException(e);
         }
     }
+
+    public void disconnect() {
+        try {
+            client.disconnect();
+        } catch (MqttException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

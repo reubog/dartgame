@@ -11,6 +11,7 @@
         <module name="mqtt-granboard-linux" />
         <module name="mqtt-granboard" />
         <module name="dart-core" />
+        <module name="mqtt-dartboard-gui" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="21" />
@@ -20,6 +21,7 @@
       <module name="dart-core" options="-parameters" />
       <module name="dart-game-app" options="" />
       <module name="dartgame-gui" options="-parameters" />
+      <module name="mqtt-dartboard-gui" options="-parameters" />
       <module name="mqtt-granboard" options="-parameters" />
       <module name="mqtt-granboard-linux" options="-parameters" />
     </option>
