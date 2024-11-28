@@ -1,10 +1,7 @@
 package com.bognandi.dart.dartboard.mqtt.monitor.app;
 
-import com.bognandi.dart.core.dartboard.DartboardStatus;
-import com.bognandi.dart.core.dartboard.DartboardValue;
-import com.bognandi.dart.core.dartgame.DartboardListener;
+import com.bognandi.dart.dartboard.mqtt.DartboardMqttSubscriber;
 import com.bognandi.dart.dartboard.mqtt.GranboardMqttMessageDeserializer;
-import com.bognandi.dart.dartboard.mqtt.GranboardMqttSubscriber;
 import jakarta.annotation.PreDestroy;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -24,7 +21,7 @@ public class MonitorService {
     @Autowired
     private GranboardMqttMessageDeserializer deserializer;
 
-    private GranboardMqttSubscriber subscriber;
+    private DartboardMqttSubscriber subscriber;
 
     public MonitorService() {
         LOG.info("Monitor service startar...");
@@ -34,8 +31,9 @@ public class MonitorService {
     public void listenToBroker() {
         LOG.info("Subscribing to broker");
         try {
-            subscriber = GranboardMqttSubscriber.createSubscriber(mqttClient, deserializer);
-            subscriber.addEventListener(new Listener());
+            subscriber = DartboardMqttSubscriber.createSubscriber(mqttClient, deserializer);
+            subscriber.setOnStatusChange(status -> LOG.info("Status: {}", status));
+            subscriber.setOnDartboardValue(value -> LOG.info("Value: {}", value));
             LOG.info("Subscriber connected");
 
         } catch (MqttException e) {
@@ -44,15 +42,13 @@ public class MonitorService {
         }
     }
 
-    private class Listener implements DartboardListener {
-        @Override
-        public void onStatusChange(DartboardStatus status) {
-            LOG.info("Status: {}", status);
-        }
-
-        @Override
-        public void onDartboardValue(DartboardValue value) {
-            LOG.info("Value: {}", value);
+    @PreDestroy
+    public void destroy() {
+        LOG.info("unsubscribing");
+        try {
+            subscriber.unsubscribe(mqttClient);
+        } catch (MqttException e) {
+            throw new RuntimeException(e);
         }
     }
 }

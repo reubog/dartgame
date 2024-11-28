@@ -1,7 +1,5 @@
 package com.bognandi.dart.dartgame.gui.app.gui;
 
-import com.bognandi.dart.core.dartboard.DartboardValue;
-import com.bognandi.dart.core.dartboard.DartboardValueMapper;
 import com.bognandi.dart.core.dartgame.*;
 import com.bognandi.dart.dartgame.gui.app.service.dartboard.DartboardService;
 import com.bognandi.dart.dartgame.x01game.x01game.X01Dartgame;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -106,10 +103,8 @@ public class GameController extends DefaultDartgameEventListener {
         backgroundMediaView.setMediaPlayer(mediaPlayer);
 
         dartgame = new X01Dartgame(new X01ScoreBoard(301, dartValueMapper));
-        dartgame.addEventListener(this);
-
-        Dartboard dartboard  = dartboardService.createDartboard();
-        dartboard.addEventListener(dartgame);
+        dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
+        dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
 
         ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
         service.submit(() -> spela());
@@ -125,34 +120,34 @@ public class GameController extends DefaultDartgameEventListener {
         wait(1);
         dartgame.addPlayer(new DefaultPlayer("Player 3"));
         wait(1);
-
-        dartgame.onDartboardValue(DartboardValue.RED_BUTTON);
-        wait(1);
-
-        for (int round = 0; round < 20; round++) {
-            for (int player = 0; player < dartgame.getPlayers().size(); player++) {
-                dartgame.onDartboardValue(randomDartboardValue());
-                wait(1);
-                dartgame.onDartboardValue(randomDartboardValue());
-                wait(1);
-                dartgame.onDartboardValue(randomDartboardValue());
-                wait(1);
-
-                dartgame.onDartboardValue(DartboardValue.RED_BUTTON);
-                wait(1);
-            }
-        }
+//
+//        dartgame.onDartboardValue(DartboardValue.RED_BUTTON);
+//        wait(1);
+//
+//        for (int round = 0; round < 20; round++) {
+//            for (int player = 0; player < dartgame.getPlayers().size(); player++) {
+//                dartgame.onDartboardValue(randomDartboardValue());
+//                wait(1);
+//                dartgame.onDartboardValue(randomDartboardValue());
+//                wait(1);
+//                dartgame.onDartboardValue(randomDartboardValue());
+//                wait(1);
+//
+//                dartgame.onDartboardValue(DartboardValue.RED_BUTTON);
+//                wait(1);
+//            }
+//        }
     }
 
-    private DartboardValue randomDartboardValue() {
-        Dart dart = Dart.values()[new Random().nextInt(Dart.values().length)];
-        DartboardValue value = DartboardValueMapper.DART_MAP.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(dart))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(randomDartboardValue());
-        return value;
-    }
+//    private DartboardValue randomDartboardValue() {
+//        Dart dart = Dart.values()[new Random().nextInt(Dart.values().length)];
+//        DartboardValue value = DartboardValueMapper.DART_MAP.entrySet().stream()
+//                .filter(entry -> entry.getValue().equals(dart))
+//                .map(Map.Entry::getKey)
+//                .findFirst()
+//                .orElse(randomDartboardValue());
+//        return value;
+//    }
 
     private void wait(int seconds) {
         try {

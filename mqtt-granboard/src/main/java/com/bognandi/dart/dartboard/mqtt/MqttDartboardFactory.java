@@ -13,8 +13,9 @@ public class MqttDartboardFactory implements DartboardFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(MqttDartboardFactory.class);
 
+
     private IMqttClient client;
-    private GranboardMqttSubscriber subscriber;
+    private DartboardMqttSubscriber subscriber;
     private GranboardMqttMessageDeserializer deserializer;
 
     public MqttDartboardFactory(String serverUrl, String clientId) {
@@ -42,7 +43,7 @@ public class MqttDartboardFactory implements DartboardFactory {
     public Dartboard createDartboard() {
         LOG.debug("Subscribing to Mqtt dartboard");
         try {
-            subscriber = GranboardMqttSubscriber.createSubscriber(client, deserializer);
+            subscriber = DartboardMqttSubscriber.createSubscriber(client, deserializer);
             LOG.info("Subscribed to Mqtt dartboard");
             return subscriber;
         } catch (MqttException e) {

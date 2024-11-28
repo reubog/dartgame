@@ -20,7 +20,7 @@ public class GamePlayerListCell extends ListCell<GameController.GamePlayer> {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gamePlayerListCell.fxml"));
                 root = loader.load();
                 controller = loader.getController();
-                LOG.info("loaded, controller={}, root={}", controller, root);
+                LOG.trace("loaded, controller={}, root={}", controller, root);
             } catch (IOException exc) {
                 throw new RuntimeException(exc);
             }
@@ -28,11 +28,12 @@ public class GamePlayerListCell extends ListCell<GameController.GamePlayer> {
 
     @Override
     protected void updateItem(GameController.GamePlayer item, boolean empty) {
-        LOG.info("updateItem: {}", item);
         super.updateItem(item, empty);
         if (empty || item == null) {
+            LOG.trace("updateItem: null");
             setGraphic(null);
         } else {
+            LOG.debug("updateItem: {}", item);
             controller.updatePlayer(item);
             setGraphic(root);
         }

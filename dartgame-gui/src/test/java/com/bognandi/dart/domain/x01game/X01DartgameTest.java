@@ -43,8 +43,7 @@ public class X01DartgameTest {
         game = new X01Dartgame(scoreBoard);
         game.startGame();
         game.addEventListener(dartGameEventListener);
-        dartBoard.addEventListener(game);
-
+        game.attachDartboard(dartBoard);
     }
 
     @Test

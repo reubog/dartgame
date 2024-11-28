@@ -1,6 +1,5 @@
 package com.bognandi.dart.dartgame.x01game.x01game;
 
-import com.bognandi.dart.core.dartboard.DartboardStatus;
 import com.bognandi.dart.core.dartboard.DartboardValue;
 import com.bognandi.dart.core.dartboard.DartboardValueMapper;
 import com.bognandi.dart.core.dartgame.*;
@@ -9,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class X01Dartgame implements Dartgame, DartboardListener {
+public class X01Dartgame implements Dartgame {
 
     private static final Logger LOG = LoggerFactory.getLogger(X01Dartgame.class);
 
@@ -34,9 +33,16 @@ public class X01Dartgame implements Dartgame, DartboardListener {
     private boolean enableDarts;
     private Map<Player, PlayerState> playerStateMap;
     private List<Dart> thrownDarts = new ArrayList<>();
+    private Dartboard dartboard;
 
     public X01Dartgame(X01ScoreBoard scoreBoard) {
         this.scoreBoard = scoreBoard;
+    }
+
+    @Override
+    public void attachDartboard(Dartboard dartboard) {
+        this.dartboard = dartboard;
+        this.dartboard.setOnDartboardValue(this::onDartboardValue);
     }
 
     @Override
@@ -61,13 +67,7 @@ public class X01Dartgame implements Dartgame, DartboardListener {
         dartgameEventListeners.remove(listener);
     }
 
-    @Override
-    public void onStatusChange(DartboardStatus status) {
-        //
-    }
-
-    @Override
-    public void onDartboardValue(DartboardValue value) {
+    private void onDartboardValue(DartboardValue value) {
         switch (value) {
             case INITIAL_CODE -> {
             }
