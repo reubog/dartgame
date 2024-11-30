@@ -1,24 +1,19 @@
 package com.bognandi.dart.dartboard.bluetooth.app;
 
 import com.bognandi.dart.core.dartboard.DartboardStatus;
-import com.bognandi.dart.dartboard.BluetoothDartboardPeripheral;
+import com.bognandi.dart.dartboard.bluetooth.BluetoothDartboardPeripheral;
 import com.bognandi.dart.dartboard.bluetooth.BluetoothSearchCallback;
-import com.bognandi.dart.dartboard.bluetooth.LoggedBluetoothCallback;
 import com.bognandi.dart.dartboard.mqtt.GranboardMessage;
 import com.bognandi.dart.dartboard.mqtt.GranboardMqttMessageSerializer;
 import com.bognandi.dart.dartboard.mqtt.GranboardMqttPublisher;
-import com.bognandi.dart.dartboard.mqtt.MqttClientFactory;
 import com.welie.blessed.*;
 import jakarta.annotation.PreDestroy;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Function;
 
 @Service
 public class BluetoothDartboardService {

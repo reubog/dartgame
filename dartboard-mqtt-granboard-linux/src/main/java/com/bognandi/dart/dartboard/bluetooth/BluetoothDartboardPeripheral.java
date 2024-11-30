@@ -1,9 +1,8 @@
-package com.bognandi.dart.dartboard;
+package com.bognandi.dart.dartboard.bluetooth;
 
 import com.bognandi.dart.core.dartboard.DartboardStatus;
 import com.bognandi.dart.core.dartboard.DartboardValue;
 import com.bognandi.dart.core.dartboard.DartboardValueMapper;
-import com.bognandi.dart.dartboard.bluetooth.LoggedBluetoothPeripheral;
 import com.bognandi.dart.dartboard.mqtt.GranboardMessage;
 import com.bognandi.dart.dartboard.mqtt.GranboardMqttPublisher;
 import com.welie.blessed.BluetoothCommandStatus;

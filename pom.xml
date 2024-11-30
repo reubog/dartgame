@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.bognandi.dartgame</groupId>
-    <artifactId>dart-game-app</artifactId>
+    <artifactId>dart-project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>dart-game-app</name>
@@ -22,12 +22,12 @@
         <developer/>
     </developers>
     <modules>
-        <module>mqtt-granboard-linux</module>
-        <module>dartgame-gui</module>
-        <module>mqtt-granboard</module>
+        <module>dartboard-mqtt-granboard-linux</module>
+        <module>dart-gui</module>
+        <module>dartboard-mqtt</module>
         <module>dart-core</module>
-        <module>mqtt-dartboard-gui</module>
-        <module>mqtt-dartboard-monitor</module>
+        <module>dartboard-mqtt-gui</module>
+        <module>dartboard-mqtt-monitor</module>
     </modules>
     <scm>
         <connection/>

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.bognandi.dartgame</groupId>
-        <artifactId>dart-game-app</artifactId>
+        <artifactId>dart-project</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mqtt-granboard-linux</artifactId>
+    <artifactId>dartboard-mqtt-granboard-linux</artifactId>
 
     <repositories>
         <repository>
@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>com.bognandi.dartgame</groupId>
-            <artifactId>mqtt-granboard</artifactId>
+            <artifactId>dartboard-mqtt</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

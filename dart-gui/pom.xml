@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.bognandi.dartgame</groupId>
-        <artifactId>dart-game-app</artifactId>
+        <artifactId>dart-project</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mqtt-dartboard-gui</artifactId>
+    <artifactId>dart-gui</artifactId>
 
     <properties>
-        <main.app.class>com.bognandi.dart.dartboard.mqtt.gui.app.MqttDartboardGui</main.app.class>
+        <main.app.class>com.bognandi.dart.dartgame.gui.app.JavaFxApplicationSupport</main.app.class>
     </properties>
 
     <dependencies>
@@ -25,6 +25,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.sociaal</groupId>
+            <artifactId>freetts</artifactId>
+            <version>1.2.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -36,6 +45,14 @@
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-media -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -48,12 +65,8 @@
         </dependency>
         <dependency>
             <groupId>com.bognandi.dartgame</groupId>
-            <artifactId>mqtt-granboard</artifactId>
+            <artifactId>dartboard-mqtt</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
 
@@ -65,7 +78,7 @@
                 <configuration>
                     <mainClass>${main.app.class}</mainClass>
                     <jvmArguments>--module-path platform/javafx-sdk-${javafx.version}/lib --add-modules
-                        javafx.controls,javafx.fxml
+                        javafx.controls,javafx.base,javafx.media,javafx.fxml
                     </jvmArguments>
                 </configuration>
             </plugin>
@@ -79,4 +92,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
