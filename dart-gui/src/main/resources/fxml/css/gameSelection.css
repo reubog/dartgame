@@ -1,0 +1,21 @@
+.list-view {
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+}
+
+.list-cell .label {
+    -fx-text-fill: black;
+}
+.list-cell:selected .label {
+    -fx-text-fill: white;
+}
+
+.list-cell #bgbox{
+    -fx-stroke: black;
+}
+.list-cell:filled:selected #bgbox {
+    -fx-stroke: white;
+}

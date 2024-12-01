@@ -16,7 +16,13 @@
         <module name="dart-gui" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="21">
+      <module name="dartgame-gui" target="21" />
+      <module name="mqtt-dartboard-gui" target="21" />
+      <module name="mqtt-dartboard-monitor" target="21" />
+      <module name="mqtt-granboard" target="21" />
+      <module name="mqtt-granboard-linux" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

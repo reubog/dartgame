@@ -29,6 +29,10 @@ public class DartboardService {
     }
 
     public Dartboard getDartboard() {
+        if (subscriber != null) {
+            return subscriber;
+        }
+
         LOG.info("Creating dartboard");
         try {
             subscriber = DartboardMqttSubscriber.createSubscriber(mqttClient, deserializer);
@@ -43,7 +47,9 @@ public class DartboardService {
     public void destroy() {
         LOG.info("unsubscribiting");
         try {
-            subscriber.unsubscribe(mqttClient);
+            if (subscriber != null) {
+                subscriber.unsubscribe(mqttClient);
+            }
         } catch (MqttException e) {
             throw new RuntimeException(e);
         }

@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class GamesService {
+public class DartgamesService {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(GamesService.class);
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DartgamesService.class);
 
     private Map<DartgameDescriptor,DartgameFactory> availableDartgames;
 
-    public GamesService() {
+    public DartgamesService() {
         LOG.info("Scanning for dartgames...");
 
         try (ScanResult scanResult = new ClassGraph().acceptPackages("").scan()) {
@@ -48,7 +48,7 @@ public class GamesService {
         }
     }
 
-    public List<DartgameDescriptor> getAvailableDartgames() {
+    public List<DartgameDescriptor> getDartgames() {
         return availableDartgames.keySet().stream().toList();
     }
 

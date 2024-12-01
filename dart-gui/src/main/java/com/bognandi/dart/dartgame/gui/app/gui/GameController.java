@@ -1,12 +1,16 @@
 package com.bognandi.dart.dartgame.gui.app.gui;
 
 import com.bognandi.dart.core.dartgame.*;
-import com.bognandi.dart.dartgame.gui.app.service.GamesService;
+import com.bognandi.dart.dartgame.gui.app.event.StartDartgameEvent;
+import com.bognandi.dart.dartgame.gui.app.service.DartgamesService;
 import com.bognandi.dart.dartgame.gui.app.service.dartboard.DartboardService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -17,9 +21,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
@@ -38,13 +46,16 @@ public class GameController extends DefaultDartgameEventListener {
     private static final String SCORETABLEKEY_ROUND = "round";
 
     @Autowired
+    private ConfigurableApplicationContext context;
+
+    @Autowired
     private DartValueMapper dartValueMapper;
 
     @Autowired
     private DartboardService dartboardService;
 
     @Autowired
-    private GamesService gamesService;
+    private DartgamesService dartgamesService;
 
     @FXML
     private MediaView backgroundMediaView;
@@ -85,6 +96,30 @@ public class GameController extends DefaultDartgameEventListener {
 
     private Map<Player, GamePlayer> gamePlayerMap = new LinkedHashMap<>();
 
+    @EventListener(StartDartgameEvent.class)
+    public void startGame(StartDartgameEvent event) {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
+                loader.setControllerFactory(context::getBean);
+
+                Parent root = loader.load();
+
+                Stage stage = event.getStage();
+                stage.setScene(new Scene(root, 1920, 1080));
+                stage.show();
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            dartgame = dartgamesService.createDartgame(event.getDartgameDescriptor());
+            dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
+            dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
+            dartgame.startGame();
+        });
+    }
+
     @FXML
     public void initialize() {
         playersList.setCellFactory(listView -> new GamePlayerListCell());
@@ -104,56 +139,8 @@ public class GameController extends DefaultDartgameEventListener {
         mediaPlayer.setAutoPlay(true);
         backgroundMediaView.setMediaPlayer(mediaPlayer);
 
-        dartgame = gamesService.getAvailableDartgames().stream()
-                .filter(descriptor -> "301".equals(descriptor.getTitle()))
-                .map(gamesService::createDartgame)
-                .findFirst()
-                .get();
-        dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
-        dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
-
-        ExecutorService service = Executors.newVirtualThreadPerTaskExecutor();
-        service.submit(() -> spela());
+        currentPlayerScoreLabel.setVisible(false);
     }
-
-    private void spela() {
-        wait(1);
-        dartgame.startGame();
-        wait(1);
-        dartgame.addPlayer(new DefaultPlayer("Player 1"));
-        wait(1);
-        dartgame.addPlayer(new DefaultPlayer("Player 2"));
-        wait(1);
-        dartgame.addPlayer(new DefaultPlayer("Player 3"));
-        wait(1);
-//
-//        dartgame.onDartboardValue(DartboardValue.RED_BUTTON);
-//        wait(1);
-//
-//        for (int round = 0; round < 20; round++) {
-//            for (int player = 0; player < dartgame.getPlayers().size(); player++) {
-//                dartgame.onDartboardValue(randomDartboardValue());
-//                wait(1);
-//                dartgame.onDartboardValue(randomDartboardValue());
-//                wait(1);
-//                dartgame.onDartboardValue(randomDartboardValue());
-//                wait(1);
-//
-//                dartgame.onDartboardValue(DartboardValue.RED_BUTTON);
-//                wait(1);
-//            }
-//        }
-    }
-
-//    private DartboardValue randomDartboardValue() {
-//        Dart dart = Dart.values()[new Random().nextInt(Dart.values().length)];
-//        DartboardValue value = DartboardValueMapper.DART_MAP.entrySet().stream()
-//                .filter(entry -> entry.getValue().equals(dart))
-//                .map(Map.Entry::getKey)
-//                .findFirst()
-//                .orElse(randomDartboardValue());
-//        return value;
-//    }
 
     private void wait(int seconds) {
         try {
@@ -273,6 +260,7 @@ public class GameController extends DefaultDartgameEventListener {
 
     private void updateScore() {
         PlayerScore currentPlayerScore = dartgame.getPlayerScore(currentPlayer);
+        currentPlayerScoreLabel.setVisible(true);
         currentPlayerScoreLabel.setText(String.valueOf(currentPlayerScore.getScore()));
 
         ((AtomicInteger) currentScoreRound.get(currentPlayer.getName())).set(currentPlayerScore.getDartsForRound(currentRound).stream()
