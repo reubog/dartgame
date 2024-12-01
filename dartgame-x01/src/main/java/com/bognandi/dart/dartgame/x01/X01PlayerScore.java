@@ -1,4 +1,4 @@
-package com.bognandi.dart.dartgame.x01game.x01game;
+package com.bognandi.dart.dartgame.x01;
 
 import com.bognandi.dart.core.dartgame.Dart;
 import com.bognandi.dart.core.dartgame.PlayerScore;

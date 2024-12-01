@@ -1,7 +1,7 @@
 package com.bognandi.dart.dartboard.mqtt.monitor.app;
 
 import com.bognandi.dart.dartboard.mqtt.DartboardMqttSubscriber;
-import com.bognandi.dart.dartboard.mqtt.GranboardMqttMessageDeserializer;
+import com.bognandi.dart.dartboard.mqtt.DartboardMqttMessageDeserializer;
 import jakarta.annotation.PreDestroy;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -19,7 +19,7 @@ public class MonitorService {
     private IMqttClient mqttClient;
 
     @Autowired
-    private GranboardMqttMessageDeserializer deserializer;
+    private DartboardMqttMessageDeserializer deserializer;
 
     private DartboardMqttSubscriber subscriber;
 

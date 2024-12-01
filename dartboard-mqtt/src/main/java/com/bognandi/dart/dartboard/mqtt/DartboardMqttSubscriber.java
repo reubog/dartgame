@@ -22,7 +22,7 @@ public class DartboardMqttSubscriber implements Dartboard, IMqttMessageListener 
 
     private static final Logger LOG = LoggerFactory.getLogger(DartboardMqttSubscriber.class);
 
-    public static DartboardMqttSubscriber createSubscriber(IMqttClient client, GranboardMqttMessageDeserializer deserializer) throws MqttException {
+    public static DartboardMqttSubscriber createSubscriber(IMqttClient client, DartboardMqttMessageDeserializer deserializer) throws MqttException {
         DartboardMqttSubscriber dartboardMqttSubscriber = new DartboardMqttSubscriber(deserializer);
         client.subscribe(GRANBOARD_TOPIC, dartboardMqttSubscriber);
         return dartboardMqttSubscriber;
@@ -33,13 +33,13 @@ public class DartboardMqttSubscriber implements Dartboard, IMqttMessageListener 
     }
 
     private DartboardStatus status;
-    private GranboardMqttMessageDeserializer deserializer;
+    private DartboardMqttMessageDeserializer deserializer;
     private Consumer<DartboardStatus> statusConsumer;
     private Consumer<DartboardValue> valueConsumer;
     private Queue<GranboardMessage> messageQueue = new ArrayDeque<>();
     private ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
 
-    private DartboardMqttSubscriber(GranboardMqttMessageDeserializer deserializer) {
+    private DartboardMqttSubscriber(DartboardMqttMessageDeserializer deserializer) {
         this.deserializer = deserializer;
 
         executorService.execute(() -> {

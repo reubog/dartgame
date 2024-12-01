@@ -68,6 +68,17 @@
             <artifactId>dartboard-mqtt</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.179</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bognandi.dartgame</groupId>
+            <artifactId>dartgame-x01</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

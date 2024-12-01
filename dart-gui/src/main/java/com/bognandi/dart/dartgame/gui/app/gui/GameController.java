@@ -1,9 +1,8 @@
 package com.bognandi.dart.dartgame.gui.app.gui;
 
 import com.bognandi.dart.core.dartgame.*;
+import com.bognandi.dart.dartgame.gui.app.service.GamesService;
 import com.bognandi.dart.dartgame.gui.app.service.dartboard.DartboardService;
-import com.bognandi.dart.dartgame.x01game.x01game.X01Dartgame;
-import com.bognandi.dart.dartgame.x01game.x01game.X01ScoreBoard;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,6 +43,9 @@ public class GameController extends DefaultDartgameEventListener {
     @Autowired
     private DartboardService dartboardService;
 
+    @Autowired
+    private GamesService gamesService;
+
     @FXML
     private MediaView backgroundMediaView;
 
@@ -68,7 +70,7 @@ public class GameController extends DefaultDartgameEventListener {
     @FXML
     private Label currentPlayerScoreLabel;
 
-    private X01Dartgame dartgame;
+    private Dartgame dartgame;
     private Player currentPlayer;
     private int currentRound;
     private ObservableList<Map<String, Object>> scoreData = FXCollections.observableArrayList();
@@ -102,7 +104,11 @@ public class GameController extends DefaultDartgameEventListener {
         mediaPlayer.setAutoPlay(true);
         backgroundMediaView.setMediaPlayer(mediaPlayer);
 
-        dartgame = new X01Dartgame(new X01ScoreBoard(301, dartValueMapper));
+        dartgame = gamesService.getAvailableDartgames().stream()
+                .filter(descriptor -> "301".equals(descriptor.getTitle()))
+                .map(gamesService::createDartgame)
+                .findFirst()
+                .get();
         dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
         dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
 

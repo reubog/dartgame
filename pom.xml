@@ -12,8 +12,6 @@
     <artifactId>dart-project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>dart-game-app</name>
-    <description>Dart Game</description>
     <url/>
     <licenses>
         <license/>
@@ -28,6 +26,7 @@
         <module>dart-core</module>
         <module>dartboard-mqtt-gui</module>
         <module>dartboard-mqtt-monitor</module>
+        <module>dartgame-x01</module>
     </modules>
     <scm>
         <connection/>

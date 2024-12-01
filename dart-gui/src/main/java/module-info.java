@@ -17,4 +17,5 @@ open module com.bognandi.dart.dartgame.gui.app {
     requires org.slf4j;
     requires com.bognandi.dart.dartboard.mqtt;
     requires org.eclipse.paho.client.mqttv3;
+    requires io.github.classgraph;
 }

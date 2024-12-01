@@ -31,7 +31,7 @@ public class GameAppService {
     /**
      * currently selected game, only valid if GameAppState.GAME_WAITING_FOR_PLAYERS, GameAppState.GAME_STARTED
      */
-    private DartgameDescriptor selectedGame;
+//    private DartgameDescriptor selectedGame;
 
 
     @Autowired
@@ -57,15 +57,15 @@ public class GameAppService {
 //        return dartgameFactory.getDartgames();
 //    }
 
-    public void selectGame(DartgameDescriptor dartgameDescriptor) {
-        if (Objects.isNull(dartgameDescriptor) || !GameAppState.SELECT_GAME.equals(gameAppState)) {
-            LOG.debug("Omitting game selection " + dartgameDescriptor);
-            return;
-        }
-
-        selectedGame = dartgameDescriptor;
-        gameAppState = GameAppState.GAME_WAITING_FOR_PLAYERS;
-    }
+//    public void selectGame(DartgameDescriptor dartgameDescriptor) {
+//        if (Objects.isNull(dartgameDescriptor) || !GameAppState.SELECT_GAME.equals(gameAppState)) {
+//            LOG.debug("Omitting game selection " + dartgameDescriptor);
+//            return;
+//        }
+//
+//        selectedGame = dartgameDescriptor;
+//        gameAppState = GameAppState.GAME_WAITING_FOR_PLAYERS;
+//    }
 
 //    public void playGame(String name, int numberOfPlayers) {
 //        //Platform.runLater(() -> {

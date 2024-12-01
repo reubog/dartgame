@@ -1,4 +1,4 @@
-package com.bognandi.dart.dartgame.x01game.x01game;
+package com.bognandi.dart.dartgame.x01;
 
 import com.bognandi.dart.core.dartboard.DartboardValue;
 import com.bognandi.dart.core.dartboard.DartboardValueMapper;
@@ -69,9 +69,9 @@ public class X01Dartgame implements Dartgame {
 
     private void onDartboardValue(DartboardValue value) {
         switch (value) {
-            case INITIAL_CODE -> {
+            case DartboardValue.INITIAL_CODE -> {
             }
-            case RED_BUTTON -> onButton();
+            case DartboardValue.RED_BUTTON -> onButton();
 
             default -> onDartThrown(DartboardValueMapper.DART_MAP.get(value));
         }

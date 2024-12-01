@@ -16,7 +16,7 @@ public class MqttDartboardFactory implements DartboardFactory {
 
     private IMqttClient client;
     private DartboardMqttSubscriber subscriber;
-    private GranboardMqttMessageDeserializer deserializer;
+    private DartboardMqttMessageDeserializer deserializer;
 
     public MqttDartboardFactory(String serverUrl, String clientId) {
         this.deserializer = deserializer;

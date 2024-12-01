@@ -2,7 +2,7 @@ package com.bognandi.dart.dartgame.gui.app.service.dartboard;
 
 import com.bognandi.dart.core.dartgame.Dartboard;
 import com.bognandi.dart.dartboard.mqtt.DartboardMqttSubscriber;
-import com.bognandi.dart.dartboard.mqtt.GranboardMqttMessageDeserializer;
+import com.bognandi.dart.dartboard.mqtt.DartboardMqttMessageDeserializer;
 import jakarta.annotation.PreDestroy;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -20,7 +20,7 @@ public class DartboardService {
     private IMqttClient mqttClient;
 
     @Autowired
-    private GranboardMqttMessageDeserializer deserializer;
+    private DartboardMqttMessageDeserializer deserializer;
 
     private DartboardMqttSubscriber subscriber;
 
@@ -48,6 +48,4 @@ public class DartboardService {
             throw new RuntimeException(e);
         }
     }
-
-
 }

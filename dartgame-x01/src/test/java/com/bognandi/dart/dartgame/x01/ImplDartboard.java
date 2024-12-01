@@ -1,4 +1,4 @@
-package com.bognandi.dart.domain.x01game;
+package com.bognandi.dart.dartgame.x01;
 
 import com.bognandi.dart.core.dartboard.DartboardStatus;
 import com.bognandi.dart.core.dartboard.DartboardValue;
@@ -24,16 +24,6 @@ public class ImplDartboard implements Dartboard {
     public DartboardStatus getStatus() {
         return status;
     }
-
-//    @Override
-//    public void addEventListener(DartboardListener listener) {
-//        eventListeners.add(listener);
-//    }
-//
-//    @Override
-//    public void removeEventListener(DartboardListener listener) {
-//        eventListeners.remove(listener);
-//    }
 
     public void doThrowDart(Dart dart) {
         valueConsumer.accept(DartboardValueMapper.DART_MAP.entrySet().stream()

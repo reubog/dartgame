@@ -1,17 +1,16 @@
-package com.bognandi.dart.domain.x01game;
+package com.bognandi.dart.dartgame.x01;
 
-import com.bognandi.dart.core.dartgame.*;
-import com.bognandi.dart.dartgame.x01game.x01game.X01Dartgame;
-import com.bognandi.dart.dartgame.x01game.x01game.X01ScoreBoard;
+import com.bognandi.dart.core.dartgame.Dart;
+import com.bognandi.dart.core.dartgame.Dartgame;
+import com.bognandi.dart.core.dartgame.DartgameEventListener;
+import com.bognandi.dart.core.dartgame.Player;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static com.bognandi.dart.core.dartgame.Dart.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class X01DartgameTest {
@@ -38,7 +37,7 @@ public class X01DartgameTest {
 
     @BeforeEach
     void setUp() {
-        when(scoreBoard.getMinimumNumberOfPlayers()).thenReturn(2);
+        Mockito.when(scoreBoard.getMinimumNumberOfPlayers()).thenReturn(2);
 
         game = new X01Dartgame(scoreBoard);
         game.startGame();
@@ -51,38 +50,38 @@ public class X01DartgameTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
 
-        verify(dartGameEventListener).onPlayerAdded(game, player1);
-        verify(dartGameEventListener).onPlayerAdded(game, player2);
+        Mockito.verify(dartGameEventListener).onPlayerAdded(game, player1);
+        Mockito.verify(dartGameEventListener).onPlayerAdded(game, player2);
 
         dartBoard.doPressButton();
 
-        verify(dartGameEventListener).onGameStarted(game);
+        Mockito.verify(dartGameEventListener).onGameStarted(game);
 
-        verify(dartGameEventListener).onRoundStarted(game, 1);
-        verify(dartGameEventListener).onPlayerTurn(game, 1, player1);
-        dartBoard.doThrowDart(ONE);
-        verify(dartGameEventListener).onDartThrown(game, ONE);
-        dartBoard.doThrowDart(TWO);
-        verify(dartGameEventListener).onDartThrown(game, TWO);
-        dartBoard.doThrowDart(THREE);
-        verify(dartGameEventListener).onDartThrown(game, THREE);
-        verify(dartGameEventListener).onRemoveDarts(game, 1, player1);
-        dartBoard.doThrowDart(FOUR);
-        verify(dartGameEventListener, never()).onDartThrown(game, FOUR);
+        Mockito.verify(dartGameEventListener).onRoundStarted(game, 1);
+        Mockito.verify(dartGameEventListener).onPlayerTurn(game, 1, player1);
+        dartBoard.doThrowDart(Dart.ONE);
+        Mockito.verify(dartGameEventListener).onDartThrown(game, Dart.ONE);
+        dartBoard.doThrowDart(Dart.TWO);
+        Mockito.verify(dartGameEventListener).onDartThrown(game, Dart.TWO);
+        dartBoard.doThrowDart(Dart.THREE);
+        Mockito.verify(dartGameEventListener).onDartThrown(game, Dart.THREE);
+        Mockito.verify(dartGameEventListener).onRemoveDarts(game, 1, player1);
+        dartBoard.doThrowDart(Dart.FOUR);
+        Mockito.verify(dartGameEventListener, Mockito.never()).onDartThrown(game, Dart.FOUR);
         dartBoard.doPressButton();
-        verify(dartGameEventListener).onPlayerTurn(game, 1, player2);
-        dartBoard.doThrowDart(FIVE);
-        verify(dartGameEventListener).onDartThrown(game, FIVE);
+        Mockito.verify(dartGameEventListener).onPlayerTurn(game, 1, player2);
+        dartBoard.doThrowDart(Dart.FIVE);
+        Mockito.verify(dartGameEventListener).onDartThrown(game, Dart.FIVE);
         dartBoard.doPressButton();
-        verify(dartGameEventListener).onRemoveDarts(game, 1, player2);
-        dartBoard.doThrowDart(SIX);
-        verify(dartGameEventListener, never()).onDartThrown(game, SIX);
+        Mockito.verify(dartGameEventListener).onRemoveDarts(game, 1, player2);
+        dartBoard.doThrowDart(Dart.SIX);
+        Mockito.verify(dartGameEventListener, Mockito.never()).onDartThrown(game, Dart.SIX);
         dartBoard.doPressButton();
 
-        verify(dartGameEventListener).onRoundStarted(game, 2);
-        verify(dartGameEventListener).onPlayerTurn(game, 2, player1);
+        Mockito.verify(dartGameEventListener).onRoundStarted(game, 2);
+        Mockito.verify(dartGameEventListener).onPlayerTurn(game, 2, player1);
         dartBoard.doPressButton();
-        verify(dartGameEventListener).onPlayerTurn(game, 2, player2);
+        Mockito.verify(dartGameEventListener).onPlayerTurn(game, 2, player2);
         dartBoard.doPressButton();
 
 
@@ -96,50 +95,50 @@ public class X01DartgameTest {
         dartBoard.doPressButton();
 
         // player 1
-        throw3dartsAndPressButton(DOUBLE_BULLSEYE, DOUBLE_BULLSEYE, DOUBLE_BULLSEYE);
+        throw3dartsAndPressButton(Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE);
 
         // player 2
-        throw3dartsAndPressButton(DOUBLE_BULLSEYE, DOUBLE_BULLSEYE, DOUBLE_BULLSEYE);
+        throw3dartsAndPressButton(Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE);
 
         // player 3
-        throw3dartsAndPressButton(DOUBLE_BULLSEYE, DOUBLE_BULLSEYE, DOUBLE_BULLSEYE);
+        throw3dartsAndPressButton(Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE);
 
 
         // player 1
-        throw3dartsAndPressButton(DOUBLE_BULLSEYE, DOUBLE_BULLSEYE, DOUBLE_BULLSEYE);
+        throw3dartsAndPressButton(Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE);
 
         // player 2
-        throw3dartsAndPressButton(DOUBLE_BULLSEYE,DOUBLE_BULLSEYE,DOUBLE_TWENTY);
+        throw3dartsAndPressButton(Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_BULLSEYE, Dart.DOUBLE_TWENTY);
 
         // player 3
-        throw3dartsAndPressButton(THREE,THREE,THREE);
+        throw3dartsAndPressButton(Dart.THREE, Dart.THREE, Dart.THREE);
 
         // player 1
-        when(scoreBoard.isWinner(player1)).thenReturn(true);
-        dartBoard.doThrowDart(ONE);
-        verify(dartGameEventListener).onPlayerWon(game, player1);
+        Mockito.when(scoreBoard.isWinner(player1)).thenReturn(true);
+        dartBoard.doThrowDart(Dart.ONE);
+        Mockito.verify(dartGameEventListener).onPlayerWon(game, player1);
         dartBoard.doPressButton();
 
         // player 2
-        verify(dartGameEventListener).onPlayerTurn(game, 3, player2);
-        when(scoreBoard.isWinner(player2)).thenReturn(true);
-        dartBoard.doThrowDart(ELEVEN);
-        verify(dartGameEventListener).onPlayerWon(game, player2);
+        Mockito.verify(dartGameEventListener).onPlayerTurn(game, 3, player2);
+        Mockito.when(scoreBoard.isWinner(player2)).thenReturn(true);
+        dartBoard.doThrowDart(Dart.ELEVEN);
+        Mockito.verify(dartGameEventListener).onPlayerWon(game, player2);
 
-        verify(dartGameEventListener).onGameFinished(game);
+        Mockito.verify(dartGameEventListener).onGameFinished(game);
     }
 
     @Test
     void testTwoPlayersWhenPlayerWinGameShouldFinish() {
         game.addPlayer(player1);
         game.addPlayer(player2);
-        when(scoreBoard.isWinner(player1)).thenReturn(true);
+        Mockito.when(scoreBoard.isWinner(player1)).thenReturn(true);
 
         dartBoard.doPressButton();
-        dartBoard.doThrowDart(ONE);
+        dartBoard.doThrowDart(Dart.ONE);
 
-        verify(dartGameEventListener).onPlayerWon(game, player1);
-        verify(dartGameEventListener).onGameFinished(game);
+        Mockito.verify(dartGameEventListener).onPlayerWon(game, player1);
+        Mockito.verify(dartGameEventListener).onGameFinished(game);
     }
 
 
@@ -148,19 +147,19 @@ public class X01DartgameTest {
     void testStartGameWithoutPlayerShouldNotStart() {
         game.addPlayer(player1);
         dartBoard.doPressButton();
-        verify(dartGameEventListener, never()).onGameStarted(game);
+        Mockito.verify(dartGameEventListener, Mockito.never()).onGameStarted(game);
     }
 
     @Test
     void testBust() {
         game.addPlayer(player1);
         game.addPlayer(player2);
-        when(scoreBoard.isBust(player1)).thenReturn(true);
+        Mockito.when(scoreBoard.isBust(player1)).thenReturn(true);
 
         dartBoard.doPressButton();
-        dartBoard.doThrowDart(DOUBLE_BULLSEYE);
+        dartBoard.doThrowDart(Dart.DOUBLE_BULLSEYE);
 
-        verify(dartGameEventListener).onPlayerBust(game, player1);
+        Mockito.verify(dartGameEventListener).onPlayerBust(game, player1);
     }
 
     @Test
@@ -170,20 +169,20 @@ public class X01DartgameTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
         game.addPlayer(player3);
-        when(scoreBoard.isWinner(player1)).thenReturn(true);
+        Mockito.when(scoreBoard.isWinner(player1)).thenReturn(true);
 
         dartBoard.doPressButton(); // start round player1
-        dartBoard.doThrowDart(ONE);
+        dartBoard.doThrowDart(Dart.ONE);
         //verify(dartGameEventListener).onPlayerWon(game, player1);
 
         dartBoard.doPressButton(); // player 2
-        assertEquals(player2, gameEvents.getCurrentPlayer());
+        Assertions.assertEquals(player2, gameEvents.getCurrentPlayer());
         dartBoard.doPressButton(); // player 3
-        assertEquals(player3, gameEvents.getCurrentPlayer());
+        Assertions.assertEquals(player3, gameEvents.getCurrentPlayer());
         dartBoard.doPressButton(); // player 2
-        assertEquals(player2, gameEvents.getCurrentPlayer());
+        Assertions.assertEquals(player2, gameEvents.getCurrentPlayer());
         dartBoard.doPressButton(); // player 3
-        assertEquals(player3, gameEvents.getCurrentPlayer());
+        Assertions.assertEquals(player3, gameEvents.getCurrentPlayer());
     }
 
     private void throw3dartsAndPressButton(Dart first, Dart second, Dart third) {

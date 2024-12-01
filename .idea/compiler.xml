@@ -10,8 +10,9 @@
         <module name="dartboard-mqtt" />
         <module name="dart-core" />
         <module name="dartboard-mqtt-gui" />
-        <module name="dartboard-mqtt-granboard-linux" />
+        <module name="dartgame-x01" />
         <module name="dartboard-mqtt-monitor" />
+        <module name="dartboard-mqtt-granboard-linux" />
         <module name="dart-gui" />
       </profile>
     </annotationProcessing>
@@ -26,6 +27,7 @@
       <module name="dartboard-mqtt-granboard-linux" options="-parameters" />
       <module name="dartboard-mqtt-gui" options="-parameters" />
       <module name="dartboard-mqtt-monitor" options="-parameters" />
+      <module name="dartgame-x01" options="-parameters" />
     </option>
   </component>
 </project>

@@ -1,19 +1,13 @@
-package com.bognandi.dart.domain.x01game;
+package com.bognandi.dart.dartgame.x01;
 
-import com.bognandi.dart.core.dartgame.Dartgame;
-import com.bognandi.dart.core.dartgame.DartValueMapper;
-import com.bognandi.dart.core.dartgame.Player;
-import com.bognandi.dart.core.dartgame.PlayerScore;
-import com.bognandi.dart.dartgame.x01game.x01game.X01ScoreBoard;
+import com.bognandi.dart.core.dartgame.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static com.bognandi.dart.core.dartgame.Dart.ONE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class X01ScoreBoardTest {
@@ -45,13 +39,13 @@ public class X01ScoreBoardTest {
 
     @Test
     void test() {
-        when(dartValueMapper.getDartScore(ONE)).thenReturn(1);
+        Mockito.when(dartValueMapper.getDartScore(Dart.ONE)).thenReturn(1);
         scoreBoard.onPlayerTurn(dartGame, 1, player1);
-        scoreBoard.onDartThrown(dartGame, ONE);
+        scoreBoard.onDartThrown(dartGame, Dart.ONE);
 
         PlayerScore playerScore =  scoreBoard.getPlayerScore(player1);
-        assertEquals(300, playerScore.getScore() );
-        assertEquals(1, playerScore.getPlayedRounds() );
-        assertEquals(1, playerScore.getThrownDarts() );
+        Assertions.assertEquals(300, playerScore.getScore() );
+        Assertions.assertEquals(1, playerScore.getPlayedRounds() );
+        Assertions.assertEquals(1, playerScore.getThrownDarts() );
     }
 }
