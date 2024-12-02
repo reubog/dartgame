@@ -9,9 +9,12 @@ import io.github.classgraph.ScanResult;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
 
 @Service
 public class DartgamesService {
@@ -49,7 +52,9 @@ public class DartgamesService {
     }
 
     public List<DartgameDescriptor> getDartgames() {
-        return availableDartgames.keySet().stream().toList();
+        return availableDartgames.keySet().stream()
+                .sorted(comparing(DartgameDescriptor::getTitle))
+                .toList();
     }
 
     public Dartgame createDartgame(DartgameDescriptor dartgameDescriptor) {

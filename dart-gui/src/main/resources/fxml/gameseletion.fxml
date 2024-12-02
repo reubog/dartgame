@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
@@ -12,7 +12,6 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<?import java.net.URL?>
 <StackPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bognandi.dart.dartgame.gui.app.gui.GameSelectionController">
    <stylesheets>
       <URL value="@css/gameSelection.css" />
@@ -56,7 +55,21 @@
                      <bottom>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button fx:id="selectButton" layoutX="285.0" layoutY="62.0" mnemonicParsing="false" onAction="#startGame" prefHeight="84.0" prefWidth="260.0" text="Start Game" />
+                              <Label layoutX="36.0" layoutY="64.0" onMouseClicked="#selectPrevious" prefHeight="37.0" prefWidth="103.0" text="↑20" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="50.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="382.0" layoutY="68.0" onMouseClicked="#startGame" prefHeight="63.0" prefWidth="49.0" text="●" textFill="#bf0000">
+                                 <font>
+                                    <Font name="System Bold" size="50.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="699.0" layoutY="67.0" onMouseClicked="#selectNext" prefHeight="42.0" prefWidth="76.0" text="3↓" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="50.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </AnchorPane>
                      </bottom>

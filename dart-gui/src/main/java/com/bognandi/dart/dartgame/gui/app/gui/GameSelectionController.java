@@ -91,7 +91,6 @@ public class GameSelectionController {
     private void setupDartboardEvents() {
         dartboardService.getDartboard().setOnDartboardValue(dartboardValue ->
                 platformRun(() -> {
-                    int selectedIndex = gamesList.getSelectionModel().getSelectedIndex();
                     switch (dartboardValue) {
                         case RED_BUTTON:
                             startGame();
@@ -101,18 +100,14 @@ public class GameSelectionController {
                         case TRIPLE_TWENTY:
                         case DOUBLE_TWENTY:
                         case TWENTY_OUTER:
-                            if (selectedIndex > 0) {
-                                gamesList.getSelectionModel().selectPrevious();
-                            }
+                            selectPrevious();
                             break;
 
                         case THREE_INNER:
                         case THREE_OUTER:
                         case TRIPLE_THREE:
                         case DOUBLE_THREE:
-                            if (selectedIndex < gamesList.getItems().size() - 1) {
-                                gamesList.getSelectionModel().selectNext();
-                            }
+                            selectNext();
                             break;
 
                         case ELEVEN_INNER:
@@ -124,6 +119,22 @@ public class GameSelectionController {
                     }
                 })
         );
+    }
+
+    @FXML
+    public void selectPrevious() {
+        int selectedIndex = gamesList.getSelectionModel().getSelectedIndex();
+        if (selectedIndex > 0) {
+            gamesList.getSelectionModel().selectPrevious();
+        }
+    }
+
+    @FXML
+    public void selectNext() {
+        int selectedIndex = gamesList.getSelectionModel().getSelectedIndex();
+        if (selectedIndex < gamesList.getItems().size() - 1) {
+            gamesList.getSelectionModel().selectNext();
+        }
     }
 
     @FXML
