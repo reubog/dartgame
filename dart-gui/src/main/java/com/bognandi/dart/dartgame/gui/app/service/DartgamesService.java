@@ -29,7 +29,7 @@ public class DartgamesService {
                     .map(clazz -> {
                         try {
                             DartgameFactory factory = (DartgameFactory) clazz.getDeclaredConstructor().newInstance();
-                            LOG.info("Found dartgame: " + factory.getDartgameDescriptor().getTitle());
+                            LOG.info("Found dartgame '{}' in class={}", factory.getDartgameDescriptor().getTitle(), clazz.getCanonicalName());
                             return factory;
                         } catch (InstantiationException e) {
                             throw new RuntimeException(e);

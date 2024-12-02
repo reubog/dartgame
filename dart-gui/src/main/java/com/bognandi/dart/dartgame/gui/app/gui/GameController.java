@@ -1,8 +1,12 @@
 package com.bognandi.dart.dartgame.gui.app.gui;
 
 import com.bognandi.dart.core.dartgame.*;
+import com.bognandi.dart.dartgame.gui.app.JavaFxApplicationSupport;
+import com.bognandi.dart.dartgame.gui.app.event.EndedDartgameEvent;
+import com.bognandi.dart.dartgame.gui.app.event.StageReadyEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StartDartgameEvent;
 import com.bognandi.dart.dartgame.gui.app.service.DartgamesService;
+import com.bognandi.dart.dartgame.gui.app.service.EventPublisherService;
 import com.bognandi.dart.dartgame.gui.app.service.dartboard.DartboardService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -16,13 +20,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,21 +36,18 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class GameController extends DefaultDartgameEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameController.class);
 
+    private static final String BACKGROUND_VIDEO_RESOURCE = "/video/tavern.mp4";
     private static final String SCORETABLEKEY_ROUND = "round";
-
-    @Autowired
-    private ConfigurableApplicationContext context;
 
     @Autowired
     private DartValueMapper dartValueMapper;
@@ -56,6 +57,9 @@ public class GameController extends DefaultDartgameEventListener {
 
     @Autowired
     private DartgamesService dartgamesService;
+
+    @Autowired
+    private EventPublisherService  eventPublisherService;
 
     @FXML
     private MediaView backgroundMediaView;
@@ -87,6 +91,8 @@ public class GameController extends DefaultDartgameEventListener {
     private ObservableList<Map<String, Object>> scoreData = FXCollections.observableArrayList();
     private Map<String, Object> currentScoreRound;
     private MediaPlayer mediaPlayer;
+    private int guestPlayers = 0;
+    private ConfigurableApplicationContext context;
 
     public record GamePlayer(Player player, PlayerScore playerScore, AtomicBoolean leaderScore) {
     }
@@ -95,45 +101,29 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     private Map<Player, GamePlayer> gamePlayerMap = new LinkedHashMap<>();
+    private Parent parent;
+    private Stage stage;
 
-    @EventListener(StartDartgameEvent.class)
-    public void startGame(StartDartgameEvent event) {
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
-                loader.setControllerFactory(context::getBean);
-
-                Parent root = loader.load();
-
-                Stage stage = event.getStage();
-                stage.setScene(new Scene(root, 1920, 1080));
-                stage.show();
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            dartgame = dartgamesService.createDartgame(event.getDartgameDescriptor());
-            dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
-            dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
-            dartgame.startGame();
-        });
+    public GameController(@Autowired ConfigurableApplicationContext context) {
+        this.context = context;
+        LOG.debug("GameController created");
     }
 
     @FXML
     public void initialize() {
+        LOG.debug("Initializing game controller view");
         playersList.setCellFactory(listView -> new GamePlayerListCell());
         dartsList.setCellFactory(listView -> new DartListCell());
 
         TableColumn column = new TableColumn<GameRound, String>("Round");
         column.setCellValueFactory(new MapValueFactory<>(SCORETABLEKEY_ROUND));
-        column.setPrefWidth(100.0);
+        column.setPrefWidth(100.0); // TODO why this remove? control from fxml
 
         scoreTable.getColumns().add(column);
         scoreTable.setPrefWidth(column.getPrefWidth() + 1);
         scoreTable.setItems(scoreData);
 
-        Media media = new Media(getClass().getResource("/video/tavern.mp4").toExternalForm());
+        Media media = new Media(getClass().getResource(BACKGROUND_VIDEO_RESOURCE).toExternalForm());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.setAutoPlay(true);
@@ -142,18 +132,69 @@ public class GameController extends DefaultDartgameEventListener {
         currentPlayerScoreLabel.setVisible(false);
     }
 
-    private void wait(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    @EventListener(StageReadyEvent.class)
+    public void savestage(StageReadyEvent event) {
+        LOG.debug("Stage ready event received");
+        stage = event.getStage();
+    }
+
+    @EventListener(StartDartgameEvent.class)
+    public void startGame(StartDartgameEvent event) {
+        LOG.debug("Start dartgame event received, showing view");
+        platformRun(() -> {
+            stage.getScene().setRoot(JavaFxApplicationSupport.GAME_PARENT);
+
+            dartgame = dartgamesService.createDartgame(event.getDartgameDescriptor());
+            dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
+            dartgame.initGameWaitForPlayers();
+        });
     }
 
     @Override
-    public void onGameStarting(Dartgame dartGame) {
+    public void onWaitingForPlayers(Dartgame dartGame) {
         Platform.runLater(() -> {
             showMessage("Waiting for players...");
+
+            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
+                LOG.debug("Dartboard value: {}", dartboardValue);
+                switch (dartboardValue) {
+                    case RED_BUTTON:
+                        IntStream.range(1, guestPlayers + 1)
+                                .forEach(i -> dartgame.addPlayer(new DefaultPlayer("Guest " + i)));
+                        dartgame.startPlaying();
+                        break;
+
+                    case TWO_INNER:
+                    case TWO_OUTER:
+                    case TRIPLE_TWO:
+                    case DOUBLE_TWO:
+                        guestPlayers = 2;
+                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                        break;
+
+                    case THREE_INNER:
+                    case THREE_OUTER:
+                    case TRIPLE_THREE:
+                    case DOUBLE_THREE:
+                        guestPlayers = 3;
+                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+
+                    case FOUR_INNER:
+                    case FOUR_OUTER:
+                    case TRIPLE_FOUR:
+                    case DOUBLE_FOUR:
+                        guestPlayers = 4;
+                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                        break;
+
+                    case FIVE_INNER:
+                    case FIVE_OUTER:
+                    case TRIPLE_FIVE:
+                    case DOUBLE_FIVE:
+                        guestPlayers = 5;
+                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                }
+            }));
         });
     }
 
@@ -175,9 +216,10 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     @Override
-    public void onGameStarted(Dartgame dartGame) {
+    public void onGamePlayStarted(Dartgame dartGame) {
         Platform.runLater(() -> {
             showMessage("Get ready!");
+            dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
         });
     }
 
@@ -198,7 +240,7 @@ public class GameController extends DefaultDartgameEventListener {
             dartsList.getItems().clear();
 
             showMessage("Round #" + roundNumber);
-            wait(1);
+            //wait(1);
         });
     }
 
@@ -255,6 +297,15 @@ public class GameController extends DefaultDartgameEventListener {
     public void onGameFinished(Dartgame dartGame) {
         Platform.runLater(() -> {
             showMessage("Game over");
+            //show scores
+            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
+                LOG.debug("Dartboard value: {}", dartboardValue);
+                switch (dartboardValue) {
+                    case RED_BUTTON:
+                        eventPublisherService.publish(new EndedDartgameEvent(this));
+                        break;
+                }
+            }));
         });
     }
 
@@ -285,6 +336,16 @@ public class GameController extends DefaultDartgameEventListener {
 
     private void hideMessage() {
         messagePane.setVisible(false);
+    }
+
+    private void platformRun(Runnable runnable) {
+        if (Platform.isFxApplicationThread()) {
+            LOG.trace("Running on JavaFX thread");
+            runnable.run();
+        } else {
+            LOG.trace("Running on non-JavaFX thread, so scheduling to run on it");
+            Platform.runLater(runnable);
+        }
     }
 
 }

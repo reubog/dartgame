@@ -34,7 +34,7 @@ public class GameDescriptorListCell extends ListCell<DartgameDescriptor> {
             LOG.trace("updateItem: null");
             setGraphic(null);
         } else {
-            LOG.debug("updateItem: {}", item);
+            LOG.trace("updateItem: {}", item);
             controller.updateItem(item);
             setGraphic(root);
         }

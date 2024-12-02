@@ -8,12 +8,12 @@ public class DefaultDartgameEventListener implements DartgameEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultDartgameEventListener.class);
 
     @Override
-    public void onGameStarting(Dartgame dartGame) {
+    public void onWaitingForPlayers(Dartgame dartGame) {
         LOG.debug("Game starting...");
     }
 
     @Override
-    public void onGameStarted(Dartgame dartGame) {
+    public void onGamePlayStarted(Dartgame dartGame) {
         LOG.debug("Game started");
     }
 

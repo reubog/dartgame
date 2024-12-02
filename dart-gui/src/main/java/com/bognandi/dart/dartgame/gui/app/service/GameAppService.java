@@ -131,12 +131,12 @@ public class GameAppService {
         private int startRoundScore;
 
         @Override
-        public void onGameStarting(Dartgame dartGame) {
+        public void onWaitingForPlayers(Dartgame dartGame) {
             speak("waiting for players and button press");
         }
 
         @Override
-        public void onGameStarted(Dartgame dartGame) {
+        public void onGamePlayStarted(Dartgame dartGame) {
             speak("game started");
             audioService.playAudioClip(SoundClip.BELL);
         }

@@ -53,12 +53,12 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     }
 
     @Override
-    public void onGameStarting(Dartgame dartGame) {
+    public void onWaitingForPlayers(Dartgame dartGame) {
         playing.clear();
     }
 
     @Override
-    public void onGameStarted(Dartgame dartGame) {
+    public void onGamePlayStarted(Dartgame dartGame) {
 
     }
 

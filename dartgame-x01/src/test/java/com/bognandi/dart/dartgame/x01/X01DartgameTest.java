@@ -40,7 +40,7 @@ public class X01DartgameTest {
         Mockito.when(scoreBoard.getMinimumNumberOfPlayers()).thenReturn(2);
 
         game = new X01Dartgame(scoreBoard);
-        game.startGame();
+        game.initGameWaitForPlayers();
         game.addEventListener(dartGameEventListener);
         game.attachDartboard(dartBoard);
     }
@@ -55,7 +55,7 @@ public class X01DartgameTest {
 
         dartBoard.doPressButton();
 
-        Mockito.verify(dartGameEventListener).onGameStarted(game);
+        Mockito.verify(dartGameEventListener).onGamePlayStarted(game);
 
         Mockito.verify(dartGameEventListener).onRoundStarted(game, 1);
         Mockito.verify(dartGameEventListener).onPlayerTurn(game, 1, player1);
@@ -144,10 +144,10 @@ public class X01DartgameTest {
 
 
     @Test
-    void testStartGameWithoutPlayerShouldNotStart() {
+    void testStartGameWithoutPlayerShouldNotInitWaitForPlayers() {
         game.addPlayer(player1);
         dartBoard.doPressButton();
-        Mockito.verify(dartGameEventListener, Mockito.never()).onGameStarted(game);
+        Mockito.verify(dartGameEventListener, Mockito.never()).onGamePlayStarted(game);
     }
 
     @Test
@@ -197,12 +197,12 @@ public class X01DartgameTest {
         private Player currentPlayer;
 
         @Override
-        public void onGameStarting(Dartgame dartGame) {
+        public void onWaitingForPlayers(Dartgame dartGame) {
 
         }
 
         @Override
-        public void onGameStarted(Dartgame dartGame) {
+        public void onGamePlayStarted(Dartgame dartGame) {
 
         }
 

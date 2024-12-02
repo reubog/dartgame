@@ -1,8 +1,8 @@
 package com.bognandi.dart.core.dartgame;
 
 public interface DartgameEventListener {
-    void onGameStarting(Dartgame dartGame);
-    void onGameStarted(Dartgame dartGame);
+    void onWaitingForPlayers(Dartgame dartGame);
+    void onGamePlayStarted(Dartgame dartGame);
     void onGameFinished(Dartgame dartGame);
 
     void onPlayerAdded(Dartgame dartGame, Player player);

@@ -75,7 +75,7 @@ public class DartboardMqttSubscriber implements Dartboard, IMqttMessageListener 
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) {
-        LOG.debug("Message received from topic {}: {}", topic, new String(mqttMessage.getPayload()));
+        LOG.trace("Message received from topic {}: {}", topic, new String(mqttMessage.getPayload()));
 
         if (!GRANBOARD_TOPIC.equals(topic)) {
             return;
@@ -83,12 +83,12 @@ public class DartboardMqttSubscriber implements Dartboard, IMqttMessageListener 
 
         synchronized (messageQueue) {
             messageQueue.add(deserializer.deserialize(mqttMessage));
-            LOG.debug("Message added to queue: size={}", messageQueue.size());
+            LOG.trace("Message added to queue: size={}", messageQueue.size());
         }
     }
 
     private void processMessage(GranboardMessage message) {
-        LOG.debug("Processing message: {}", message);
+        LOG.trace("Processing message: {}", message);
         DartboardStatus oldStatus = status;
         status = message.getStatus();
         if (status != oldStatus) {

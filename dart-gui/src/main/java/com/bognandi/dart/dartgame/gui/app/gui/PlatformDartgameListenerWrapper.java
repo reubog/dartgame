@@ -19,13 +19,13 @@ public class PlatformDartgameListenerWrapper implements DartgameEventListener {
     }
 
     @Override
-    public void onGameStarting(Dartgame dartGame) {
-        platformRun(() -> delegate.onGameStarting(dartGame));
+    public void onWaitingForPlayers(Dartgame dartGame) {
+        platformRun(() -> delegate.onWaitingForPlayers(dartGame));
     }
 
     @Override
-    public void onGameStarted(Dartgame dartGame) {
-        platformRun(() -> delegate.onGameStarted(dartGame));
+    public void onGamePlayStarted(Dartgame dartGame) {
+        platformRun(() -> delegate.onGamePlayStarted(dartGame));
     }
 
     @Override

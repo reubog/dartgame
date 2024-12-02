@@ -21,7 +21,7 @@ public class DartListCell extends ListCell<Dart> {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameDartListCell.fxml"));
             root = loader.load();
             controller = loader.getController();
-            LOG.info("loaded, controller={}, root={}", controller, root);
+            LOG.debug("loaded, controller={}, root={}", controller, root);
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }
@@ -29,11 +29,12 @@ public class DartListCell extends ListCell<Dart> {
 
     @Override
     protected void updateItem(Dart item, boolean empty) {
-        LOG.info("updateItem: {}", item);
         super.updateItem(item, empty);
         if (empty || item == null) {
+            LOG.trace("updateItem: null");
             setGraphic(null);
         } else {
+            LOG.trace("updateItem: {}", item);
             controller.updateDart(item);
             setGraphic(root);
         }

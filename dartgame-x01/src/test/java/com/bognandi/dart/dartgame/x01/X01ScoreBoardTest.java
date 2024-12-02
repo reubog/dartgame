@@ -31,8 +31,8 @@ public class X01ScoreBoardTest {
         scoreBoard = new X01ScoreBoard(301, dartValueMapper);
         scoreBoard.onPlayerAdded(dartGame, player1);
         scoreBoard.onPlayerAdded(dartGame, player2);
-        scoreBoard.onGameStarting(dartGame);
-        scoreBoard.onGameStarted(dartGame);
+        scoreBoard.onWaitingForPlayers(dartGame);
+        scoreBoard.onGamePlayStarted(dartGame);
         scoreBoard.onRoundStarted(dartGame, 1);
 
     }

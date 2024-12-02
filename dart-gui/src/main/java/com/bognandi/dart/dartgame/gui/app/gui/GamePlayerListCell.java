@@ -33,7 +33,7 @@ public class GamePlayerListCell extends ListCell<GameController.GamePlayer> {
             LOG.trace("updateItem: null");
             setGraphic(null);
         } else {
-            LOG.debug("updateItem: {}", item);
+            LOG.trace("updateItem: {}", item);
             controller.updatePlayer(item);
             setGraphic(root);
         }

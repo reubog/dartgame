@@ -46,15 +46,14 @@ public class X01Dartgame implements Dartgame {
     }
 
     @Override
-    public void startGame() {
-        LOG.info("Starting game");
+    public void initGameWaitForPlayers() {
+        LOG.info("Initializing game and waiting for players");
 
         this.dartgameEventListeners.addFirst(scoreBoard);
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
 
-        LOG.info("Game starting, waiting for players and button press");
-        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameStarting(this));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onWaitingForPlayers(this));
     }
 
     @Override
@@ -115,7 +114,7 @@ public class X01Dartgame implements Dartgame {
         }
     }
 
-    private void startPlaying() {
+    public void startPlaying() {
         if (players.size() < scoreBoard.getMinimumNumberOfPlayers()) {
             LOG.warn("Not enough players to start the game");
             return;
@@ -126,7 +125,7 @@ public class X01Dartgame implements Dartgame {
         players.forEach(player -> playerStateMap.put(player, PlayerState.PLAYING));
 
         LOG.info("Game Started");
-        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGameStarted(this));
+        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onGamePlayStarted(this));
 
         newRound();
     }
