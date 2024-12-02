@@ -2,7 +2,7 @@ package com.bognandi.dart.dartgame.gui.app.gui;
 
 import com.bognandi.dart.core.dartgame.*;
 import com.bognandi.dart.dartgame.gui.app.JavaFxApplicationSupport;
-import com.bognandi.dart.dartgame.gui.app.event.EndedDartgameEvent;
+import com.bognandi.dart.dartgame.gui.app.event.CloseDartgameEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StageReadyEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StartDartgameEvent;
 import com.bognandi.dart.dartgame.gui.app.service.DartgamesService;
@@ -12,15 +12,12 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -34,8 +31,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -49,6 +49,11 @@ public class GameController extends DefaultDartgameEventListener {
     private static final String BACKGROUND_VIDEO_RESOURCE = "/video/tavern.mp4";
     private static final String SCORETABLEKEY_ROUND = "round";
 
+    private enum GameState {
+        WAITING_FOR_PLAYERS,
+        FINISHED,
+    }
+
     @Autowired
     private DartValueMapper dartValueMapper;
 
@@ -59,7 +64,7 @@ public class GameController extends DefaultDartgameEventListener {
     private DartgamesService dartgamesService;
 
     @Autowired
-    private EventPublisherService  eventPublisherService;
+    private EventPublisherService eventPublisherService;
 
     @FXML
     private MediaView backgroundMediaView;
@@ -69,6 +74,12 @@ public class GameController extends DefaultDartgameEventListener {
 
     @FXML
     private Label messageLabel;
+
+    @FXML
+    private Label guideTextLabel;
+
+    @FXML
+    private Label confirmButtonLabel;
 
     @FXML
     private BorderPane gamePane;
@@ -85,6 +96,7 @@ public class GameController extends DefaultDartgameEventListener {
     @FXML
     private Label currentPlayerScoreLabel;
 
+    private GameState gameState;
     private Dartgame dartgame;
     private Player currentPlayer;
     private int currentRound;
@@ -134,7 +146,7 @@ public class GameController extends DefaultDartgameEventListener {
 
     @EventListener(StageReadyEvent.class)
     public void savestage(StageReadyEvent event) {
-        LOG.debug("Stage ready event received");
+        LOG.debug("Saving stage");
         stage = event.getStage();
     }
 
@@ -150,18 +162,41 @@ public class GameController extends DefaultDartgameEventListener {
         });
     }
 
+    @FXML
+    public void messageConfirmed() {
+        if (gameState == null) {
+            LOG.warn("Message confirmed, but no game state");
+            return;
+        }
+
+        LOG.debug("Message confirmed");
+        switch(gameState) {
+            case WAITING_FOR_PLAYERS:
+                IntStream.range(1, guestPlayers + 1)
+                        .forEach(i -> dartgame.addPlayer(new DefaultPlayer("Guest " + i)));
+                dartgame.startPlaying();
+                break;
+
+            case FINISHED:
+                eventPublisherService.publish(new CloseDartgameEvent(GameController.this));
+                break;
+
+            default:
+                LOG.warn("Unknown game state: {}", gameState);
+        }
+        gameState = null;
+    }
+
     @Override
     public void onWaitingForPlayers(Dartgame dartGame) {
         Platform.runLater(() -> {
-            showMessage("Waiting for players...");
-
+            showMessageConfirm("Waiting for players...");
+            gameState = GameState.WAITING_FOR_PLAYERS;
             dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
                 LOG.debug("Dartboard value: {}", dartboardValue);
                 switch (dartboardValue) {
                     case RED_BUTTON:
-                        IntStream.range(1, guestPlayers + 1)
-                                .forEach(i -> dartgame.addPlayer(new DefaultPlayer("Guest " + i)));
-                        dartgame.startPlaying();
+                        messageConfirmed();
                         break;
 
                     case TWO_INNER:
@@ -169,7 +204,7 @@ public class GameController extends DefaultDartgameEventListener {
                     case TRIPLE_TWO:
                     case DOUBLE_TWO:
                         guestPlayers = 2;
-                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
                         break;
 
                     case THREE_INNER:
@@ -177,14 +212,14 @@ public class GameController extends DefaultDartgameEventListener {
                     case TRIPLE_THREE:
                     case DOUBLE_THREE:
                         guestPlayers = 3;
-                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
 
                     case FOUR_INNER:
                     case FOUR_OUTER:
                     case TRIPLE_FOUR:
                     case DOUBLE_FOUR:
                         guestPlayers = 4;
-                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
                         break;
 
                     case FIVE_INNER:
@@ -192,7 +227,7 @@ public class GameController extends DefaultDartgameEventListener {
                     case TRIPLE_FIVE:
                     case DOUBLE_FIVE:
                         guestPlayers = 5;
-                        showMessage(String.format("Waiting for players...(%d) guests", guestPlayers));
+                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
                 }
             }));
         });
@@ -218,7 +253,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onGamePlayStarted(Dartgame dartGame) {
         Platform.runLater(() -> {
-            showMessage("Get ready!");
+            showMessageForDuration(Duration.ofSeconds(3), "Get ready!");
             dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
         });
     }
@@ -239,7 +274,7 @@ public class GameController extends DefaultDartgameEventListener {
             currentRound = roundNumber;
             dartsList.getItems().clear();
 
-            showMessage("Round #" + roundNumber);
+            showMessageForDuration(Duration.ofSeconds(3), "Round #" + roundNumber);
             //wait(1);
         });
     }
@@ -251,7 +286,7 @@ public class GameController extends DefaultDartgameEventListener {
             dartsList.getItems().clear();
             updateScore();
 
-            showMessage(player.getName() + ": Throw the dart");
+            showMessageForDuration(Duration.ofSeconds(3), player.getName() + ": Throw the dart");
         });
     }
 
@@ -268,45 +303,55 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onRemoveDarts(Dartgame dartGame, int round, Player player) {
         Platform.runLater(() -> {
-            showMessage("Remove the darts");
+            showMessageConfirm("Remove the darts");
         });
     }
 
     @Override
     public void onPlayerBust(Dartgame dartGame, Player player) {
         Platform.runLater(() -> {
-            showMessage(player.getName() + " is bust");
+            showMessageConfirm(player.getName() + " is bust");
         });
     }
 
     @Override
     public void onPlayerLost(Dartgame dartGame, Player player) {
         Platform.runLater(() -> {
-            showMessage(player.getName() + " is out");
+            showMessageConfirm(player.getName() + " is out");
         });
     }
 
     @Override
     public void onPlayerWon(Dartgame dartGame, Player player) {
         Platform.runLater(() -> {
-            showMessage(player.getName() + " is a winner");
+            showMessageConfirm(player.getName() + " is a winner");
         });
     }
 
     @Override
     public void onGameFinished(Dartgame dartGame) {
-        Platform.runLater(() -> {
-            showMessage("Game over");
-            //show scores
-            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
-                LOG.debug("Dartboard value: {}", dartboardValue);
-                switch (dartboardValue) {
-                    case RED_BUTTON:
-                        eventPublisherService.publish(new EndedDartgameEvent(this));
-                        break;
-                }
-            }));
-        });
+        LOG.debug("Game finished, so closing the view, scheduling to show message");
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        platformRun(() -> {
+                            showMessageConfirm("Game over");
+                            gameState = GameState.FINISHED;
+                            // TODO show scores
+                            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
+                                LOG.debug("Dartboard value: {}", dartboardValue);
+                                switch (dartboardValue) {
+                                    case RED_BUTTON:
+                                        messageConfirmed();
+                                        break;
+                                }
+                            }));
+                        });
+
+                    }
+                },
+                Duration.ofSeconds(5).toMillis());
     }
 
     private void updateScore() {
@@ -329,8 +374,41 @@ public class GameController extends DefaultDartgameEventListener {
         scoreTable.refresh();
     }
 
-    private void showMessage(String message) {
+    private void showMessageForDuration(Duration duration, String message) {
         messageLabel.setText(message);
+        messagePane.setVisible(true);
+        guideTextLabel.setVisible(false);
+        confirmButtonLabel.setVisible(false);
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        platformRun(() -> {
+                            LOG.debug("Hiding message: {}", message);
+                            if (messageLabel.getText().equals(message)) {
+                                messagePane.setVisible(false);
+                            } else {
+                                LOG.debug("Message changed, so not hiding message");
+                            }
+                        });
+                    }
+                },
+                duration.toMillis()
+        );
+    }
+
+    private void showMessageConfirm(String message) {
+        messageLabel.setText(message);
+        guideTextLabel.setVisible(false);
+        confirmButtonLabel.setVisible(true);
+        messagePane.setVisible(true);
+    }
+
+    private void showMessageGuideText(String message, String guideText) {
+        messageLabel.setText(message);
+        guideTextLabel.setText(guideText);
+        guideTextLabel.setVisible(true);
+        confirmButtonLabel.setVisible(false);
         messagePane.setVisible(true);
     }
 

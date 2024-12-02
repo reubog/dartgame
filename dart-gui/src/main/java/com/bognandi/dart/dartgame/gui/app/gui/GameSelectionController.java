@@ -2,7 +2,7 @@ package com.bognandi.dart.dartgame.gui.app.gui;
 
 import com.bognandi.dart.core.dartgame.DartgameDescriptor;
 import com.bognandi.dart.dartgame.gui.app.JavaFxApplicationSupport;
-import com.bognandi.dart.dartgame.gui.app.event.EndedDartgameEvent;
+import com.bognandi.dart.dartgame.gui.app.event.CloseDartgameEvent;
 import com.bognandi.dart.dartgame.gui.app.event.SplashScreenFinishedEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StageReadyEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StartDartgameEvent;
@@ -66,8 +66,8 @@ public class GameSelectionController {
         startGui();
     }
 
-    @EventListener(EndedDartgameEvent.class)
-    public void onGameEnded(EndedDartgameEvent event) {
+    @EventListener(CloseDartgameEvent.class)
+    public void onGameEnded(CloseDartgameEvent event) {
         startGui();
     }
 

@@ -3,9 +3,9 @@ package com.bognandi.dart.dartgame.gui.app.event;
 import com.bognandi.dart.dartgame.gui.app.gui.GameController;
 import org.springframework.context.ApplicationEvent;
 
-public class EndedDartgameEvent extends ApplicationEvent {
+public class CloseDartgameEvent extends ApplicationEvent {
 
-    public EndedDartgameEvent(GameController controller) {
+    public CloseDartgameEvent(GameController controller) {
         super(controller);
     }
 }

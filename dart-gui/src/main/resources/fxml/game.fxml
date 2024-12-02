@@ -8,10 +8,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-
 
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bognandi.dart.dartgame.gui.app.gui.GameController">
    <children>
@@ -53,15 +54,40 @@
             </BorderPane>
             <AnchorPane fx:id="messagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1400.0">
                <children>
-                  <Rectangle arcHeight="100.0" arcWidth="100.0" height="400.0" opacity="0.7" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="1400.0" />
-                  <Label fx:id="messageLabel" alignment="CENTER" layoutX="51.0" layoutY="45.0" prefHeight="320.0" prefWidth="1310.0" text="fgsfghsfdghdfghdgfdf df dfghdf" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font size="72.0" />
-                     </font>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </Label>
+                  <Rectangle arcHeight="100.0" arcWidth="100.0" height="400.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="1400.0" />
+                  <VBox layoutX="41.0" layoutY="32.0" prefHeight="333.0" prefWidth="1315.0">
+                     <children>
+                        <Label fx:id="messageLabel" alignment="CENTER" prefHeight="320.0" prefWidth="1310.0" text="fgsfghsfdghdfghdgfdf df dfghdf" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font size="72.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <BorderPane>
+                           <center>
+                              <VBox BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Label fx:id="confirmButtonLabel" alignment="CENTER" onMouseClicked="#messageConfirmed" prefHeight="44.0" prefWidth="1315.0" text="Continue" textFill="WHITE">
+                                       <font>
+                                          <Font name="System Bold" size="36.0" />
+                                       </font>
+                                       <graphic>
+                                          <Circle fill="#b20101" radius="15.0" stroke="BLACK" strokeType="INSIDE" />
+                                       </graphic>
+                                    </Label>
+                                    <Label fx:id="guideTextLabel" alignment="CENTER" prefHeight="43.0" prefWidth="1315.0" text="guideText" textFill="WHITE">
+                                       <font>
+                                          <Font size="35.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </VBox>
                </children>
             </AnchorPane>
          </children>

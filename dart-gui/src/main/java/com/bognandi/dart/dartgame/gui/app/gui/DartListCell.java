@@ -21,7 +21,7 @@ public class DartListCell extends ListCell<Dart> {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameDartListCell.fxml"));
             root = loader.load();
             controller = loader.getController();
-            LOG.debug("loaded, controller={}, root={}", controller, root);
+            LOG.trace("loaded, controller={}, root={}", controller, root);
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }
