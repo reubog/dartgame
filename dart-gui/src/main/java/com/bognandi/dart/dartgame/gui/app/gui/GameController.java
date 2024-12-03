@@ -12,7 +12,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -27,7 +26,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -104,7 +102,6 @@ public class GameController extends DefaultDartgameEventListener {
     private Map<String, Object> currentScoreRound;
     private MediaPlayer mediaPlayer;
     private int guestPlayers = 0;
-    private ConfigurableApplicationContext context;
 
     public record GamePlayer(Player player, PlayerScore playerScore, AtomicBoolean leaderScore) {
     }
@@ -113,11 +110,9 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     private Map<Player, GamePlayer> gamePlayerMap = new LinkedHashMap<>();
-    private Parent parent;
     private Stage stage;
 
-    public GameController(@Autowired ConfigurableApplicationContext context) {
-        this.context = context;
+    public GameController() {
         LOG.debug("GameController created");
     }
 
@@ -190,7 +185,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onWaitingForPlayers(Dartgame dartGame) {
         Platform.runLater(() -> {
-            showMessageConfirm("Waiting for players...");
+            showMessageGuideText("Waiting for players...", "Use dartboard numbers to select");
             gameState = GameState.WAITING_FOR_PLAYERS;
             dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
                 LOG.debug("Dartboard value: {}", dartboardValue);
@@ -254,7 +249,7 @@ public class GameController extends DefaultDartgameEventListener {
     public void onGamePlayStarted(Dartgame dartGame) {
         Platform.runLater(() -> {
             showMessageForDuration(Duration.ofSeconds(3), "Get ready!");
-            dartgame.attachDartboard(new PlatformDartboardWrapper(dartboardService.getDartboard()));
+            dartgame.attachDartboard(new EnsureJavaFXThreadDartboardWrapper(dartboardService.getDartboard()));
         });
     }
 
@@ -310,21 +305,21 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onPlayerBust(Dartgame dartGame, Player player) {
         Platform.runLater(() -> {
-            showMessageConfirm(player.getName() + " is bust");
+            showMessageConfirm(player.getName() + " is bust\nRemove the darts");
         });
     }
 
     @Override
     public void onPlayerLost(Dartgame dartGame, Player player) {
         Platform.runLater(() -> {
-            showMessageConfirm(player.getName() + " is out");
+            showMessageConfirm(player.getName() + " is out\nRemove the darts");
         });
     }
 
     @Override
     public void onPlayerWon(Dartgame dartGame, Player player) {
         Platform.runLater(() -> {
-            showMessageConfirm(player.getName() + " is a winner");
+            showMessageConfirm(player.getName() + " is a winner\nRemove the darts");
         });
     }
 

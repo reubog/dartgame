@@ -3,6 +3,7 @@ package com.bognandi.dart.dartgame.gui.app.service.dartboard;
 import com.bognandi.dart.core.dartgame.Dartboard;
 import com.bognandi.dart.dartboard.mqtt.DartboardMqttSubscriber;
 import com.bognandi.dart.dartboard.mqtt.DartboardMqttMessageDeserializer;
+import com.bognandi.dart.dartgame.gui.app.gui.EnsureJavaFXThreadDartboardWrapper;
 import jakarta.annotation.PreDestroy;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -36,7 +37,7 @@ public class DartboardService {
         LOG.info("Creating dartboard");
         try {
             subscriber = DartboardMqttSubscriber.createSubscriber(mqttClient, deserializer);
-            return subscriber;
+            return new EnsureJavaFXThreadDartboardWrapper(subscriber);
         } catch (MqttException e) {
             throw new RuntimeException(e);
         }

@@ -72,9 +72,11 @@ public class GameSelectionController {
     }
 
     private void startGui() {
-        LOG.debug("Starting game selection gui");
-        stage.getScene().setRoot(JavaFxApplicationSupport.GAME_SELECTION_PARENT);
-        setupDartboardEvents();
+        platformRun(() -> {
+            LOG.debug("Starting game selection gui");
+            stage.getScene().setRoot(JavaFxApplicationSupport.GAME_SELECTION_PARENT);
+            setupDartboardEvents();
+        });
     }
 
     @FXML
@@ -150,10 +152,10 @@ public class GameSelectionController {
 
     private void platformRun(Runnable runnable) {
         if (Platform.isFxApplicationThread()) {
-            LOG.debug("Running on JavaFX thread");
+            LOG.debug("Already on JavaFX thread");
             runnable.run();
         } else {
-            LOG.debug("Running on non-JavaFX thread");
+            LOG.debug("Running on non-JavaFX thread, so scheduling...");
             Platform.runLater(runnable);
         }
     }

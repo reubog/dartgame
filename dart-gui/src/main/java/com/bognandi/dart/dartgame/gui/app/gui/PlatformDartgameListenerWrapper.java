@@ -75,7 +75,7 @@ public class PlatformDartgameListenerWrapper implements DartgameEventListener {
 
     private void platformRun(Runnable runnable) {
         if (Platform.isFxApplicationThread()) {
-            LOG.debug("Running on JavaFX thread");
+            LOG.debug("Already on JavaFX thread");
             runnable.run();
         } else {
             LOG.debug("Running on non-JavaFX thread");
