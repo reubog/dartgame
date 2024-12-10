@@ -42,7 +42,6 @@ public class X01DartgameTest {
         Mockito.when(scoreBoard.getMinimumNumberOfPlayers()).thenReturn(2);
 
         game = new X01Dartgame(scoreBoard);
-        game.initGameWaitForPlayers();
         game.addEventListener(dartGameEventListener);
         game.attachDartboard(dartBoard);
     }
@@ -204,7 +203,8 @@ public class X01DartgameTest {
 
         }
 
-        public void onPlayerAdded(Dartgame dartGame, Player player) {
+        @Override
+        public void onPlayersSet(Dartgame dartGame, List<Player> players) {
 
         }
 

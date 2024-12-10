@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class PlatformDartgameListenerWrapper implements DartgameEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatformDartgameListenerWrapper.class);
@@ -33,8 +35,8 @@ public class PlatformDartgameListenerWrapper implements DartgameEventListener {
     }
 
     @Override
-    public void onPlayerAdded(Dartgame dartGame, Player player) {
-        platformRun(() -> delegate.onPlayerAdded(dartGame, player));
+    public void onPlayersSet(Dartgame dartGame, List<Player> players) {
+        platformRun(() -> delegate.onPlayersSet(dartGame, players));
     }
 
     @Override
@@ -74,10 +76,10 @@ public class PlatformDartgameListenerWrapper implements DartgameEventListener {
 
     private void platformRun(Runnable runnable) {
         if (Platform.isFxApplicationThread()) {
-            LOG.debug("Already on JavaFX thread");
+            //LOG.debug("Already on JavaFX thread");
             runnable.run();
         } else {
-            LOG.debug("Running on non-JavaFX thread");
+            //LOG.debug("Running on non-JavaFX thread");
             Platform.runLater(runnable);
         }
     }

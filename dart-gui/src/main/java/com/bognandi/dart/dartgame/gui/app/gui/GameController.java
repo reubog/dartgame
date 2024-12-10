@@ -174,15 +174,13 @@ public class GameController extends DefaultDartgameEventListener {
             return;
         }
 
-        LOG.debug("Message confirmed");
+        LOG.debug("Message confirmed, gamestate={}", gameState);
         switch (gameState) {
             case WAITING_FOR_PLAYERS:
                 dartgame = dartgamesService.createDartgame(dartgameDescriptor);
                 dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
                 dartgame.attachDartboard(dartboardService.getDartboard());
-                dartgame.setPlayers(IntStream.range(1, guestPlayers + 1)
-                        .mapToObj(i -> new DefaultPlayer("Guest " + i))
-                                .collect(Collectors.toList()));
+                dartgame.setPlayers(players);
                 dartgame.startPlaying();
                 break;
 
@@ -270,7 +268,7 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     @Override
-    public void onPlayerAdded(Dartgame dartGame, Player player) {
+    public void onPlayersSet(Dartgame dartGame, List<Player> players) {
         doEnsureFxThread(() -> {
 
 

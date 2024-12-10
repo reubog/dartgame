@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
 public class X01ScoreBoardTest {
 
@@ -29,8 +31,7 @@ public class X01ScoreBoardTest {
     @BeforeEach
     void setUp() {
         scoreBoard = new X01ScoreBoard(301, dartValueMapper);
-        scoreBoard.onPlayerAdded(dartGame, player1);
-        scoreBoard.onPlayerAdded(dartGame, player2);
+        scoreBoard.onPlayersSet(dartGame, List.of(player1, player2));
         scoreBoard.onWaitingForPlayers(dartGame);
         scoreBoard.onGamePlayStarted(dartGame);
         scoreBoard.onRoundStarted(dartGame, 1);

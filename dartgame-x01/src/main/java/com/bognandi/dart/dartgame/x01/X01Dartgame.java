@@ -46,14 +46,12 @@ public class X01Dartgame implements Dartgame {
         this.dartboard.setOnDartboardValue(this::onDartboardValue);
     }
 
-    public void initGameWaitForPlayers() {
+    private void initGameWaitForPlayers() {
         LOG.info("Initializing game and waiting for players");
 
         this.dartgameEventListeners.addFirst(scoreBoard);
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
-
-        //this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onWaitingForPlayers(this));
     }
 
     @Override
@@ -193,9 +191,10 @@ public class X01Dartgame implements Dartgame {
             return;
         }
 
+        this.players.clear();
         this.players.addAll(players);
         LOG.info("{} players added", this.players.size());
-        //this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerAdded(this, player));
+        this.dartgameEventListeners.forEach(listener -> listener.onPlayersSet(this, Collections.unmodifiableList(players)));
     }
 
     private void newRound() {

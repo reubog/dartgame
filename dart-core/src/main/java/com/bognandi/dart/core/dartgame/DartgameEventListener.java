@@ -1,11 +1,13 @@
 package com.bognandi.dart.core.dartgame;
 
+import java.util.List;
+
 public interface DartgameEventListener {
     //void onWaitingForPlayers(Dartgame dartGame);
     void onGamePlayStarted(Dartgame dartGame);
     void onGameFinished(Dartgame dartGame);
 
-    void onPlayerAdded(Dartgame dartGame, Player player);
+    void onPlayersSet(Dartgame dartGame, List<Player> players);
 
     void onRoundStarted(Dartgame dartGame, int roundNumber);
     void onPlayerTurn(Dartgame dartGame, int roundNumber, Player player);

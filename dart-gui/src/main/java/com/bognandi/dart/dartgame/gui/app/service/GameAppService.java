@@ -147,8 +147,8 @@ public class GameAppService {
         }
 
         @Override
-        public void onPlayerAdded(Dartgame dartGame, Player player) {
-            speak("welcome to the game " + player.getName());
+        public void onPlayersSet(Dartgame dartGame, List<Player> players) {
+            speak("welcome to the game " + players.get(0).getName());
         }
 
         @Override

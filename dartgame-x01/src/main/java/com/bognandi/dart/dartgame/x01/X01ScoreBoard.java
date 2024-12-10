@@ -1,13 +1,18 @@
 package com.bognandi.dart.dartgame.x01;
 
 import com.bognandi.dart.core.dartgame.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(X01ScoreBoard.class);
 
     private final int startScore;
     private int currentPlayerTurnStartScore;
@@ -66,9 +71,14 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     }
 
-    public void onPlayerAdded(Dartgame dartGame, Player player) {
-        playerScoreMap.put(player, new X01PlayerScore(startScore));
-        playing.add(player);
+    @Override
+    public void onPlayersSet(Dartgame dartGame, List<Player> players) {
+        LOG.debug("players={}", players.stream().map(Player::getName).collect(Collectors.joining(", ")));
+
+        players.forEach(player -> playerScoreMap.put(player, new X01PlayerScore(startScore)));
+
+        playing.clear();
+        playing.addAll(players);
     }
 
     @Override

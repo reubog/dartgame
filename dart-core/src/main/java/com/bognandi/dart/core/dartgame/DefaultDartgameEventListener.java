@@ -3,6 +3,9 @@ package com.bognandi.dart.core.dartgame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class DefaultDartgameEventListener implements DartgameEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultDartgameEventListener.class);
@@ -22,8 +25,8 @@ public class DefaultDartgameEventListener implements DartgameEventListener {
     }
 
     @Override
-    public void onPlayerAdded(Dartgame dartGame, Player player) {
-        LOG.debug("Player added: {}", player.getName());
+    public void onPlayersSet(Dartgame dartGame, List<Player> players) {
+        LOG.debug("Players set: {}", players.stream().map(player -> player.getName()).collect(Collectors.joining(", ")));
     }
 
     @Override
