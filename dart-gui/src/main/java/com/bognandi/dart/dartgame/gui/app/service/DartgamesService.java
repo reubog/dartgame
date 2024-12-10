@@ -9,7 +9,6 @@ import io.github.classgraph.ScanResult;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,7 +20,7 @@ public class DartgamesService {
 
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DartgamesService.class);
 
-    private Map<DartgameDescriptor,DartgameFactory> availableDartgames;
+    private Map<DartgameDescriptor, DartgameFactory> availableDartgames;
 
     public DartgamesService() {
         LOG.info("Scanning for dartgames...");

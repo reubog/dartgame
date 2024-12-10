@@ -46,7 +46,7 @@ public class DartboardService {
 
     @PreDestroy
     public void destroy() {
-        LOG.info("unsubscribiting");
+        LOG.info("unsubscribing");
         try {
             if (subscriber != null) {
                 subscriber.unsubscribe(mqttClient);

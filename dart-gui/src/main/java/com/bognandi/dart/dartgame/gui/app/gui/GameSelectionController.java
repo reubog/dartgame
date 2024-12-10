@@ -45,14 +45,7 @@ public class GameSelectionController {
     private Stage stage;
 
     public GameSelectionController() {
-        LOG.debug("Creating game selection gui");
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gameseletion.fxml"));
-//            loader.setControllerFactory(applicationContext::getBean);
-//            parent = loader.load();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        LOG.debug("Creating game selection controller");
     }
 
     @EventListener(StageReadyEvent.class)
@@ -91,36 +84,34 @@ public class GameSelectionController {
     }
 
     private void setupDartboardEvents() {
-        dartboardService.getDartboard().setOnDartboardValue(dartboardValue ->
-                platformRun(() -> {
-                    switch (dartboardValue) {
-                        case RED_BUTTON:
-                            startGame();
-                            break;
+        dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> {
+            switch (dartboardValue) {
+                case RED_BUTTON:
+                    startGame();
+                    break;
 
-                        case TWENTY_INNER:
-                        case TRIPLE_TWENTY:
-                        case DOUBLE_TWENTY:
-                        case TWENTY_OUTER:
-                            selectPrevious();
-                            break;
+                case TWENTY_INNER:
+                case TRIPLE_TWENTY:
+                case DOUBLE_TWENTY:
+                case TWENTY_OUTER:
+                    selectPrevious();
+                    break;
 
-                        case THREE_INNER:
-                        case THREE_OUTER:
-                        case TRIPLE_THREE:
-                        case DOUBLE_THREE:
-                            selectNext();
-                            break;
+                case THREE_INNER:
+                case THREE_OUTER:
+                case TRIPLE_THREE:
+                case DOUBLE_THREE:
+                    selectNext();
+                    break;
 
-                        case ELEVEN_INNER:
-                        case ELEVEN_OUTER:
-                        case DOUBLE_ELEVEN:
-                        case TRIPLE_ELEVEN:
-                            Platform.exit();
-                            break;
-                    }
-                })
-        );
+                case ELEVEN_INNER:
+                case ELEVEN_OUTER:
+                case DOUBLE_ELEVEN:
+                case TRIPLE_ELEVEN:
+                    Platform.exit();
+                    break;
+            }
+        });
     }
 
     @FXML
@@ -152,10 +143,10 @@ public class GameSelectionController {
 
     private void platformRun(Runnable runnable) {
         if (Platform.isFxApplicationThread()) {
-            LOG.debug("Already on JavaFX thread");
+            //LOG.debug("Already on JavaFX thread");
             runnable.run();
         } else {
-            LOG.debug("Running on non-JavaFX thread, so scheduling...");
+            //LOG.debug("Running on non-JavaFX thread, so scheduling...");
             Platform.runLater(runnable);
         }
     }

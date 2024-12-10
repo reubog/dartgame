@@ -52,7 +52,6 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
         return playerPositions.get(0);
     }
 
-    @Override
     public void onWaitingForPlayers(Dartgame dartGame) {
         playing.clear();
     }
@@ -67,7 +66,6 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     }
 
-    @Override
     public void onPlayerAdded(Dartgame dartGame, Player player) {
         playerScoreMap.put(player, new X01PlayerScore(startScore));
         playing.add(player);

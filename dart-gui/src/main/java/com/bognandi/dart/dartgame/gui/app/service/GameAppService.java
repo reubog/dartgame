@@ -130,7 +130,6 @@ public class GameAppService {
         private Player currentPlayer;
         private int startRoundScore;
 
-        @Override
         public void onWaitingForPlayers(Dartgame dartGame) {
             speak("waiting for players and button press");
         }

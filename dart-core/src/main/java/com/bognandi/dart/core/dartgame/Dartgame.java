@@ -6,9 +6,8 @@ public interface Dartgame {
     void attachDartboard(Dartboard dartboard);
     void addEventListener(DartgameEventListener listener);
     void removeEventListener(DartgameEventListener listener);
-    void initGameWaitForPlayers();
     void startPlaying();
-    void addPlayer(Player player);
+    void setPlayers(List<Player> players);
     List<Player> getPlayers();
     PlayerScore getPlayerScore(Player player);
     ScoreBoard  getScoreBoard();

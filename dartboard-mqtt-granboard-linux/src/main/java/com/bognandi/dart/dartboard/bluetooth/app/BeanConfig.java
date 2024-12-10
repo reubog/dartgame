@@ -27,7 +27,7 @@ public class BeanConfig {
         return new MqttClientFactory(serverUrl, clientId);
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public IMqttClient createMqttClient(@Autowired MqttClientFactory clientFactory) {
         return clientFactory.newConnectedClient();
     }

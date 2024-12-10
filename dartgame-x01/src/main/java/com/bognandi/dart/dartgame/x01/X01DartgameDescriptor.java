@@ -26,4 +26,14 @@ public class X01DartgameDescriptor implements DartgameDescriptor {
     public String getDescrption() {
         return DESCRIPTION.replace("<TITLE>", title);
     }
+
+    @Override
+    public int getMinimumPlayerCount() {
+        return 2;
+    }
+
+    @Override
+    public int getMaximumPlayerCount() {
+        return Integer.MAX_VALUE;
+    }
 }

@@ -37,6 +37,7 @@ public class X01Dartgame implements Dartgame {
 
     public X01Dartgame(X01ScoreBoard scoreBoard) {
         this.scoreBoard = scoreBoard;
+        initGameWaitForPlayers();
     }
 
     @Override
@@ -45,7 +46,6 @@ public class X01Dartgame implements Dartgame {
         this.dartboard.setOnDartboardValue(this::onDartboardValue);
     }
 
-    @Override
     public void initGameWaitForPlayers() {
         LOG.info("Initializing game and waiting for players");
 
@@ -53,7 +53,7 @@ public class X01Dartgame implements Dartgame {
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
 
-        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onWaitingForPlayers(this));
+        //this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onWaitingForPlayers(this));
     }
 
     @Override
@@ -187,15 +187,15 @@ public class X01Dartgame implements Dartgame {
     }
 
     @Override
-    public void addPlayer(Player player) {
+    public void setPlayers(List<Player> players) {
         if (!GameState.WAITING_FOR_PLAYERS.equals(gameState)) {
             LOG.warn("Game is not waiting for players, so ignoring");
             return;
         }
 
-        players.add(player);
-        LOG.info("Added player {}", player);
-        this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerAdded(this, player));
+        this.players.addAll(players);
+        LOG.info("{} players added", this.players.size());
+        //this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerAdded(this, player));
     }
 
     private void newRound() {

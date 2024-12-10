@@ -16,8 +16,8 @@ public class GamePlayerListCellController {
     private ImageView leaderImage;
 
     public void updatePlayer(GameController.GamePlayer item) {
-        playerNameLabel.setText(item.player().getName());
-        scoreLabel.setText("" + item.playerScore().getScore());
-        leaderImage.setVisible(item.leaderScore().get());
+        playerNameLabel.setText(item.playerName);
+        scoreLabel.setText("" + item.playerScore);
+        leaderImage.setVisible(item.leader);
     }
 }

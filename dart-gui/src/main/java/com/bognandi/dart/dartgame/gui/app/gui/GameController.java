@@ -30,11 +30,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -101,12 +97,26 @@ public class GameController extends DefaultDartgameEventListener {
     private ObservableList<Map<String, Object>> scoreData = FXCollections.observableArrayList();
     private Map<String, Object> currentScoreRound;
     private MediaPlayer mediaPlayer;
-    private int guestPlayers = 0;
+    private List<Player> players = new ArrayList<>();
+    private int guestPlayers;
+    private DartgameDescriptor dartgameDescriptor;
 
-    public record GamePlayer(Player player, PlayerScore playerScore, AtomicBoolean leaderScore) {
+    public class GamePlayer {
+            String playerName;
+            int playerScore;
+            boolean leader;
+
+        public GamePlayer(String playerName, int playerScore, boolean leader) {
+            this.playerName = playerName;
+            this.playerScore = playerScore;
+            this.leader = leader;
+        }
     }
 
-    public record GameRound(int round, Map<Player, AtomicInteger> score) {
+    public record GameRound(
+            int round,
+            Map<Player, AtomicInteger> score
+    ) {
     }
 
     private Map<Player, GamePlayer> gamePlayerMap = new LinkedHashMap<>();
@@ -140,20 +150,20 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     @EventListener(StageReadyEvent.class)
-    public void savestage(StageReadyEvent event) {
+    public void saveStageForLater(StageReadyEvent event) {
         LOG.debug("Saving stage");
         stage = event.getStage();
     }
 
     @EventListener(StartDartgameEvent.class)
-    public void startGame(StartDartgameEvent event) {
-        LOG.debug("Start dartgame event received, showing view");
-        platformRun(() -> {
+    public void startGameGui(StartDartgameEvent event) {
+        LOG.debug("Switching view to Game mode");
+        doEnsureFxThread(() -> {
             stage.getScene().setRoot(JavaFxApplicationSupport.GAME_PARENT);
 
-            dartgame = dartgamesService.createDartgame(event.getDartgameDescriptor());
-            dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
-            dartgame.initGameWaitForPlayers();
+            dartgameDescriptor = event.getDartgameDescriptor();
+
+            waitingForPlayers();
         });
     }
 
@@ -165,10 +175,14 @@ public class GameController extends DefaultDartgameEventListener {
         }
 
         LOG.debug("Message confirmed");
-        switch(gameState) {
+        switch (gameState) {
             case WAITING_FOR_PLAYERS:
-                IntStream.range(1, guestPlayers + 1)
-                        .forEach(i -> dartgame.addPlayer(new DefaultPlayer("Guest " + i)));
+                dartgame = dartgamesService.createDartgame(dartgameDescriptor);
+                dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
+                dartgame.attachDartboard(dartboardService.getDartboard());
+                dartgame.setPlayers(IntStream.range(1, guestPlayers + 1)
+                        .mapToObj(i -> new DefaultPlayer("Guest " + i))
+                                .collect(Collectors.toList()));
                 dartgame.startPlaying();
                 break;
 
@@ -182,56 +196,67 @@ public class GameController extends DefaultDartgameEventListener {
         gameState = null;
     }
 
-    @Override
-    public void onWaitingForPlayers(Dartgame dartGame) {
-        Platform.runLater(() -> {
-            showMessageGuideText("Waiting for players...", "Use dartboard numbers to select");
-            gameState = GameState.WAITING_FOR_PLAYERS;
-            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
-                LOG.debug("Dartboard value: {}", dartboardValue);
-                switch (dartboardValue) {
-                    case RED_BUTTON:
-                        messageConfirmed();
-                        break;
+    private void waitingForPlayers() {
+        showMessageGuideText("Waiting for players...", "Use dartboard numbers to select");
+        gameState = GameState.WAITING_FOR_PLAYERS;
+        dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> doEnsureFxThread(() -> {
+            LOG.debug("Dartboard value: {}", dartboardValue);
+            switch (dartboardValue) {
+                case RED_BUTTON:
+                    addPlayersToGame();
+                    messageConfirmed();
+                    dartgame.startPlaying();
+                    break;
 
-                    case TWO_INNER:
-                    case TWO_OUTER:
-                    case TRIPLE_TWO:
-                    case DOUBLE_TWO:
-                        guestPlayers = 2;
-                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
-                        break;
+                case TWO_INNER:
+                case TWO_OUTER:
+                case TRIPLE_TWO:
+                case DOUBLE_TWO:
+                    guestPlayers = 2;
+                    showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
+                    break;
 
-                    case THREE_INNER:
-                    case THREE_OUTER:
-                    case TRIPLE_THREE:
-                    case DOUBLE_THREE:
-                        guestPlayers = 3;
-                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
+                case THREE_INNER:
+                case THREE_OUTER:
+                case TRIPLE_THREE:
+                case DOUBLE_THREE:
+                    guestPlayers = 3;
+                    showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
+                    break;
 
-                    case FOUR_INNER:
-                    case FOUR_OUTER:
-                    case TRIPLE_FOUR:
-                    case DOUBLE_FOUR:
-                        guestPlayers = 4;
-                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
-                        break;
+                case FOUR_INNER:
+                case FOUR_OUTER:
+                case TRIPLE_FOUR:
+                case DOUBLE_FOUR:
+                    guestPlayers = 4;
+                    showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
+                    break;
 
-                    case FIVE_INNER:
-                    case FIVE_OUTER:
-                    case TRIPLE_FIVE:
-                    case DOUBLE_FIVE:
-                        guestPlayers = 5;
-                        showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
-                }
-            }));
-        });
+                case FIVE_INNER:
+                case FIVE_OUTER:
+                case TRIPLE_FIVE:
+                case DOUBLE_FIVE:
+                    guestPlayers = 5;
+                    showMessageConfirm(String.format("Waiting for players...(%d) guests", guestPlayers));
+            }
+        }));
     }
 
-    @Override
-    public void onPlayerAdded(Dartgame dartGame, Player player) {
-        Platform.runLater(() -> {
-            GamePlayer gamePlayer = new GamePlayer(player, dartGame.getPlayerScore(player), new AtomicBoolean(false));
+    private void addPlayersToGame() {
+        LOG.debug("Add players");
+
+        players = IntStream.range(0, guestPlayers)
+                .mapToObj(i -> (Player) new DefaultPlayer("Guest " + (i + 1)))
+                .toList();
+
+        players.forEach(player -> {
+            LOG.debug("Adding player: {}", player.getName());
+
+            GamePlayer gamePlayer = new GamePlayer(
+                    player.getName(),
+                    0,
+                    false);
+
             gamePlayerMap.put(player, gamePlayer);
             playersList.getItems().add(gamePlayer);
 
@@ -241,21 +266,27 @@ public class GameController extends DefaultDartgameEventListener {
 
             scoreTable.getColumns().add(column);
             scoreTable.setPrefWidth(scoreTable.getPrefWidth() + column.getPrefWidth() + 1);
+        });
+    }
+
+    @Override
+    public void onPlayerAdded(Dartgame dartGame, Player player) {
+        doEnsureFxThread(() -> {
+
 
         });
     }
 
     @Override
     public void onGamePlayStarted(Dartgame dartGame) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             showMessageForDuration(Duration.ofSeconds(3), "Get ready!");
-            dartgame.attachDartboard(new EnsureJavaFXThreadDartboardWrapper(dartboardService.getDartboard()));
         });
     }
 
     @Override
     public void onRoundStarted(Dartgame dartGame, int roundNumber) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             currentScoreRound = new LinkedHashMap<>();
             currentScoreRound.put(SCORETABLEKEY_ROUND, String.format("#%d", roundNumber));
             currentScoreRound.putAll(dartgame.getPlayers().stream()
@@ -276,7 +307,7 @@ public class GameController extends DefaultDartgameEventListener {
 
     @Override
     public void onPlayerTurn(Dartgame dartGame, int roundNumber, Player player) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             playersList.getSelectionModel().select(gamePlayerMap.get(currentPlayer = player));
             dartsList.getItems().clear();
             updateScore();
@@ -287,7 +318,7 @@ public class GameController extends DefaultDartgameEventListener {
 
     @Override
     public void onDartThrown(Dartgame dartGame, Dart dart) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             hideMessage();
 
             dartsList.getItems().add(dart);
@@ -297,28 +328,28 @@ public class GameController extends DefaultDartgameEventListener {
 
     @Override
     public void onRemoveDarts(Dartgame dartGame, int round, Player player) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             showMessageConfirm("Remove the darts");
         });
     }
 
     @Override
     public void onPlayerBust(Dartgame dartGame, Player player) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             showMessageConfirm(player.getName() + " is bust\nRemove the darts");
         });
     }
 
     @Override
     public void onPlayerLost(Dartgame dartGame, Player player) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             showMessageConfirm(player.getName() + " is out\nRemove the darts");
         });
     }
 
     @Override
     public void onPlayerWon(Dartgame dartGame, Player player) {
-        Platform.runLater(() -> {
+        doEnsureFxThread(() -> {
             showMessageConfirm(player.getName() + " is a winner\nRemove the darts");
         });
     }
@@ -330,11 +361,11 @@ public class GameController extends DefaultDartgameEventListener {
                 new TimerTask() {
                     @Override
                     public void run() {
-                        platformRun(() -> {
+                        doEnsureFxThread(() -> {
                             showMessageConfirm("Game over");
                             gameState = GameState.FINISHED;
                             // TODO show scores
-                            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> platformRun(() -> {
+                            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> doEnsureFxThread(() -> {
                                 LOG.debug("Dartboard value: {}", dartboardValue);
                                 switch (dartboardValue) {
                                     case RED_BUTTON:
@@ -361,8 +392,11 @@ public class GameController extends DefaultDartgameEventListener {
         if (currentRound > 1) {
             Player leadPlayer = dartgame.getScoreBoard().getLeadingPlayer();
 
-            gamePlayerMap.values().stream().forEach(gamePlayer ->
-                    gamePlayer.leaderScore.set(gamePlayer.player.equals(leadPlayer)));
+            gamePlayerMap.entrySet().stream().forEach(entry -> {
+                Player player = entry.getKey();
+                GamePlayer gamePlayer = entry.getValue();
+                gamePlayer.leader = player.equals(leadPlayer);
+            });
         }
 
         playersList.refresh();
@@ -378,7 +412,7 @@ public class GameController extends DefaultDartgameEventListener {
                 new TimerTask() {
                     @Override
                     public void run() {
-                        platformRun(() -> {
+                        doEnsureFxThread(() -> {
                             LOG.debug("Hiding message: {}", message);
                             if (messageLabel.getText().equals(message)) {
                                 messagePane.setVisible(false);
@@ -411,12 +445,12 @@ public class GameController extends DefaultDartgameEventListener {
         messagePane.setVisible(false);
     }
 
-    private void platformRun(Runnable runnable) {
+    private void doEnsureFxThread(Runnable runnable) {
         if (Platform.isFxApplicationThread()) {
-            LOG.trace("Running on JavaFX thread");
+            //LOG.trace("Running on JavaFX thread");
             runnable.run();
         } else {
-            LOG.trace("Running on non-JavaFX thread, so scheduling to run on it");
+            //LOG.trace("Running on non-JavaFX thread, so scheduling to run on it");
             Platform.runLater(runnable);
         }
     }
