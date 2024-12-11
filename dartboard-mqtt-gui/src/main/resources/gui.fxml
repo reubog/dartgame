@@ -50,6 +50,7 @@
         </Label>
             <ChoiceBox fx:id="dartvalueChoice" layoutX="26.0" layoutY="105.0" prefHeight="26.0" prefWidth="253.0" />
             <Button fx:id="sendButton" layoutX="300.0" layoutY="103.0" mnemonicParsing="false" onAction="#sendDartvalue" text="Send" />
+            <Button fx:id="redButton" layoutX="300.0" layoutY="153.0" mnemonicParsing="false" onAction="#sendRedButton" text="Red Button" />
       </children>
     </AnchorPane>
   </children>

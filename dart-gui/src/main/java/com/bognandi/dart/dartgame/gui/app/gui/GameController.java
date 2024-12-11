@@ -102,9 +102,9 @@ public class GameController extends DefaultDartgameEventListener {
     private DartgameDescriptor dartgameDescriptor;
 
     public class GamePlayer {
-            String playerName;
-            int playerScore;
-            boolean leader;
+        String playerName;
+        int playerScore;
+        boolean leader;
 
         public GamePlayer(String playerName, int playerScore, boolean leader) {
             this.playerName = playerName;
@@ -129,6 +129,14 @@ public class GameController extends DefaultDartgameEventListener {
     @FXML
     public void initialize() {
         LOG.debug("Initializing game controller view");
+
+        gamePlayerMap.clear();
+        scoreData.clear();
+        players.clear();
+        playersList.getItems().clear();
+        scoreTable.getItems().clear();
+        scoreTable.getColumns().clear();
+        dartsList.getItems().clear();
         playersList.setCellFactory(listView -> new GamePlayerListCell());
         dartsList.setCellFactory(listView -> new DartListCell());
 
@@ -177,11 +185,7 @@ public class GameController extends DefaultDartgameEventListener {
         LOG.debug("Message confirmed, gamestate={}", gameState);
         switch (gameState) {
             case WAITING_FOR_PLAYERS:
-                dartgame = dartgamesService.createDartgame(dartgameDescriptor);
-                dartgame.addEventListener(new PlatformDartgameListenerWrapper(this));
-                dartgame.attachDartboard(dartboardService.getDartboard());
-                dartgame.setPlayers(players);
-                dartgame.startPlaying();
+                addPlayersAndStartGame();
                 break;
 
             case FINISHED:
@@ -194,6 +198,17 @@ public class GameController extends DefaultDartgameEventListener {
         gameState = null;
     }
 
+    private void addPlayersAndStartGame() {
+        addPlayersToGame();
+
+        LOG.debug("Starting game");
+        dartgame = dartgamesService.createDartgame(dartgameDescriptor);
+        dartgame.addEventListener(this);
+        dartgame.attachDartboard(new EnsureJavaFXThreadDartboardWrapper(dartboardService.getDartboard()));
+        dartgame.setPlayers(players);
+        dartgame.startPlaying();
+    }
+
     private void waitingForPlayers() {
         showMessageGuideText("Waiting for players...", "Use dartboard numbers to select");
         gameState = GameState.WAITING_FOR_PLAYERS;
@@ -201,9 +216,7 @@ public class GameController extends DefaultDartgameEventListener {
             LOG.debug("Dartboard value: {}", dartboardValue);
             switch (dartboardValue) {
                 case RED_BUTTON:
-                    addPlayersToGame();
-                    messageConfirmed();
-                    dartgame.startPlaying();
+                    addPlayersAndStartGame();
                     break;
 
                 case TWO_INNER:
@@ -299,7 +312,6 @@ public class GameController extends DefaultDartgameEventListener {
             dartsList.getItems().clear();
 
             showMessageForDuration(Duration.ofSeconds(3), "Round #" + roundNumber);
-            //wait(1);
         });
     }
 
@@ -328,6 +340,7 @@ public class GameController extends DefaultDartgameEventListener {
     public void onRemoveDarts(Dartgame dartGame, int round, Player player) {
         doEnsureFxThread(() -> {
             showMessageConfirm("Remove the darts");
+            updateScore();
         });
     }
 
@@ -379,23 +392,26 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     private void updateScore() {
+        LOG.debug("updating score");
         PlayerScore currentPlayerScore = dartgame.getPlayerScore(currentPlayer);
         currentPlayerScoreLabel.setVisible(true);
         currentPlayerScoreLabel.setText(String.valueOf(currentPlayerScore.getScore()));
 
-        ((AtomicInteger) currentScoreRound.get(currentPlayer.getName())).set(currentPlayerScore.getDartsForRound(currentRound).stream()
+        int scoreTotalDartsForCurrentRound = currentPlayerScore.getDartsForRound(currentRound).stream()
                 .map(dartValueMapper::getDartScore)
-                .reduce(0, Integer::sum));
+                .reduce(0, Integer::sum);
 
-        if (currentRound > 1) {
-            Player leadPlayer = dartgame.getScoreBoard().getLeadingPlayer();
+        ((AtomicInteger) currentScoreRound.get(currentPlayer.getName())).set(scoreTotalDartsForCurrentRound);
 
-            gamePlayerMap.entrySet().stream().forEach(entry -> {
-                Player player = entry.getKey();
-                GamePlayer gamePlayer = entry.getValue();
-                gamePlayer.leader = player.equals(leadPlayer);
-            });
-        }
+        boolean showLeadPlayer = currentRound > 1;
+        Player leadPlayer = dartgame.getScoreBoard().getLeadingPlayer();
+
+        gamePlayerMap.entrySet().stream().forEach(entry -> {
+            Player player = entry.getKey();
+            GamePlayer gamePlayer = entry.getValue();
+            gamePlayer.playerScore = dartgame.getPlayerScore(player).getScore();
+            gamePlayer.leader = showLeadPlayer && player.equals(leadPlayer);
+        });
 
         playersList.refresh();
         scoreTable.refresh();

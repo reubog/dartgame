@@ -27,7 +27,7 @@ public class EnsureJavaFXThreadDartboardWrapper implements Dartboard {
     @Override
     public void setOnStatusChange(Consumer<DartboardStatus> statusConsumer) {
         delegate.setOnStatusChange(status -> platformRun(() -> {
-            LOG.debug("Status changed to {}", status);
+            LOG.trace("Status changed to {}", status);
             statusConsumer.accept(status);
         }));
     }
@@ -35,17 +35,15 @@ public class EnsureJavaFXThreadDartboardWrapper implements Dartboard {
     @Override
     public void setOnDartboardValue(Consumer<DartboardValue> valueConsumer) {
         delegate.setOnDartboardValue(value -> platformRun(() -> {
-            LOG.debug("Value changed to {}", value);
+            LOG.trace("Value changed to {}", value);
             valueConsumer.accept(value);
         }));
     }
 
     private void platformRun(Runnable runnable) {
         if (Platform.isFxApplicationThread()) {
-            //LOG.debug("Already on JavaFX thread");
             runnable.run();
         } else {
-            //LOG.debug("Running on non-JavaFX thread, so scheduling...");
             Platform.runLater(runnable);
         }
     }

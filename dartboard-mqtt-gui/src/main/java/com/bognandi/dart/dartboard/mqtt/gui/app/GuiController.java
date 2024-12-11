@@ -7,6 +7,7 @@ import com.bognandi.dart.dartboard.mqtt.GranboardMqttMessageSerializer;
 import com.bognandi.dart.dartboard.mqtt.GranboardMqttPublisher;
 import jakarta.annotation.PreDestroy;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.slf4j.Logger;
@@ -29,6 +30,12 @@ public class GuiController {
 
     @FXML
     private ChoiceBox<DartboardValue> dartvalueChoice;
+
+    @FXML
+    public void sendRedButton() {
+        LOG.info("Sending red button");
+        publisher.publish(new GranboardMessage(DartboardStatus.CONNECTED, DartboardValue.RED_BUTTON));
+    }
 
     @FXML
     public void sendDartvalue() {
