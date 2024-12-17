@@ -37,7 +37,7 @@ public class DartboardMqttSubscriber implements Dartboard, IMqttMessageListener 
     private Consumer<DartboardStatus> statusConsumer;
     private Consumer<DartboardValue> valueConsumer;
     private Queue<GranboardMessage> messageQueue = new ArrayDeque<>();
-    private ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private DartboardMqttSubscriber(DartboardMqttMessageDeserializer deserializer) {
         this.deserializer = deserializer;

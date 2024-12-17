@@ -126,7 +126,7 @@ public class GameAppService {
 
     private class GameEventListener implements DartgameEventListener {
 
-        private ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+        private ExecutorService executorService = Executors.newSingleThreadExecutor();
         private Player currentPlayer;
         private int startRoundScore;
 

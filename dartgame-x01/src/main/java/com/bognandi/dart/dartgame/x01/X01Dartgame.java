@@ -49,7 +49,7 @@ public class X01Dartgame implements Dartgame {
     private void initGameWaitForPlayers() {
         LOG.info("Initializing game and waiting for players");
 
-        this.dartgameEventListeners.addFirst(scoreBoard);
+        this.dartgameEventListeners.add(0, scoreBoard);
         this.playerStateMap = new LinkedHashMap<>();
         this.gameState = GameState.WAITING_FOR_PLAYERS;
     }
@@ -65,12 +65,12 @@ public class X01Dartgame implements Dartgame {
     }
 
     private void onDartboardValue(DartboardValue value) {
-        switch (value) {
-            case DartboardValue.INITIAL_CODE -> {
-            }
-            case DartboardValue.RED_BUTTON -> onButton();
-
-            default -> onDartThrown(DartboardValueMapper.DART_MAP.get(value));
+        if (DartboardValue.INITIAL_CODE.equals(value)) {
+            ;
+        } else if (DartboardValue.RED_BUTTON.equals(value)) {
+            onButton();
+        } else {
+            onDartThrown(DartboardValueMapper.DART_MAP.get(value));
         }
     }
 
