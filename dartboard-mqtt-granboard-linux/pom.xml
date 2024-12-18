@@ -11,6 +11,12 @@
 
     <artifactId>dartboard-mqtt-granboard-linux</artifactId>
 
+    <properties>
+        <module.name>com.bognandi.dart.dartboard.bluetooth.granboard</module.name>
+        <main.app.class>com.bognandi.dart.dartboard.bluetooth.app.GranboardMqttMain</main.app.class>
+    </properties>
+
+
     <repositories>
         <repository>
             <id>jitpack</id>
@@ -60,6 +66,33 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${main.app.class}</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.app.class}</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptors>
+                        <descriptor>src/main/assembly/dist.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

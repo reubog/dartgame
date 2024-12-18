@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -60,6 +61,8 @@ public class JavaFxApplicationSupport extends Application {
             Platform.exit();
             System.exit(0);
         });
+        stage.setFullScreenExitKeyCombination(KeyCombination.valueOf("ESC"));
+        stage.setFullScreen(true);
         applicationContext.publishEvent(new StageReadyEvent(applicationContext, stage));
     }
 
