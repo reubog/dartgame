@@ -14,7 +14,10 @@ Purpose:
   * Join game via QR-code (web-ui)
   * Maintain player profile incl. statistics (web-ui)
   * 
-  
+
+# System Topology
+![System Topology](topology.drawio.svg "System Topology")
+
 # Build and Run
 
 * Java version = 21
