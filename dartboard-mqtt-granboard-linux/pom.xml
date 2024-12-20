@@ -12,7 +12,6 @@
     <artifactId>dartboard-mqtt-granboard-linux</artifactId>
 
     <properties>
-        <module.name>com.bognandi.dart.dartboard.bluetooth.granboard</module.name>
         <main.app.class>com.bognandi.dart.dartboard.bluetooth.app.GranboardMqttMain</main.app.class>
     </properties>
 

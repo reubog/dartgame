@@ -1,4 +1,4 @@
-open module com.bognandi.dart.dartboard.bluetooth.granboard {
+open module granboard.mqtt {
     requires org.slf4j;
     requires com.bognandi.dart.core;
     requires com.bognandi.dart.dartboard.mqtt;

@@ -63,4 +63,14 @@ public class BluetoothSearchCallback extends LoggedBluetoothCallback {
             onDisconnected.accept(peripheral);
         }
     }
+
+    @Override
+    public void onConnectionFailed(@NotNull BluetoothPeripheral peripheral, @NotNull BluetoothCommandStatus status) {
+        super.onConnectionFailed(peripheral, status);
+
+        if (peripheralName.equals(peripheral.getName())) {
+            LOG.debug("Dartboard '{}' connection failed!", peripheralName);
+            onDisconnected.accept(peripheral);
+        }
+    }
 }

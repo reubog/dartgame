@@ -1,5 +1,7 @@
 # dart game
-Dart Board Game for Electronic Dart Board
+Dart Board Game for Electronic Dart Board 
+
+![Granboard Dash Blue](granboard-dash-blue.jpg "Granboard Dash Blue")
 
 Purpose:
 * Connect to electronic dart board, i.e Granboard Dash(/3s)
