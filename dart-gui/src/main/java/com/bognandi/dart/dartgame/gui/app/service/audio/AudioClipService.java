@@ -46,7 +46,7 @@ public class AudioClipService {
     public AudioClipService() throws IOException {
         LOG.debug("AudioClipService created");
 
-        Arrays.stream(new PathMatchingResourcePatternResolver().getResources("classpath*:/audio/*"))
+        Arrays.stream(new PathMatchingResourcePatternResolver().getResources("/audio/*"))
                 .map(this::resource2url)
                 .forEach(this::addAudioClip);
 

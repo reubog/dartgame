@@ -7,6 +7,7 @@ import com.bognandi.dart.dartgame.gui.app.event.StageReadyEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StartDartgameEvent;
 import com.bognandi.dart.dartgame.gui.app.service.DartgamesService;
 import com.bognandi.dart.dartgame.gui.app.service.EventPublisherService;
+import com.bognandi.dart.dartgame.gui.app.service.audio.AudioClipService;
 import com.bognandi.dart.dartgame.gui.app.service.dartboard.DartboardService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -60,6 +61,9 @@ public class GameController extends DefaultDartgameEventListener {
 
     @Autowired
     private EventPublisherService eventPublisherService;
+
+    @Autowired
+    private AudioClipService audioClipService;
 
     @FXML
     private MediaView backgroundMediaView;
@@ -208,6 +212,7 @@ public class GameController extends DefaultDartgameEventListener {
                 break;
 
             case FINISHED:
+                audioClipService.play(AudioClipService.SoundClip.GAME_OVER);
                 showMessageConfirm("Game is finished");
                 gameState = GameState.READY_TO_CLOSE;
                 break;
@@ -224,7 +229,7 @@ public class GameController extends DefaultDartgameEventListener {
     }
 
     private void addPlayersAndStartGame() {
-        if (guestPlayers  < dartgameDescriptor.getMinimumPlayerCount()) {
+        if (guestPlayers < dartgameDescriptor.getMinimumPlayerCount()) {
             LOG.debug("Too few players");
             return;
         }
@@ -326,6 +331,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onGamePlayStarted(Dartgame dartGame) {
         doEnsureFxThread(() -> {
+            audioClipService.play(AudioClipService.SoundClip.BELL);
             showMessageForDuration(Duration.ofSeconds(3), "Get ready!");
         });
     }
@@ -365,7 +371,7 @@ public class GameController extends DefaultDartgameEventListener {
     public void onDartThrown(Dartgame dartGame, Dart dart) {
         doEnsureFxThread(() -> {
             hideMessage();
-
+            makeDartSound(dart);
             dartsList.getItems().add(dart);
             updateScore();
         });
@@ -389,6 +395,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onPlayerLost(Dartgame dartGame, Player player) {
         doEnsureFxThread(() -> {
+            audioClipService.play(AudioClipService.SoundClip.LOOSE);
             showMessageConfirm(player.getName() + " is out\nRemove the darts");
         });
     }
@@ -396,6 +403,7 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onPlayerWon(Dartgame dartGame, Player player) {
         doEnsureFxThread(() -> {
+            audioClipService.play(AudioClipService.SoundClip.APPLAUSE);
             if (dartGame.isPlaying()) {
                 showMessageConfirm(player.getName() + " is a winner\nRemove the darts");
             } else {
@@ -495,6 +503,28 @@ public class GameController extends DefaultDartgameEventListener {
         } else {
             //LOG.trace("Running on non-JavaFX thread, so scheduling to run on it");
             Platform.runLater(runnable);
+        }
+    }
+
+    private void makeDartSound(Dart dart) {
+        LOG.debug("Make dart sound: {}", dart);
+
+        if (Dart.BULLSEYE.equals(dart)) {
+            audioClipService.play(AudioClipService.SoundClip.OUTER_BULLSEYE);
+        } else if (Dart.DOUBLE_BULLSEYE.equals(dart)) {
+            audioClipService.play(AudioClipService.SoundClip.INNER_BULLSEYE);
+        } else {
+            switch (dartValueMapper.multiplier(dart)) {
+                case 1:
+                    audioClipService.play(AudioClipService.SoundClip.SINGLE);
+                    break;
+                case 2:
+                    audioClipService.play(AudioClipService.SoundClip.DOUBLE);
+                    break;
+                case 3:
+                    audioClipService.play(AudioClipService.SoundClip.TRIPLE);
+                    break;
+            }
         }
     }
 
