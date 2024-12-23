@@ -138,7 +138,7 @@ public class X01Dartgame implements Dartgame {
         LOG.info("Player {} busted!", player);
         this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerBust(this, player));
 
-        if (isNoMoreActivePlayers()) {
+        if (!isHavingActivePlayers()) {
             finishGame();
         }
     }
@@ -150,16 +150,16 @@ public class X01Dartgame implements Dartgame {
         LOG.info("Player {} won!", player);
         this.dartgameEventListeners.forEach((dartGameNotification) -> dartGameNotification.onPlayerWon(this, player));
 
-        if (isNoMoreActivePlayers()) {
+        if (!isHavingActivePlayers()) {
             finishGame();
         }
     }
 
-    private boolean isNoMoreActivePlayers() {
+    private boolean isHavingActivePlayers() {
         int activePlayers = (int) playerStateMap.values().stream()
                 .filter(state -> PlayerState.PLAYING.equals(state))
                 .count();
-        return activePlayers < scoreBoard.getMinimumNumberOfPlayers();
+        return activePlayers >= scoreBoard.getMinimumNumberOfPlayers();
     }
 
     private void finishGame() {
@@ -239,5 +239,10 @@ public class X01Dartgame implements Dartgame {
     @Override
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return isHavingActivePlayers();
     }
 }

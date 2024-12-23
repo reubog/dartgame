@@ -46,6 +46,7 @@ public class GameController extends DefaultDartgameEventListener {
     private enum GameState {
         WAITING_FOR_PLAYERS,
         FINISHED,
+        READY_TO_CLOSE,
     }
 
     @Autowired
@@ -189,16 +190,31 @@ public class GameController extends DefaultDartgameEventListener {
                 break;
 
             case FINISHED:
+                showMessageConfirm("Game is finished");
+                gameState = GameState.READY_TO_CLOSE;
+                break;
+
+            case READY_TO_CLOSE:
                 eventPublisherService.publish(new CloseDartgameEvent(GameController.this));
                 break;
 
             default:
                 LOG.warn("Unknown game state: {}", gameState);
+                gameState = null;
         }
-        gameState = null;
     }
 
     private void addPlayersAndStartGame() {
+        if (guestPlayers  < dartgameDescriptor.getMinimumPlayerCount()) {
+            LOG.debug("Too few players");
+            return;
+        }
+
+        if (guestPlayers > dartgameDescriptor.getMaximumPlayerCount()) {
+            LOG.debug("Too many players");
+            return;
+        }
+
         addPlayersToGame();
 
         LOG.debug("Starting game");
@@ -256,9 +272,9 @@ public class GameController extends DefaultDartgameEventListener {
     private void addPlayersToGame() {
         LOG.debug("Add players");
 
-        players = IntStream.range(0, guestPlayers)
+        players.addAll(IntStream.range(0, guestPlayers)
                 .mapToObj(i -> (Player) new DefaultPlayer("Guest " + (i + 1)))
-                .toList();
+                .toList());
 
         players.forEach(player -> {
             LOG.debug("Adding player: {}", player.getName());
@@ -361,34 +377,28 @@ public class GameController extends DefaultDartgameEventListener {
     @Override
     public void onPlayerWon(Dartgame dartGame, Player player) {
         doEnsureFxThread(() -> {
-            showMessageConfirm(player.getName() + " is a winner\nRemove the darts");
+            if (dartGame.isPlaying()) {
+                showMessageConfirm(player.getName() + " is a winner\nRemove the darts");
+            } else {
+                showMessageConfirm(player.getName() + " is a winner");
+                gameState = GameState.FINISHED;
+                // TODO show scores
+                dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> doEnsureFxThread(() -> {
+                    LOG.debug("Dartboard value: {}", dartboardValue);
+                    switch (dartboardValue) {
+                        case RED_BUTTON:
+                            messageConfirmed();
+                            break;
+                    }
+                }));
+            }
+
         });
     }
 
     @Override
     public void onGameFinished(Dartgame dartGame) {
-        LOG.debug("Game finished, so closing the view, scheduling to show message");
-        new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        doEnsureFxThread(() -> {
-                            showMessageConfirm("Game over");
-                            gameState = GameState.FINISHED;
-                            // TODO show scores
-                            dartboardService.getDartboard().setOnDartboardValue(dartboardValue -> doEnsureFxThread(() -> {
-                                LOG.debug("Dartboard value: {}", dartboardValue);
-                                switch (dartboardValue) {
-                                    case RED_BUTTON:
-                                        messageConfirmed();
-                                        break;
-                                }
-                            }));
-                        });
-
-                    }
-                },
-                Duration.ofSeconds(5).toMillis());
+        LOG.debug("Game finished");
     }
 
     private void updateScore() {

@@ -11,4 +11,5 @@ public interface Dartgame {
     List<Player> getPlayers();
     PlayerScore getPlayerScore(Player player);
     ScoreBoard  getScoreBoard();
+    boolean isPlaying();
 }
