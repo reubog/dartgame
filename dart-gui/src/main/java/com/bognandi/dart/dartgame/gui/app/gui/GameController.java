@@ -131,31 +131,26 @@ public class GameController extends DefaultDartgameEventListener {
     public void initialize() {
         LOG.debug("Initializing game controller view");
 
-        gamePlayerMap.clear();
-        scoreData.clear();
-        players.clear();
-        playersList.getItems().clear();
-        scoreTable.getItems().clear();
-        scoreTable.getColumns().clear();
-        dartsList.getItems().clear();
         playersList.setCellFactory(listView -> new GamePlayerListCell());
         dartsList.setCellFactory(listView -> new DartListCell());
 
+        scoreTable.setItems(scoreData);
+
+        Media media = new Media(getClass().getResource(BACKGROUND_VIDEO_RESOURCE).toExternalForm());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        backgroundMediaView.setMediaPlayer(mediaPlayer);
+
+        currentPlayerScoreLabel.setVisible(false);
+    }
+
+    private void createDefaultScoreColumm() {
         TableColumn column = new TableColumn<GameRound, String>("Round");
         column.setCellValueFactory(new MapValueFactory<>(SCORETABLEKEY_ROUND));
         column.setPrefWidth(100.0); // TODO why this remove? control from fxml
 
         scoreTable.getColumns().add(column);
         scoreTable.setPrefWidth(column.getPrefWidth() + 1);
-        scoreTable.setItems(scoreData);
-
-        Media media = new Media(getClass().getResource(BACKGROUND_VIDEO_RESOURCE).toExternalForm());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        mediaPlayer.setAutoPlay(true);
-        backgroundMediaView.setMediaPlayer(mediaPlayer);
-
-        currentPlayerScoreLabel.setVisible(false);
     }
 
     @EventListener(StageReadyEvent.class)
@@ -168,12 +163,35 @@ public class GameController extends DefaultDartgameEventListener {
     public void startGameGui(StartDartgameEvent event) {
         LOG.debug("Switching view to Game mode");
         doEnsureFxThread(() -> {
+            clearVariables();
+
             stage.getScene().setRoot(JavaFxApplicationSupport.GAME_PARENT);
 
             dartgameDescriptor = event.getDartgameDescriptor();
 
+            mediaPlayer.setAutoPlay(true);
+
             waitingForPlayers();
         });
+    }
+
+    private void clearVariables() {
+        LOG.debug("Clearing variables");
+        dartgame = null;
+        currentPlayer = null;
+        currentRound = 0;
+        currentScoreRound = null;
+        gamePlayerMap.clear();
+        players.clear();
+        scoreData.clear();
+        dartsList.getItems().clear();
+        playersList.getItems().clear();
+        scoreTable.getItems().clear();
+        scoreTable.getColumns().clear();
+        currentPlayerScoreLabel.setVisible(false);
+        gameState = null;
+
+        createDefaultScoreColumm();
     }
 
     @FXML
@@ -195,6 +213,7 @@ public class GameController extends DefaultDartgameEventListener {
                 break;
 
             case READY_TO_CLOSE:
+                mediaPlayer.setAutoPlay(false);
                 eventPublisherService.publish(new CloseDartgameEvent(GameController.this));
                 break;
 
