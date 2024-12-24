@@ -15,9 +15,9 @@ public class DartListCellController {
 
     public void updateDart(Dart dart) {
         if (Dart.BULLSEYE.equals(dart)) {
-            dartLabel.setText("Bullseye");
+            dartLabel.setText("Bull");
         } else if (Dart.DOUBLE_BULLSEYE.equals(dart)) {
-            dartLabel.setText("2x Bullseye");
+            dartLabel.setText("= Bull");
         } else {
             switch (dartValueMapper.multiplier(dart)) {
                 case 1 -> dartLabel.setText(String.format("%d", dartValueMapper.getDartValue(dart)));
