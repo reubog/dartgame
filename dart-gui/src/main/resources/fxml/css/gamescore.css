@@ -1,0 +1,83 @@
+.table-view {
+    -fx-background-color: transparent;
+ }
+
+.table-cell {
+    -fx-text-fill: white;
+}
+
+ .table-view:focused{
+     -fx-background-color: transparent;
+ }
+
+ .table-view .column-header-background
+ {
+     -fx-background-color: transparent;
+ }
+
+ .table-view .column-header-background .label {
+     -fx-text-fill: white;
+     -fx-border-color: white;
+     -fx-opacity: 60%;
+     -fx-alignment: center;
+     -fx-background-color: black;
+     -fx-font-size:25px;
+     -fx-cell-size: 25px;
+ }
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 25px;
+    -fx-cell-size: 25px;
+    -fx-background-insets: 0;
+    -fx-padding: 0.0em;
+}
+
+.table-view .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell:filled{
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-alignment: center;
+    -fx-font-size: 25px;
+    -fx-cell-size: 25px;
+    -fx-background-insets: 0;
+    -fx-padding: 0.0em;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0.0em;
+}
+
+.table-row-cell:selected {
+    -fx-opacity: 80%;
+    -fx-table-cell-border-color: transparent;
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-alignment: center;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-cell-size: 25px;
+}
+
+.table-row-cell{
+    -fx-opacity: 60%;
+    -fx-table-cell-border-color: transparent;
+    -fx-background-color: black;
+}
+
+.table-view .scroll-bar * {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}

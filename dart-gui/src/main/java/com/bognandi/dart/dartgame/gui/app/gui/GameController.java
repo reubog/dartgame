@@ -2,7 +2,7 @@ package com.bognandi.dart.dartgame.gui.app.gui;
 
 import com.bognandi.dart.core.dartgame.*;
 import com.bognandi.dart.dartgame.gui.app.JavaFxApplicationSupport;
-import com.bognandi.dart.dartgame.gui.app.event.CloseDartgameEvent;
+import com.bognandi.dart.dartgame.gui.app.event.OpenScoreboardEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StageReadyEvent;
 import com.bognandi.dart.dartgame.gui.app.event.StartDartgameEvent;
 import com.bognandi.dart.dartgame.gui.app.service.DartgamesService;
@@ -219,7 +219,7 @@ public class GameController extends DefaultDartgameEventListener {
 
             case READY_TO_CLOSE:
                 mediaPlayer.setAutoPlay(false);
-                eventPublisherService.publish(new CloseDartgameEvent(GameController.this));
+                eventPublisherService.publish(new OpenScoreboardEvent(dartgame.getPlayers(), dartgame.getScoreBoard()));
                 break;
 
             default:

@@ -5,6 +5,8 @@ import java.util.List;
 public interface PlayerScore {
     int getScore();
     int getPlayedRounds();
-    int getThrownDarts();
+    List<Dart> getThrownDarts();
     List<Dart> getDartsForRound(int round);
+    double getDartAverage();
+    double getPointsPerDart();
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.text.Font?>
+
+
+<StackPane prefHeight="1080.0" prefWidth="1920.0" stylesheets="@css/gamescore.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bognandi.dart.dartgame.gui.app.gui.score.ScoreController">
+   <children>
+      <MediaView fx:id="mediaView" fitHeight="1080.0" fitWidth="1920.0" />
+      <StackPane StackPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="scoreTable" />
+               </children>
+            </Pane>
+         </children>
+         <padding>
+            <Insets bottom="150.0" left="100.0" right="100.0" top="100.0" />
+         </padding>
+      </StackPane>
+      <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefHeight="0.0" prefWidth="244.0" text="Continue" textFill="WHITE">
+               <graphic>
+                  <Label prefHeight="63.0" prefWidth="49.0" text="●" textFill="#bf0000">
+                     <font>
+                        <Font name="System Bold" size="50.0" />
+                     </font>
+                  </Label>
+               </graphic>
+               <font>
+                  <Font size="50.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </padding>
+      </HBox>
+   </children>
+</StackPane>

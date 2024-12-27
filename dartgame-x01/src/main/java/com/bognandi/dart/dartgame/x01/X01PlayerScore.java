@@ -10,11 +10,14 @@ import java.util.Collections;
 public class X01PlayerScore implements PlayerScore {
 
     private int score;
+    private int initialScore;
     private int playedRounds;
-    private int thrownDarts;
+    private List<Dart> thrownDarts = new ArrayList<>();
     private Map<Integer,List<Dart>> dartsForRound = new LinkedHashMap<>();
 
+
     public X01PlayerScore(int score) {
+        this.initialScore = score;
         this.score = score;
     }
 
@@ -30,7 +33,7 @@ public class X01PlayerScore implements PlayerScore {
     }
 
     public X01PlayerScore nextDart(Dart dart) {
-        this.thrownDarts++;
+        this.thrownDarts.add(dart);
         dartsForRound.get(this.playedRounds).add(dart);
         return this;
     }
@@ -51,12 +54,22 @@ public class X01PlayerScore implements PlayerScore {
     }
 
     @Override
-    public int getThrownDarts() {
+    public List<Dart> getThrownDarts() {
         return thrownDarts;
     }
 
     @Override
     public List<Dart> getDartsForRound(int round) {
         return Collections.unmodifiableList(dartsForRound.get(round));
+    }
+
+    @Override
+    public double getDartAverage() {
+        return (initialScore - score) / thrownDarts.size() * 3;
+    }
+
+    @Override
+    public double getPointsPerDart() {
+        return (initialScore - score) / thrownDarts.size();
     }
 }

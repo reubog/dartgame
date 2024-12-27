@@ -24,6 +24,7 @@ public class JavaFxApplicationSupport extends Application {
     public static Parent GAME_STARING_PARENT;
     public static Parent GAME_SELECTION_PARENT;
     public static Parent GAME_PARENT;
+    public static Parent GAME_SCORE_PARENT;
 
 
     private ConfigurableApplicationContext applicationContext;
@@ -36,6 +37,7 @@ public class JavaFxApplicationSupport extends Application {
         GAME_STARING_PARENT = loadFxml("/fxml/start.fxml");
         GAME_SELECTION_PARENT = loadFxml("/fxml/gameseletion.fxml");
         GAME_PARENT = loadFxml("/fxml/game.fxml");
+        GAME_SCORE_PARENT = loadFxml("/fxml/gamescore.fxml");
     }
 
     private Parent loadFxml(String fxmlPath) {

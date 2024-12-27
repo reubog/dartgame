@@ -18,7 +18,6 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
     private int currentPlayerTurnStartScore;
     private Player currentPlayer;
     private final DartValueMapper dartValueMapper;
-    //private List<PlayerRound> playerRounds;
     private Map<Player, X01PlayerScore> playerScoreMap = new LinkedHashMap<>();
     private List<Player> playing = new ArrayList<>();
 
@@ -50,11 +49,15 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     @Override
     public Player getLeadingPlayer() {
-        List<Player> playerPositions = playerScoreMap.keySet().stream()
+        return getPlayerPosition().get(0);
+    }
+
+    @Override
+    public List<Player> getPlayerPosition() {
+        return playerScoreMap.keySet().stream()
                 .filter(player -> playing.contains(player))
                 .sorted((o1, o2) -> playerScoreMap.get(o1).getScore() < playerScoreMap.get(o2).getScore() ? -1 : 1)
                 .toList();
-        return playerPositions.get(0);
     }
 
     public void onWaitingForPlayers(Dartgame dartGame) {

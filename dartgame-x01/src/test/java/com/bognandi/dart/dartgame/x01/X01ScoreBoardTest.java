@@ -47,6 +47,6 @@ public class X01ScoreBoardTest {
         PlayerScore playerScore =  scoreBoard.getPlayerScore(player1);
         Assertions.assertEquals(300, playerScore.getScore() );
         Assertions.assertEquals(1, playerScore.getPlayedRounds() );
-        Assertions.assertEquals(1, playerScore.getThrownDarts() );
+        Assertions.assertEquals(1, playerScore.getThrownDarts().size() );
     }
 }
