@@ -151,6 +151,11 @@ public class ScoreController {
         ));
 
         scoreData.add(createScoreRowData(
+                "Dart Average Level",
+                player -> findDartAverageLevelStr(scoreBoard.getPlayerScore(player).getDartAverage())
+        ));
+
+        scoreData.add(createScoreRowData(
                 "Points Per Dart",
                 player -> String.format("%#.1f", scoreBoard.getPlayerScore(player).getPointsPerDart())
         ));
@@ -167,11 +172,6 @@ public class ScoreController {
                 player -> String.format("%d", scoreBoard.getPlayerScore(player).getThrownDarts().stream()
                         .filter(dart -> dartValueMapper.multiplier(dart) == 2)
                         .count())
-        ));
-
-        scoreData.add(createScoreRowData(
-                "Level",
-                player -> findDartAverageLevelStr(scoreBoard.getPlayerScore(player).getDartAverage())
         ));
 
     }

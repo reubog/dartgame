@@ -65,11 +65,13 @@ public class X01PlayerScore implements PlayerScore {
 
     @Override
     public double getDartAverage() {
-        return (initialScore - score) / thrownDarts.size() * 3;
+        return getPointsPerDart() * 3;
     }
 
     @Override
     public double getPointsPerDart() {
-        return (initialScore - score) / thrownDarts.size();
+        double points = initialScore - score;
+        double numberOfDarts = thrownDarts.size();
+        return points / numberOfDarts;
     }
 }
