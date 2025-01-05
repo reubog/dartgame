@@ -1,0 +1,12 @@
+[Unit]
+Description=Dartgame GUI
+PartOf=graphical-session.target
+
+[Service]
+Environment="DISPLAY=:0"
+Environment="JAVA_HOME=/usr/lib/jvm/bellsoft-java21-aarch64"
+Environment="JAVAFX_HOME=/opt/javafx-sdk-23.0.1"
+ExecStart=/home/pi/opt/dart-gui-dist/javafx-run.sh
+
+[Install]
+WantedBy=default.target

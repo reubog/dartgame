@@ -1,0 +1,10 @@
+[Unit]
+Description=Granboard Bluetooth to Mqtt
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/lib/jvm/bellsoft-java21-aarch64/bin/java -cp /opt/granboard-dist -jar /opt/granboard-dist/dartboard-mqtt-granboard-linux-0.0.1-SNAPSHOT.jar
+User=root
+
+[Install]
+WantedBy=multi-user.target
