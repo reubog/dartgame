@@ -27,7 +27,7 @@
       </StackPane>
       <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Label prefHeight="0.0" prefWidth="244.0" text="Continue" textFill="WHITE">
+            <Label prefHeight="63.0" prefWidth="432.0" text="Continue" textFill="WHITE">
                <graphic>
                   <Label prefHeight="63.0" prefWidth="49.0" text="●" textFill="#bf0000">
                      <font>
