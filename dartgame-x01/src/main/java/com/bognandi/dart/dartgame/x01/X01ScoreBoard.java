@@ -86,13 +86,14 @@ public class X01ScoreBoard implements ScoreBoard, DartgameEventListener {
 
     @Override
     public void onRoundStarted(Dartgame dartGame, int roundNumber) {
-        playerScoreMap.values().forEach(X01PlayerScore::nextRound);
     }
 
     @Override
     public void onPlayerTurn(Dartgame dartGame, int roundNumber, Player player) {
         currentPlayer = player;
-        currentPlayerTurnStartScore = playerScoreMap.get(currentPlayer).getScore();
+        X01PlayerScore playerScore = playerScoreMap.get(currentPlayer);
+        playerScore.nextRound();
+        currentPlayerTurnStartScore = playerScore.getScore();
     }
 
     @Override

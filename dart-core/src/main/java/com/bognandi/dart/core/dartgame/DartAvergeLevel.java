@@ -1,7 +1,7 @@
 package com.bognandi.dart.core.dartgame;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public enum DartAvergeLevel {
     FIRST_TIMER(0),
@@ -25,7 +25,9 @@ public enum DartAvergeLevel {
     public static DartAvergeLevel findLevel(int average) {
         return Arrays.stream(DartAvergeLevel.values())
                 .filter(level -> average >= level.getAverageThreshold())
+                .sorted(Comparator.comparing(DartAvergeLevel::getAverageThreshold).reversed())
                 .findFirst()
                 .orElse(DartAvergeLevel.FIRST_TIMER);
     }
+
 }
